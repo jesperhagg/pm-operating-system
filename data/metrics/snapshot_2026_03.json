@@ -1,0 +1,81 @@
+{
+  "product_id": "prod-001",
+  "period": "2026-03",
+  "generated_at": "2026-03-15T00:00:00Z",
+  "acquisition": {
+    "new_signups": 1240,
+    "signups_mom_pct": 8.2,
+    "trial_starts": 890,
+    "paid_conversions": 112,
+    "trial_to_paid_rate": 0.126,
+    "cac_usd": 380,
+    "top_channels": [
+      {"channel": "organic_search", "signups": 490, "share": 0.40},
+      {"channel": "product_led_viral", "signups": 310, "share": 0.25},
+      {"channel": "paid_search", "signups": 248, "share": 0.20},
+      {"channel": "direct", "signups": 192, "share": 0.15}
+    ]
+  },
+  "activation": {
+    "day_1_activation_rate": 0.61,
+    "day_7_activation_rate": 0.47,
+    "median_time_to_first_value_minutes": 22,
+    "onboarding_completion_rate": 0.38,
+    "key_action_completion": {
+      "created_first_project": 0.72,
+      "invited_teammate": 0.41,
+      "completed_first_task": 0.55,
+      "connected_integration": 0.19
+    }
+  },
+  "engagement": {
+    "mau": 8420,
+    "wau": 4110,
+    "dau": 1380,
+    "dau_mau_ratio": 0.164,
+    "avg_sessions_per_user_per_week": 4.2,
+    "avg_session_duration_minutes": 18.3,
+    "feature_adoption": {
+      "task_management": 0.89,
+      "comments": 0.62,
+      "integrations": 0.31,
+      "reporting": 0.24,
+      "ai_assist": 0.18
+    }
+  },
+  "retention": {
+    "week1": 0.71,
+    "week2": 0.58,
+    "week4": 0.44,
+    "month3": 0.31,
+    "monthly_churn_rate": 0.031,
+    "net_revenue_retention": 1.08
+  },
+  "revenue": {
+    "mrr_usd": 148000,
+    "arr_usd": 1776000,
+    "mrr_mom_growth_pct": 6.1,
+    "arpu_usd": 17.6,
+    "ltv_usd": 568,
+    "ltv_cac_ratio": 1.49
+  },
+  "satisfaction": {
+    "nps_score": 38,
+    "nps_responses": 412,
+    "promoters_pct": 0.51,
+    "passives_pct": 0.36,
+    "detractors_pct": 0.13,
+    "csat_score": 4.1,
+    "top_complaints": [
+      "Slow load times on large projects",
+      "Mobile app missing key features",
+      "Onboarding is confusing",
+      "Missing Jira integration"
+    ],
+    "top_praise": [
+      "Clean UI",
+      "Great collaboration features",
+      "Fast support team"
+    ]
+  }
+}

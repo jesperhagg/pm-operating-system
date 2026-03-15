@@ -1,0 +1,45 @@
+{
+  "products": [
+    {
+      "id": "prod-001",
+      "name": "CoreApp",
+      "description": "Main B2B SaaS product — team collaboration and project management",
+      "stage": "growth",
+      "team": ["alice", "bob", "carol", "dave", "eve"],
+      "current_sprint": "sprint-42",
+      "okrs": [
+        {
+          "objective": "Increase activation rate",
+          "key_results": [
+            {"metric": "day_7_activation", "target": 0.60, "current": 0.47},
+            {"metric": "time_to_first_value_minutes", "target": 15, "current": 22}
+          ]
+        },
+        {
+          "objective": "Reduce churn",
+          "key_results": [
+            {"metric": "monthly_churn_rate", "target": 0.02, "current": 0.031},
+            {"metric": "nps_score", "target": 45, "current": 38}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prod-002",
+      "name": "DataLayer",
+      "description": "Analytics and data pipeline product for enterprise customers",
+      "stage": "early_growth",
+      "team": ["frank", "grace", "henry"],
+      "current_sprint": "sprint-12",
+      "okrs": [
+        {
+          "objective": "Achieve product-market fit signal",
+          "key_results": [
+            {"metric": "weekly_active_accounts", "target": 50, "current": 31},
+            {"metric": "retention_week4", "target": 0.70, "current": 0.58}
+          ]
+        }
+      ]
+    }
+  ]
+}
