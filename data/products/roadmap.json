@@ -1,0 +1,67 @@
+{
+  "product_id": "prod-001",
+  "roadmap": [
+    {
+      "quarter": "Q1-2026",
+      "theme": "Activation & Onboarding",
+      "initiatives": [
+        {
+          "id": "init-101",
+          "title": "Smart onboarding wizard",
+          "status": "in_progress",
+          "priority": "P0",
+          "effort": "L",
+          "impact": "H",
+          "owner": "alice",
+          "description": "Guided setup flow that adapts to team size and use case"
+        },
+        {
+          "id": "init-102",
+          "title": "In-app onboarding checklist",
+          "status": "in_progress",
+          "priority": "P1",
+          "effort": "M",
+          "impact": "H",
+          "owner": "bob",
+          "description": "Persistent checklist nudging users to complete key activation steps"
+        },
+        {
+          "id": "init-103",
+          "title": "Email drip sequence for new signups",
+          "status": "planned",
+          "priority": "P1",
+          "effort": "S",
+          "impact": "M",
+          "owner": "carol",
+          "description": "5-email drip covering core features over first 14 days"
+        }
+      ]
+    },
+    {
+      "quarter": "Q2-2026",
+      "theme": "Retention & Engagement",
+      "initiatives": [
+        {
+          "id": "init-201",
+          "title": "AI-powered weekly digest",
+          "status": "planned",
+          "priority": "P0",
+          "effort": "M",
+          "impact": "H",
+          "owner": "alice",
+          "description": "Auto-generated weekly summary of team activity and highlights"
+        },
+        {
+          "id": "init-202",
+          "title": "Notification preferences center",
+          "status": "planned",
+          "priority": "P2",
+          "effort": "M",
+          "impact": "M",
+          "owner": "dave",
+          "description": "Granular notification controls to reduce alert fatigue"
+        }
+      ]
+    }
+  ]
+}

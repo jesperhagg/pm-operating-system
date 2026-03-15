@@ -1,0 +1,106 @@
+{
+  "id": "sprint-42",
+  "product_id": "prod-001",
+  "name": "Sprint 42 — Activation Push",
+  "start_date": "2026-03-03",
+  "end_date": "2026-03-14",
+  "goal": "Ship onboarding wizard v1 and checklist; reduce time-to-first-value below 18 minutes",
+  "capacity_points": 40,
+  "committed_points": 37,
+  "velocity_last_3_sprints": [32, 35, 38],
+  "team": ["alice", "bob", "carol", "dave"],
+  "issues": [
+    {
+      "id": "CORE-441",
+      "title": "Onboarding wizard — step 1: use case selection",
+      "type": "feature",
+      "status": "done",
+      "points": 5,
+      "assignee": "alice"
+    },
+    {
+      "id": "CORE-442",
+      "title": "Onboarding wizard — step 2: team invite",
+      "type": "feature",
+      "status": "done",
+      "points": 3,
+      "assignee": "alice"
+    },
+    {
+      "id": "CORE-443",
+      "title": "Onboarding wizard — step 3: first project template",
+      "type": "feature",
+      "status": "in_review",
+      "points": 5,
+      "assignee": "bob"
+    },
+    {
+      "id": "CORE-444",
+      "title": "In-app checklist component (UI)",
+      "type": "feature",
+      "status": "done",
+      "points": 3,
+      "assignee": "carol"
+    },
+    {
+      "id": "CORE-445",
+      "title": "Checklist persistence + progress tracking (BE)",
+      "type": "feature",
+      "status": "in_progress",
+      "points": 5,
+      "assignee": "dave",
+      "blocker": "Waiting on DB schema review from platform team"
+    },
+    {
+      "id": "CORE-446",
+      "title": "Fix: session timeout too aggressive on free plan",
+      "type": "bug",
+      "status": "done",
+      "points": 2,
+      "assignee": "bob"
+    },
+    {
+      "id": "CORE-447",
+      "title": "Analytics: track onboarding funnel events",
+      "type": "task",
+      "status": "done",
+      "points": 3,
+      "assignee": "carol"
+    },
+    {
+      "id": "CORE-448",
+      "title": "A/B test setup: wizard vs. blank slate",
+      "type": "task",
+      "status": "blocked",
+      "points": 5,
+      "assignee": "alice",
+      "blocker": "Feature flag service has a bug causing 5% of users to see both variants"
+    },
+    {
+      "id": "CORE-449",
+      "title": "Perf: reduce homepage bundle size by 30%",
+      "type": "task",
+      "status": "done",
+      "points": 3,
+      "assignee": "dave"
+    },
+    {
+      "id": "CORE-450",
+      "title": "Mobile: fix broken layout on checklist (iOS 17)",
+      "type": "bug",
+      "status": "in_progress",
+      "points": 3,
+      "assignee": "bob"
+    }
+  ],
+  "summary": {
+    "done_points": 19,
+    "in_progress_points": 8,
+    "blocked_points": 5,
+    "in_review_points": 5,
+    "completion_rate": 0.51,
+    "blockers_count": 2,
+    "bugs_resolved": 1,
+    "bugs_open": 1
+  }
+}
