@@ -1,48 +1,15 @@
-# Claude Code — PM Operating System
+# PM Operating System
 
-This repository contains PM skills and workflows powered by Claude.
+A personal "PM Operating System" — a collection of Claude Code skills,
+templates, and workflows for AI-augmented product management.
 
-## Skills (Slash Commands)
+## Skills
 
-### /prd-writer
-Draft a Product Requirements Document from a feature idea.
-Usage: `/prd-writer <feature description>`
-File: `skills/prd_writer.py`
+- `/pm-digest` — generates a daily digest of PM + AI news, trends,
+  and actionable insights by searching the web and synthesizing findings.
 
-### /sprint-planner
-Generate a sprint plan from the current backlog.
-Usage: `/sprint-planner [--sprint-length 2w] [--team-capacity 40]`
-File: `skills/sprint_planner.py`
+## Conventions
 
-### /metrics-analyzer
-Analyze a metrics snapshot and surface key insights.
-Usage: `/metrics-analyzer [--product <product-id>] [--period last_7d]`
-File: `skills/metrics_analyzer.py`
-
-### /user-story-gen
-Generate user stories (with acceptance criteria) from a feature idea.
-Usage: `/user-story-gen <feature description>`
-File: `skills/user_story_gen.py`
-
-### /stakeholder-update
-Write a stakeholder update from sprint and metrics data.
-Usage: `/stakeholder-update [--sprint <sprint-id>]`
-File: `skills/stakeholder_update.py`
-
-## Data
-
-Mockup data lives in `data/`. All integrations default to local mockup data
-when no real credentials are configured (set via env vars).
-
-## Environment Variables (optional real integrations)
-
-```
-JIRA_URL=https://yourorg.atlassian.net
-JIRA_EMAIL=you@example.com
-JIRA_API_TOKEN=...
-
-SLACK_BOT_TOKEN=xoxb-...
-SLACK_CHANNEL=#pm-digest
-
-ANTHROPIC_API_KEY=...
-```
+- Skills live in `.claude/skills/<skill-name>/SKILL.md`
+- Digests and artifacts are output directly in the conversation, not
+  written to files, unless the user asks to save them.
