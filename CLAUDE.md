@@ -26,6 +26,9 @@ first to load the correct context.
 
 - `/pm-digest` — generates a daily digest of PM + AI news, trends,
   and actionable insights by searching the web and synthesizing findings.
+- `/market-scan <product>` — scans the competitive landscape for a specific
+  product (sagokraft or selftaped), discovering competitors, recent launches,
+  funding signals, and customer sentiment.
 
 ## Conventions
 
