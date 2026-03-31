@@ -17,34 +17,24 @@ workflow.
 
 ## Core user journey
 
-Script upload -> Script parsing -> Role selection -> AI dialogue mocking setup ->
-Guided recording -> Review & edit -> Export / submit
+Script upload → Script parsing → Role selection → AI dialogue mocking →
+Guided recording → Review & edit → Export / submit
 
-## Key features (MVP scope)
+## Product scope
 
-- Script upload via text paste and PDF (OCR = future)
-- Script parsing: character + line detection
-- TTS dialogue mocking with 2-3 voice options + adjustable pacing
-- Self-recorded reader line mode with basic AI adjustments (speed, pitch)
-- Karaoke-style script display during recording
-- Front-camera recording with framing guide
-- Take management: grid view, star favorites, quick discard
-- Basic trim editing + slate card generation
-- MP4 export to camera roll and share sheet
+Script upload (text paste, PDF), character + line parsing, TTS dialogue mocking
+with voice options and adjustable pacing, karaoke-style script display during
+recording, front-camera recording with framing guide, take management, basic
+trim editing, slate card generation, and MP4 export.
 
 ## Key terminology
 
-- **Sides** — the audition script excerpt (industry term for the pages an
-  actor receives)
-- **Dialogue mocking** — TTS playback of the other characters' lines during
-  recording
-- **Slate** — intro card with actor name, agent, and role (industry standard
-  for submissions)
+- **Sides** — audition script excerpt (the pages an actor receives)
+- **Dialogue mocking** — TTS playback of other characters' lines during recording
+- **Slate** — intro card with actor name, agent, and role
 - **Take** — a single recording attempt of a scene
-- **Reader lines** — lines spoken by off-screen characters the actor records
-  against
-- **Karaoke overlay** — the script display mode during recording, scrolling
-  with audio
+- **Reader lines** — lines spoken by off-screen characters
+- **Karaoke overlay** — scrolling script display during recording
 
 ## Design principles
 
@@ -55,40 +45,9 @@ Guided recording -> Review & edit -> Export / submit
 4. **Minimal learning curve** — if you can use a camera app, you can use
    Selftaped
 
-## Technical stack
-
-- Built mobile-first with Lovable
-- TTS: ElevenLabs / Google Cloud TTS (decision pending)
-- Audio processing: Web Audio API or lightweight library
-- Video: native device camera with overlay rendering
-- Background segmentation: MediaPipe / TF Lite (post-MVP)
-- Storage: local-first with optional cloud backup
-
-## Out of scope for MVP (do not spec or prioritize)
-
-- OCR script upload
-- Animated scene view
-- AI background replacement
-- Side-by-side take comparison
-- Direct casting platform uploads (Actors Access, Eco Cast)
-- Advanced editing (splice, color correction)
-- Collaboration features
-- Monetization/subscription flows
-
-## Success metrics
-
-- **Activation:** % completing first full recording session within 7 days
-- **Core loop:** % of sessions going script -> export
-- **Retention:** WAU returning within 14 days
-- **Recording quality proxy:** avg takes per session (fewer = better UX)
-
 ## Business model
 
 TBD — freemium with limited exports OR flat subscription (open question).
-
-## Current status
-
-PRD v0.2 (March 2026). Prototype phase. Collecting prototype feedback.
 
 ## What NOT to do
 
