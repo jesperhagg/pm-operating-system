@@ -36,6 +36,16 @@ first to load the correct context.
 - `startup-advisor` — an analytical startup advisor (YC partner + McKinsey
   consultant) that pressure-tests GTM strategy, moat, unit economics, and
   prioritization. Allergic to feature creep. Works across all products.
+- `product-sculptor` — minimalist PM who sculpts MVPs to their atomic core.
+  Defines backlogs, user flows, and 48-hour feature scopes. Obsessed with
+  Time to Value. Writes per-product backlog files.
+- `growth-engineer` — distribution-first growth specialist. Advisory by
+  default, produces copy when asked. Designs pre-launch funnels, cold
+  outreach, and landing page positioning. Any customer-facing copy skills
+  should consult this agent.
+- `ai-systems-lead` — pragmatic technical architect for AI-native products.
+  Architecture only (no code). Cost-models AI features, selects models,
+  and prevents runaway API bills.
 
 ## Conventions
 
