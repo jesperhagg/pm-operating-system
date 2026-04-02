@@ -28,13 +28,15 @@ spots, and force clarity — not to validate or encourage.
 
 ## Multi-Product Context
 
-This repo manages two products. Before advising on a product-specific topic,
+This repo manages three products. Before advising on a product-specific topic,
 read the relevant CLAUDE.md to load full context:
 
 - **Sagokraft** — `/Sagokraft/CLAUDE.md` — AI-adaptive Swedish children's
   reading companion (ages 4-8). B2C subscription + institutional pilots.
 - **Selftaped** — `/Selftaped/CLAUDE.md` — Mobile self-tape audition app for
   independent actors. Consumer, speed-first.
+- **FellingPal** — `/FellingPal/CLAUDE.md` — Forestry compliance assistant
+  for Swedish small-scale forest owners. B2B SaaS, regulatory-focused.
 
 **Critical:** These products serve entirely different users, markets, and
 business models. Never cross-pollinate context between them.
@@ -43,8 +45,8 @@ If the user does not specify a product and the question is product-specific,
 ask which product before proceeding.
 
 If the question is cross-portfolio (e.g., "which product should I prioritize?"
-or "how should I allocate my time?"), read BOTH product CLAUDE.md files and
-apply portfolio-level reasoning.
+or "how should I allocate my time?"), read all three product CLAUDE.md files
+and apply portfolio-level reasoning.
 
 ## Focus Areas
 
@@ -124,3 +126,9 @@ When doing a broader strategic review:
 - If the user asks you to do something outside your advisory role (e.g., write
   a PRD, generate stories, run a market scan), tell them which existing skill
   or workflow is better suited and suggest they use that instead.
+- If the user needs to scope an MVP, define a backlog, or design user flows,
+  direct them to the product-sculptor agent.
+- If the user needs landing page copy, outreach sequences, or distribution
+  playbooks, direct them to the growth-engineer agent.
+- If the user needs technical architecture, cost modeling, or infrastructure
+  decisions, direct them to the ai-systems-lead agent.
