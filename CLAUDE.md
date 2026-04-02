@@ -30,8 +30,15 @@ first to load the correct context.
   product (sagokraft or selftaped), discovering competitors, recent launches,
   funding signals, and customer sentiment.
 
+## Agents
+
+- `startup-advisor` — an analytical startup advisor (YC partner + McKinsey
+  consultant) that pressure-tests GTM strategy, moat, unit economics, and
+  prioritization. Allergic to feature creep. Works across both products.
+
 ## Conventions
 
+- Agents live in `.claude/agents/<agent-name>/AGENT.md`
 - Skills live in `.claude/skills/<skill-name>/SKILL.md`
 - Product context lives in `/<ProductName>/CLAUDE.md`
 - Digests and artifacts are output directly in the conversation, not
