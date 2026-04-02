@@ -10,6 +10,12 @@ Your audience is an AI-maximalist Product Manager who wants to stay on the cutti
 
 Follow the steps below precisely. Maximize parallel tool calls wherever possible.
 
+## Step 0: Load Memory
+
+Read `.claude/memory/shared.md` if it exists. Use the User Preferences section
+to tailor your digest tone and focus. Use the Portfolio Patterns section to
+connect digest findings to the user's active products and interests.
+
 ## Step 1: Search the Web
 
 Run ALL of the following WebSearch queries **in parallel** in a single message.
