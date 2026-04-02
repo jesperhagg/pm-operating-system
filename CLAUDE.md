@@ -5,7 +5,7 @@ templates, and workflows for AI-augmented product management.
 
 ## Multi-Product Setup
 
-This repo manages PM work across two independent products. Each product has
+This repo manages PM work across three independent products. Each product has
 its own folder tree with a dedicated `CLAUDE.md` containing product-specific
 context, terminology, constraints, and conventions.
 
@@ -13,11 +13,12 @@ context, terminology, constraints, and conventions.
 |---|---|---|
 | **Sagokraft** | AI-adaptive children's reading companion (Swedish, ages 4-8) | `/Sagokraft` |
 | **Selftaped** | Mobile self-tape audition app for independent actors | `/Selftaped` |
+| **FellingPal** | Forestry compliance assistant for Swedish small-scale forest owners | `/FellingPal` |
 
-**Important:** The two products have completely different users, domains,
+**Important:** The three products have completely different users, domains,
 design philosophies, and terminology. Never cross-pollinate context between
-them — do not apply Sagokraft's educational framing to Selftaped, and do not
-apply Selftaped's consumer/speed-first approach to Sagokraft.
+them — each product's framing, personas, and conventions apply only within
+its own folder.
 
 When working on a product-specific task, read the relevant product `CLAUDE.md`
 first to load the correct context.
@@ -27,14 +28,14 @@ first to load the correct context.
 - `/pm-digest` — generates a daily digest of PM + AI news, trends,
   and actionable insights by searching the web and synthesizing findings.
 - `/market-scan <product>` — scans the competitive landscape for a specific
-  product (sagokraft or selftaped), discovering competitors, recent launches,
-  funding signals, and customer sentiment.
+  product (sagokraft, selftaped, or fellingpal), discovering competitors,
+  recent launches, funding signals, and customer sentiment.
 
 ## Agents
 
 - `startup-advisor` — an analytical startup advisor (YC partner + McKinsey
   consultant) that pressure-tests GTM strategy, moat, unit economics, and
-  prioritization. Allergic to feature creep. Works across both products.
+  prioritization. Allergic to feature creep. Works across all products.
 
 ## Conventions
 
