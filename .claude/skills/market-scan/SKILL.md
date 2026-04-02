@@ -11,17 +11,22 @@ competitors and the broader market have done in the last 2–4 weeks.
 
 Follow the steps below precisely. Maximize parallel tool calls wherever possible.
 
-## Step 0: Load Product Context
+## Step 0: Load Product Context and Memory
 
 Parse the product argument from the user's invocation. The argument must be one of:
 - `sagokraft` (case-insensitive) → read `/Sagokraft/CLAUDE.md`
 - `selftaped` (case-insensitive) → read `/Selftaped/CLAUDE.md`
+- `fellingpal` (case-insensitive) → read `/FellingPal/CLAUDE.md`
 
-If no argument is provided, or the argument does not match either product, ask:
-> "Which product should I scan? `sagokraft` or `selftaped`?"
+If no argument is provided, or the argument does not match a product, ask:
+> "Which product should I scan? `sagokraft`, `selftaped`, or `fellingpal`?"
 
 Read the relevant CLAUDE.md file to load domain context, positioning, terminology,
 and non-negotiables before proceeding.
+
+**Memory:** Also read `/<Product>/memory.md` if it exists. Use prior competitive
+insights to contextualize new findings — note which findings confirm, contradict,
+or extend prior memory entries.
 
 ## Step 1: Discover Competitors and Search the Market
 
@@ -144,6 +149,10 @@ not read. Replace `{product_name}` with the actual product name.
   section as "[inaccessible]".
 - Do NOT write the scan to a file unless the user explicitly asks.
   Output it directly in the conversation.
+- **Memory:** After presenting the scan, ask the user: "Would you like me to
+  save any of these findings to {product} memory?" If yes, append selected
+  findings to `/<Product>/memory.md` under the Insights section using the
+  standard format.
 - The seed-name queries are starting points, not exhaustive lists. Always
   surface and report new competitors found through other queries.
 - If the user runs `/market-scan` without a product argument in a conversation
