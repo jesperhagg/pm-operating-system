@@ -5,3 +5,6 @@
 .env
 node_modules/
 __pycache__/
+
+# Agent collaboration scratchpad (transient working files)
+.claude/scratchpad/
