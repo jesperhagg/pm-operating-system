@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "tavily": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/mcp-remote@latest",
+        "https://mcp.tavily.com/mcp/?tavilyApiKey=YOUR_TAVILY_API_KEY"
+      ]
+    }
+  }
+}
