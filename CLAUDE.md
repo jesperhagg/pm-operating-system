@@ -3,6 +3,17 @@
 A personal "PM Operating System" — a collection of Claude Code skills,
 templates, and workflows for AI-augmented product management.
 
+## Prerequisites
+
+The `/pm-digest` skill requires a [Tavily](https://tavily.com/) MCP server for
+web search and content extraction. To set it up:
+
+1. Copy `.mcp.json.example` to `.mcp.json`
+2. Replace `YOUR_TAVILY_API_KEY` with your Tavily API key
+3. Restart your Claude Code session to connect the MCP server
+
+The `.mcp.json` file is gitignored (it contains your API key).
+
 ## Multi-Product Setup
 
 This repo manages PM work across three independent products. Each product has
