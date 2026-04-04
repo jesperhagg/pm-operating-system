@@ -50,6 +50,10 @@ different AI requirements:
 - **FellingPal:** Document parsing, GIS data integration, regulatory knowledge
   retrieval (RAG). Accuracy over speed.
 
+Each product may also have a `/<Product>/context.md` file containing the
+current build state fetched from its external repo. If present, read it
+alongside CLAUDE.md for up-to-date technical context.
+
 If the user does not specify a product and the question is product-specific,
 ask which product before proceeding.
 
@@ -159,8 +163,9 @@ domain. Rules:
 
 ### Reading (do this before your analysis)
 
-1. If working on a specific product, read `/<Product>/memory.md` if it exists.
-   Load prior decisions, insights, and open questions relevant to your work.
+1. If working on a specific product, read `/<Product>/CLAUDE.md` for product
+   context, read `/<Product>/context.md` if it exists for current build state,
+   and read `/<Product>/memory.md` if it exists for prior decisions and insights.
 2. Read `.claude/memory/shared.md` if it exists — for user preferences and
    cross-agent learnings.
 3. Reference prior decisions in your analysis: "Per the [date] decision on
