@@ -23,6 +23,14 @@ its own folder.
 When working on a product-specific task, read the relevant product `CLAUDE.md`
 first to load the correct context.
 
+### Dynamic Build Context
+
+Each product's external repo contains a `context.md` describing the current
+build state. Run `scripts/fetch-context.sh` to fetch and cache these locally
+at `/<Product>/context.md`. Requires `GITHUB_TOKEN` env var with repo read
+access. These files are gitignored. The fetch runs automatically on session
+start via a SessionStart hook.
+
 ## Skills
 
 - `/pm-digest` — generates a daily digest of PM + AI news, trends,
@@ -96,7 +104,9 @@ to prune stale entries.
 - Agents live in `.claude/agents/<agent-name>/AGENT.md`
 - Skills live in `.claude/skills/<skill-name>/SKILL.md`
 - Product context lives in `/<ProductName>/CLAUDE.md`
+- Build context lives in `/<ProductName>/context.md` (fetched, gitignored)
 - Product memory lives in `/<ProductName>/memory.md`
+- Scripts live in `scripts/`
 - Shared memory lives in `.claude/memory/shared.md`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
