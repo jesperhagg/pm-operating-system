@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "WebFetch"
+      "WebFetch",
+      "Bash(scripts/fetch-context.sh)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/fetch-context.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
