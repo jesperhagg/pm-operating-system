@@ -2,5 +2,5 @@
   "name": "pm-os",
   "version": "1.0.0",
   "description": "PM operating system skills for solo founder startup product management. Skills encode PM frameworks and query Notion via MCP for live product context.",
-  "skills": ["skills/fetch-context", "skills/write-prd"]
+  "skills": ["skills/fetch-context", "skills/write-prd", "skills/evaluate-opportunity"]
 }
