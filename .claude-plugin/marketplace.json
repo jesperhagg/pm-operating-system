@@ -1,0 +1,13 @@
+{
+  "name": "jesper-pm-os",
+  "owner": {
+    "name": "Jesper"
+  },
+  "plugins": [
+    {
+      "name": "pm-os",
+      "source": "./",
+      "description": "PM operating system skills for solo founder startup product management"
+    }
+  ]
+}
