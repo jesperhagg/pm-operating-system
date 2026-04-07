@@ -5,14 +5,21 @@ templates, and workflows for AI-augmented product management.
 
 ## Prerequisites
 
-The `/pm-digest` skill requires a [Tavily](https://tavily.com/) MCP server for
-web search and content extraction. To set it up:
+This system requires two MCP servers:
+
+1. **Tavily** — for web search and content extraction (`/pm-digest`,
+   `/market-scan`)
+2. **Notion** — for live product context (`/fetch-context`, `/write-prd`,
+   `/evaluate-opportunity`, `/log-decision`, `/weekly-review`)
+
+To set up:
 
 1. Copy `.mcp.json.example` to `.mcp.json`
 2. Replace `YOUR_TAVILY_API_KEY` with your Tavily API key
-3. Restart your Claude Code session to connect the MCP server
+3. Replace `YOUR_NOTION_TOKEN` with your Notion integration token
+4. Restart your Claude Code session to connect the MCP servers
 
-The `.mcp.json` file is gitignored (it contains your API key).
+The `.mcp.json` file is gitignored (it contains your API keys).
 
 ## Multi-Product Setup
 
@@ -44,11 +51,30 @@ start via a SessionStart hook.
 
 ## Skills
 
-- `/pm-digest` — generates a daily digest of PM + AI news, trends,
-  and actionable insights by searching the web and synthesizing findings.
+### Plugin-exported skills (in `skills/`)
+
+- `/fetch-context` — fetches live product context from Notion (decisions,
+  personas, backlog, signals). Foundation skill used by other PM skills.
+- `/write-prd` — writes a PRD using a 6-section framework, auto-hydrated
+  with live Notion context.
+- `/evaluate-opportunity` — scores an opportunity on 5 dimensions (Market,
+  Competitive, Founder Fit, Feasibility, Strategic Fit) with Explore/Park/Kill.
 - `/market-scan <product>` — scans the competitive landscape for a specific
   product (sagokraft, selftaped, or fellingpal), discovering competitors,
   recent launches, funding signals, and customer sentiment.
+- `/memory-review` — reviews memory files, identifies stale entries, and
+  proposes archival to keep memory lean and relevant.
+- `/break-down` — decomposes a PRD into kanban-ready work items using JTBD
+  framing, WIP limits, and pull-based flow.
+- `/weekly-review` — portfolio-level weekly operating rhythm across all
+  products: what shipped, what's blocked, what's next.
+- `/log-decision` — logs a product decision to Notion with structured
+  metadata (product, type, status, impact).
+
+### Internal skills (in `.claude/skills/`)
+
+- `/pm-digest` — generates a daily digest of PM + AI news, trends,
+  and actionable insights by searching the web and synthesizing findings.
 
 ## Agents
 
@@ -100,24 +126,16 @@ after significant decisions. Memory is append-only with size caps (30
 decisions, 20 insights, 10 open questions per product). Use `/memory-review`
 to prune stale entries.
 
-## Skills
-
-- `/pm-digest` — generates a daily digest of PM + AI news, trends,
-  and actionable insights by searching the web and synthesizing findings.
-- `/market-scan <product>` — scans the competitive landscape for a specific
-  product (sagokraft, selftaped, or fellingpal), discovering competitors,
-  recent launches, funding signals, and customer sentiment.
-- `/memory-review` — reviews memory files, identifies stale entries, and
-  proposes archival to keep memory lean and relevant.
-
 ## Conventions
 
+- Plugin-exported skills live in `skills/<skill-name>/SKILL.md`
+- Internal skills live in `.claude/skills/<skill-name>/SKILL.md`
 - Agents live in `.claude/agents/<agent-name>/AGENT.md`
-- Skills live in `.claude/skills/<skill-name>/SKILL.md`
 - Product context lives in `/<ProductName>/CLAUDE.md`
 - Build context lives in `/<ProductName>/context.md` (fetched, gitignored)
 - Product memory lives in `/<ProductName>/memory.md`
 - Scripts live in `scripts/`
 - Shared memory lives in `.claude/memory/shared.md`
+- Plugin manifest lives in `.claude-plugin/plugin.json`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
