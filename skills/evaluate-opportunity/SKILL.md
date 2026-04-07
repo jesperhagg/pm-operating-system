@@ -52,4 +52,4 @@ Provide:
 4. If Park: note what would need to change to revisit
 5. Suggest the user update their Notion opportunity backlog with this evaluation
 
-After completing, suggest running /strategy if the opportunity scores well.
+After completing, if the opportunity scores well, suggest consulting the **startup-advisor** agent for deeper strategic analysis, or running `/write-prd` to start defining the product.

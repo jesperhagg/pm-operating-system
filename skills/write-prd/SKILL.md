@@ -56,5 +56,5 @@ Write the PRD using this structure:
 Save the PRD as a markdown file: docs/prd-[feature-name].md
 
 After completing, suggest the user might want to run:
-- /plan-sprint to break this into buildable work
+- /break-down to decompose this into kanban-ready work items
 - /evaluate-opportunity if this is a new product bet

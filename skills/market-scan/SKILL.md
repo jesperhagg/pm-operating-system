@@ -1,6 +1,6 @@
 ---
 name: market-scan
-description: Scan the competitive landscape for a specific product (sagokraft or selftaped), discovering active competitors, recent product launches, funding moves, and customer sentiment. Use when the user invokes /market-scan with a product name argument.
+description: Scan the competitive landscape for a specific product (sagokraft, selftaped, or fellingpal), discovering active competitors, recent product launches, funding moves, and customer sentiment. Use when the user invokes /market-scan with a product name argument.
 ---
 
 # Competitive Market Scan
