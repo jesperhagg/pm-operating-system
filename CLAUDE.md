@@ -1,3 +1,114 @@
+## Who I Am
+
+- **Name:** Jesper
+- **Role:** <!-- Fill in: e.g., Solo founder / PM -->
+- **Background:** <!-- Fill in: skills, experience, domain expertise -->
+- **Working style:** <!-- Fill in: e.g., "bias toward action", "systems thinker" -->
+- **What energizes me:** <!-- Fill in -->
+- **What drains me:** <!-- Fill in -->
+
+## Purpose & Strategy
+
+### Why This Exists
+<!-- Fill in: 1-2 sentences on the vision for this PM operating system -->
+
+### Current Goals
+<!-- Fill in: quarterly goals with metrics, baselines, targets -->
+
+### Ownership Areas
+<!-- Fill in: products/areas this PM system supports -->
+
+### Personal Development
+<!-- Fill in: skills being developed, growth areas -->
+
+## How to Work With Me
+
+### Skill Routing
+
+When I mention these keywords, run the corresponding skill:
+
+| When I say... | Run... |
+|---|---|
+| "evaluate", "opportunity", "score" | `/evaluate-opportunity` |
+| "PRD", "spec", "requirements" | `/write-prd` |
+| "break down", "decompose", "tasks from this" | `/break-down` |
+| "competitors", "market", "landscape" | `/market-scan` |
+| "decision", "log", "decided" | `/log-decision` |
+| "review", "weekly", "what shipped" | `/weekly-review` |
+| "memory", "clean up", "stale" | `/memory-review` |
+| "digest", "news", "what's happening" | `/pm-digest` |
+| person name, "stakeholder", "who is" | `/knowledge people` |
+| "research", "insights", "what do we know about" | `/knowledge research` |
+| "my tasks", "what am I working on", "what's active" | `/tasks` |
+
+### MCP Usage
+
+- **Notion** is the source of truth for all product data. Never fabricate
+  product context — always fetch from Notion first.
+- **Tavily** is for web search only. Use it for market scans and digests,
+  not for product context.
+- If Notion MCP is unavailable, say so explicitly. Do not proceed with
+  stale or invented context.
+- If Tavily MCP is unavailable, degrade gracefully and note the limitation.
+
+### Session Start
+
+At the start of every conversation, run `/tasks` to show my active work
+before asking what I need. Skip if I say "skip tasks".
+
+### Working Style
+
+- Be direct. No preamble, no filler, no encouragement padding.
+- Challenge my assumptions when you see weak reasoning — with specifics,
+  not generic pushback.
+- Default to action: suggest the next concrete step, not a menu of options.
+- Ask before writing files, creating PRs, or taking irreversible actions.
+- When making a recommendation, state the tradeoff explicitly.
+- When stuck, ask one focused clarifying question — not a list.
+
+### Context Rules
+
+- When asking about a **product** → fetch context from Notion via
+  `/fetch-context`
+- When preparing for a **meeting** → check Knowledge Base (People category)
+  for stakeholder profiles via `/knowledge people`
+- When making a **strategic decision** → reference the Purpose & Strategy
+  section above and prior decisions from Notion
+- When **context window is getting full** → proactively summarize and
+  suggest what to offload to Notion
+
+### Agent Escalation
+
+If my question is strategic and cross-cutting, suggest the appropriate
+agent rather than answering generically:
+
+- GTM, moat, unit economics → `startup-advisor`
+- MVP scoping, feature cuts, backlogs → `product-sculptor`
+- Distribution, funnels, positioning → `growth-engineer`
+- AI architecture, cost modeling → `ai-systems-lead`
+
+### Memory Hygiene
+
+After any session where a significant decision was made, prompt me to run
+`/log-decision`. Do not log without asking.
+
+### What NOT to Do
+
+- Do not write files unless I ask.
+- Do not assume product details — always ground in Notion data.
+- Do not recommend capabilities I already have (check the skills list).
+- Do not ask 5 clarifying questions when the answer is inferrable from
+  context.
+
+## MCP Servers
+
+| Server | Purpose | Required By | Degradation |
+|--------|---------|-------------|-------------|
+| Notion | Product context, knowledge, tasks, decisions | All skills except `/pm-digest` | Fatal — say so explicitly, do not proceed |
+| Tavily | Web search + content extraction | `/market-scan`, `/pm-digest` | Graceful — skip web-sourced sections, note limitation |
+
+---
+
 # PM Operating System — Claude Code Plugin
 
 A product-agnostic Claude Code plugin that encodes PM frameworks as reusable
@@ -27,7 +138,16 @@ Two MCP servers are required:
 1. **Tavily** — web search and content extraction (`/pm-digest`,
    `/market-scan`)
 2. **Notion** — live product context (`/fetch-context`, `/write-prd`,
-   `/evaluate-opportunity`, `/log-decision`, `/weekly-review`)
+   `/evaluate-opportunity`, `/log-decision`, `/weekly-review`,
+   `/knowledge`, `/tasks`)
+
+Additionally, two Notion databases are expected:
+
+3. **Knowledge Base** — a Notion database with properties: Title (text),
+   Category (select: `People`, `Reference`, `Research`), Product
+   (multi-select), Tags (multi-select). Used by `/knowledge`.
+4. **Backlog / Tasks** — a Notion database with task status, priority,
+   product, and blocker fields. Used by `/tasks` and `/fetch-context`.
 
 Setup:
 
@@ -59,6 +179,12 @@ The `.mcp.json` file is gitignored (it contains your API keys).
   what's blocked, what's next.
 - `/log-decision` — logs a product decision to Notion with structured
   metadata (product, type, status, impact).
+- `/knowledge` — fetches, stores, and reviews structured knowledge in
+  Notion (People, Reference, Research). Inspired by local knowledge
+  directories but backed by Notion as the data layer.
+- `/tasks` — surfaces active tasks from the Notion backlog with sprint-
+  style formatting (in progress, waiting on, up next). Runs at session
+  start by default.
 
 ### Internal skills (in `.claude/skills/`)
 
