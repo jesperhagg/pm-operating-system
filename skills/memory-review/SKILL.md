@@ -11,21 +11,18 @@ relevant, and propose pruning to keep memory lean and useful.
 
 Follow the steps below precisely.
 
-## Step 1: Load All Memory Files
+## Step 1: Load All Memory Sources
 
-Read the following files (skip any that do not exist):
-
-1. `/Sagokraft/memory.md`
-2. `/Selftaped/memory.md`
-3. `/FellingPal/memory.md`
-4. `.claude/memory/shared.md`
+1. Use **Notion MCP** to fetch all decisions, insights, and open questions
+   across all products in the portfolio.
+2. Read `.claude/memory/shared.md` if it exists (local shared memory).
 
 ## Step 2: Analyze Each File
 
-For each memory file that exists and has entries, evaluate:
+For each memory source (Notion databases and local shared memory), evaluate:
 
-1. **Size vs. caps** — Is the file approaching or over its limits?
-   - Product memory: max 30 decisions, 20 insights, 10 open questions
+1. **Volume check** — Is the product accumulating excessive entries?
+   - Guideline: keep under 30 decisions, 20 insights, 10 open questions per product
    - Shared memory: max 15 cross-agent learnings, 15 portfolio patterns
 2. **Staleness** — Are any entries older than 90 days and not marked Active?
 3. **Superseded entries** — Are any decisions marked "Superseded" that can be
@@ -63,13 +60,11 @@ Output a structured report:
 After presenting the review:
 
 1. Ask the user: "Would you like me to archive the flagged entries?"
-2. If yes, for each file with entries to archive:
-   - Create or update an archive file alongside the memory file:
-     - `/<Product>/memory-archive.md` for product memory
-     - `.claude/memory/shared-archive.md` for shared memory
-   - Move flagged entries to the archive file under a `## Archived — {date}`
-     heading
-   - Remove them from the active memory file
+2. If yes:
+   - For Notion entries: update their Status to "Archived" in Notion via MCP
+   - For local shared memory: move flagged entries to
+     `.claude/memory/shared-archive.md` under a `## Archived — {date}` heading
+     and remove them from the active file
 3. Confirm what was archived and the new entry counts.
 
 ## Edge Cases

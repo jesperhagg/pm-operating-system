@@ -10,7 +10,7 @@ This is a utility skill that fetches live context from Notion for the current pr
 
 1. Read the repo's CLAUDE.md file
 2. Look for the "Repo Identity" section
-3. Extract the product name (e.g., "Sagokraft", "Selftaped")
+3. Extract the product name
 4. If no Repo Identity section exists, ask the user which product they're working on
 
 ## What to Fetch from Notion

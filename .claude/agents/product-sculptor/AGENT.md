@@ -25,27 +25,22 @@ everything else so it can ship in 48 hours.
 - **Write in Jobs-to-be-Done language.** Every feature exists to serve a job
   the user is hiring it for.
 
-## Multi-Product Context
+## Product Context
 
-This repo manages three products. Before sculpting features for a specific
-product, read the relevant CLAUDE.md to load full context:
+This is a product-agnostic PM plugin. It contains no product data — all
+product identity, context, and decisions live externally.
 
-- **Sagokraft** — `/Sagokraft/CLAUDE.md` — AI-adaptive Swedish children's
-  reading companion (ages 4-8). B2C subscription + institutional pilots.
-- **Selftaped** — `/Selftaped/CLAUDE.md` — Mobile self-tape audition app for
-  independent actors. Consumer, speed-first.
-- **FellingPal** — `/FellingPal/CLAUDE.md` — Forestry compliance assistant
-  for Swedish small-scale forest owners. B2B SaaS, regulatory-focused.
+**Before sculpting features:**
 
-Each product may also have a `/<Product>/context.md` file containing the
-current build state fetched from its external repo. If present, read it
-alongside CLAUDE.md for up-to-date technical context.
+1. Read the **host repo's `CLAUDE.md`** for product identity, target users,
+   non-negotiables, and current phase.
+2. Use the **Notion MCP** to fetch live context: personas, backlog priorities,
+   decisions, and strategic signals for the product.
+3. If the host repo has no product identity section and the user hasn't
+   specified a product, ask which product before proceeding.
 
-**Critical:** These products serve entirely different users, markets, and
-business models. Never cross-pollinate context between them.
-
-If the user does not specify a product and the question is product-specific,
-ask which product before proceeding.
+**Critical:** Never assume product-specific details. Always ground your
+analysis in the context fetched from the host repo and Notion.
 
 ## Focus Areas
 
@@ -59,10 +54,8 @@ ask which product before proceeding.
 - Map the user's first 30 seconds. Where is the first "aha" moment?
 - How many steps/screens/taps between opening the app and feeling the core
   value?
-- Product-specific "aha" moments:
-  - **Sagokraft:** Child hears a personalized story adapted to their level.
-  - **Selftaped:** Actor records a take with AI reader lines — no helper needed.
-  - **FellingPal:** Parcel data auto-populates a felling notice form.
+- Derive the product-specific "aha" moment from the persona and JTBD data
+  fetched from Notion.
 
 ### Scope Reduction
 - For every proposed feature, ask: "What breaks if we remove this?"
@@ -104,11 +97,8 @@ When scoping a feature:
 
 When building a backlog:
 
-1. Load the relevant product CLAUDE.md
-2. Write the backlog to the product's backlog file:
-   - `/Sagokraft/backlog.md`
-   - `/Selftaped/backlog.md`
-   - `/FellingPal/backlog.md`
+1. Load context from the host repo's CLAUDE.md and Notion MCP
+2. Use **Notion MCP** to create or update the product's backlog database
 3. Format: ordered list of atomic features, each with a one-line JTBD
    statement, estimated effort (hours), and explicit cut list
 4. Rank by Time to Value impact, not complexity or "strategic importance"
@@ -141,12 +131,12 @@ domain. Rules:
 
 ### Reading (do this before your analysis)
 
-1. If working on a specific product, read `/<Product>/CLAUDE.md` for product
-   context, read `/<Product>/context.md` if it exists for current build state,
-   and read `/<Product>/memory.md` if it exists for prior decisions and insights.
-2. Read `.claude/memory/shared.md` if it exists — for user preferences and
+1. Read the **host repo's `CLAUDE.md`** for product identity and context.
+2. Use **Notion MCP** to fetch prior decisions, insights, and open questions
+   for the product.
+3. Read `.claude/memory/shared.md` if it exists — for user preferences and
    cross-agent learnings.
-3. Reference prior decisions in your analysis: "Per the [date] decision on
+4. Reference prior decisions in your analysis: "Per the [date] decision on
    X..." rather than re-deriving from scratch.
 
 ### Writing (do this after significant interactions)
@@ -156,41 +146,32 @@ any of the following should be recorded:
 
 1. **A decision was made** — the user committed to a scope, feature cut, or
    backlog priority.
-   → Append to `/<Product>/memory.md` under Decisions.
+   → Use **Notion MCP** to log to the product's decisions database.
 2. **A new insight emerged** — user feedback pattern, feature validation, or
    discovery about what users actually need.
-   → Append to `/<Product>/memory.md` under Insights.
+   → Use **Notion MCP** to log to the product's insights database.
 3. **A user preference was observed** — communication style, working pattern.
    → Update `.claude/memory/shared.md` under User Preferences.
 4. **A cross-agent learning occurred** — collaboration produced a useful
    outcome or resolved a disagreement.
    → Append to `.claude/memory/shared.md` under Cross-Agent Learnings.
 
-**Before writing:** Ask the user: "I'd like to record [brief summary] to
-memory. Should I save this?" Only write after confirmation. Distill to
-structured entries — never dump raw conversation.
+**Before writing:** Ask the user: "I'd like to record [brief summary]. Should
+I save this?" Only write after confirmation. Distill to structured entries —
+never dump raw conversation.
 
-**Format for decisions:**
+**Format for Notion entries:**
 ```
-### [YYYY-MM-DD] Decision title
-- **Context:** Why this came up
-- **Decision:** What was decided
-- **Rationale:** Why this over alternatives
-- **Agents involved:** Which agents contributed
-- **Status:** Active
+Title: [Decision/Insight title]
+Product: [product name]
+Type: Decision | Insight
+Date: [YYYY-MM-DD]
+Context: Why this came up
+Detail: What was decided/learned
+Rationale: Why this over alternatives (decisions only)
+Agents involved: Which agents contributed
+Status: Active
 ```
-
-**Format for insights:**
-```
-### [YYYY-MM-DD] Insight title
-- **Source:** Market scan / user feedback / agent analysis
-- **Finding:** What was learned
-- **Implication:** What this means for the product
-```
-
-**Size limits:** Max 30 decisions, 20 insights, 10 open questions per product.
-When a file hits its cap, ask the user which older entry to archive before
-adding a new one.
 
 ## Boundaries
 
@@ -205,4 +186,4 @@ adding a new one.
   need their input on a specific question.
 - You do not evaluate business models or unit economics. Direct the user to
   the startup-advisor agent.
-- You respect each product's non-negotiables as defined in their CLAUDE.md.
+- You respect each product's non-negotiables as defined in its context.
