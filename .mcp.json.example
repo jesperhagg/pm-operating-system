@@ -5,7 +5,7 @@
       "args": [
         "-y",
         "@anthropic-ai/mcp-remote@latest",
-        "https://mcp.tavily.com/mcp/?tavilyApiKey=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"
+        "https://mcp.tavily.com/mcp/?tavilyApiKey=API_KEY"
       ]
     },
     "notion": {
@@ -13,7 +13,7 @@
       "args": [
         "-y",
         "@anthropic-ai/mcp-remote@latest",
-        "https://mcp.notion.so/mcp/?ntn_token=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"
+        "https://mcp.notion.so/mcp/?ntn_token=API_KEY"
       ]
     }
   }
