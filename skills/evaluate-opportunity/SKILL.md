@@ -34,14 +34,14 @@ Score the opportunity on these dimensions (1-5 scale each):
 - Passion and sustained interest level
 
 ### Feasibility
-- Can an MVP be built with current tools (Lovable, Supabase)?
+- Can an MVP be built with the current tech stack?
 - Time to first testable version (days, not months)
 - Technical complexity relative to capabilities
 
 ### Strategic Fit
-- How does this relate to existing products (Sagokraft, Selftaped)?
+- How does this relate to existing products in the portfolio (fetch from Notion)?
 - Does it create synergies or just spread focus?
-- Does it fit the Swedish market focus?
+- Does it fit the current market focus?
 
 ## Output
 
