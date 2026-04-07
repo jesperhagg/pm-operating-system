@@ -1,26 +1,23 @@
 # PM Operating System
 
-A personal PM skills marketplace for Claude Code. Skills encode PM frameworks
-and dynamically query Notion for live product context — so every analysis is
+A Claude Code plugin that encodes PM frameworks as reusable slash commands.
+Skills query Notion via MCP for live product context — so every analysis is
 grounded in your actual roadmap, not hypotheticals.
 
 ## What it is
 
-This repo is a multi-product PM workspace for a solo founder setup, currently
-covering:
-
-- **Sagokraft** — AI-adaptive children's reading companion (Swedish, ages 4-8)
-- **Selftaped** — Mobile self-tape audition app for independent actors
-- **FellingPal** — Forestry compliance assistant for Swedish small-scale forest owners
-
-Skills wrap repeatable PM work (PRDs, opportunity evaluation, market scans,
-work decomposition, decision logging, weekly reviews) in Claude Code slash
+A product-agnostic PM skills marketplace for solo founders. Skills wrap
+repeatable PM work (PRDs, opportunity evaluation, market scans, work
+decomposition, decision logging, weekly reviews) in Claude Code slash
 commands. Agents handle deeper reasoning across startup advisor, product
 sculptor, growth engineer, and AI systems lead roles.
 
+No product data lives here — skills are frameworks that pull context at
+runtime from Notion.
+
 ## Prerequisites
 
-This system requires two MCP servers:
+Two MCP servers are required:
 
 1. **Tavily** — web search and content extraction
 2. **Notion** — live product context (decisions, personas, backlog, signals)
@@ -34,9 +31,6 @@ Setup:
 
 The `.mcp.json` file is gitignored.
 
-Optional: set `GITHUB_TOKEN` env var to auto-fetch build context from product
-repos on session start.
-
 ## Install
 
 ```bash
@@ -47,27 +41,26 @@ claude plugin marketplace add <path-or-github-url>
 
 ```
 .claude-plugin/
-  plugin.json          # Plugin manifest (skills + agents)
-  marketplace.json     # Marketplace listing
-skills/                # Plugin-exported skills
-  fetch-context/       # Foundation: fetch live Notion context
-  write-prd/           # Write PRDs with 6-section framework
-  evaluate-opportunity/ # 5-dimension opportunity scoring
-  market-scan/         # Competitive landscape scanning
-  memory-review/       # Memory curation and archival
-  break-down/          # PRD → kanban-ready work items
-  weekly-review/       # Portfolio-level weekly operating rhythm
-  log-decision/        # Log decisions to Notion
+  plugin.json              # Plugin manifest (skills + agents)
+  marketplace.json         # Marketplace listing
+skills/                    # Plugin-exported skills
+  fetch-context/           # Foundation: fetch live Notion context
+  write-prd/               # Write PRDs with 6-section framework
+  evaluate-opportunity/    # 5-dimension opportunity scoring
+  market-scan/             # Competitive landscape scanning
+  memory-review/           # Memory curation and archival
+  break-down/              # PRD → kanban-ready work items
+  weekly-review/           # Portfolio-level weekly operating rhythm
+  log-decision/            # Log decisions to Notion
 .claude/
-  agents/              # Agent definitions
-    startup-advisor/   # GTM, moat, unit economics
-    product-sculptor/  # MVP scoping, JTBD backlogs
-    growth-engineer/   # Distribution, funnels, copy
-    ai-systems-lead/   # AI architecture, cost modeling
-  skills/              # Internal skills (not plugin-exported)
-    pm-digest/         # Daily PM + AI news digest
-  memory/              # Shared cross-product memory
-  settings.json        # Permissions, hooks, status line
+  agents/                  # Agent definitions
+    startup-advisor/       # GTM, moat, unit economics
+    product-sculptor/      # MVP scoping, JTBD backlogs
+    growth-engineer/       # Distribution, funnels, copy
+    ai-systems-lead/       # AI architecture, cost modeling
+  skills/                  # Internal skills (not plugin-exported)
+    pm-digest/             # Daily PM + AI news digest
+  settings.json            # Permissions + status line
 ```
 
 ## Skills
@@ -80,7 +73,7 @@ skills/                # Plugin-exported skills
 | `/market-scan <product>` | Scan competitive landscape |
 | `/memory-review` | Review and prune memory files |
 | `/break-down` | Decompose PRD into kanban-ready work items |
-| `/weekly-review` | Weekly portfolio review across all products |
+| `/weekly-review` | Weekly portfolio review |
 | `/log-decision` | Log a decision to Notion |
 | `/pm-digest` | Daily PM + AI news digest (internal, requires Tavily) |
 

@@ -3,21 +3,8 @@
     "allow": [
       "WebSearch",
       "WebFetch",
-      "Bash(scripts/fetch-context.sh)",
       "mcp__tavily__search",
       "mcp__tavily__extract"
-    ]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash scripts/fetch-context.sh"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
