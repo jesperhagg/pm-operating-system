@@ -9,8 +9,5 @@
       "source": "./",
       "description": "PM operating system skills for solo founder startup product management"
     }
-  ],
-  "requirements": {
-    "mcp_servers": ["tavily", "notion"]
-  }
+  ]
 }
