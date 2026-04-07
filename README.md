@@ -115,7 +115,7 @@ A database for task management. Used by `/tasks` and `/fetch-context`.
 |----------|------|--------|
 | Title | text | Task name |
 | Status | select | `In Progress`, `To Do`, `Waiting`, `Done` |
-| Priority | select | `High`, `Medium`, `Low` |
+| Priority | select | `Now`, `Next`, `Later` |
 | Product | select | Which product |
 | Blocker | text | What's blocking (optional) |
 | Due Date | date | Target date (optional) |
