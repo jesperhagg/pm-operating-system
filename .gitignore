@@ -11,6 +11,3 @@ __pycache__/
 
 # MCP server config (contains API keys)
 .mcp.json
-
-# Fetched build context from external repos
-*/context.md

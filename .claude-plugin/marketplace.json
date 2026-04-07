@@ -11,7 +11,6 @@
     }
   ],
   "requirements": {
-    "mcp_servers": ["tavily", "notion"],
-    "env_vars": ["GITHUB_TOKEN"]
+    "mcp_servers": ["tavily", "notion"]
   }
 }
