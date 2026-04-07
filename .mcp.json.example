@@ -5,7 +5,7 @@
       "args": [
         "-y",
         "@anthropic-ai/mcp-remote@latest",
-        "https://mcp.tavily.com/mcp/?tavilyApiKey=YOUR_TAVILY_API_KEY"
+        "https://mcp.tavily.com/mcp/?tavilyApiKey=API_KEY"
       ]
     },
     "notion": {
@@ -13,7 +13,7 @@
       "args": [
         "-y",
         "@anthropic-ai/mcp-remote@latest",
-        "https://mcp.notion.so/mcp/?ntn_token=YOUR_NOTION_TOKEN"
+        "https://mcp.notion.so/mcp/?ntn_token=API_KEY"
       ]
     }
   }
