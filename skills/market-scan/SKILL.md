@@ -1,6 +1,6 @@
 ---
 name: market-scan
-description: Scan the competitive landscape for a specific product (sagokraft, selftaped, or fellingpal), discovering active competitors, recent product launches, funding moves, and customer sentiment. Use when the user invokes /market-scan with a product name argument.
+description: Scan the competitive landscape for a product, discovering active competitors, recent product launches, funding moves, and customer sentiment. Use when the user invokes /market-scan with an optional product name argument.
 ---
 
 # Competitive Market Scan
@@ -13,52 +13,44 @@ Follow the steps below precisely. Maximize parallel tool calls wherever possible
 
 ## Step 0: Load Product Context and Memory
 
-Parse the product argument from the user's invocation. The argument must be one of:
-- `sagokraft` (case-insensitive) → read `/Sagokraft/CLAUDE.md`
-- `selftaped` (case-insensitive) → read `/Selftaped/CLAUDE.md`
-- `fellingpal` (case-insensitive) → read `/FellingPal/CLAUDE.md`
-
-If no argument is provided, or the argument does not match a product, ask:
-> "Which product should I scan? `sagokraft`, `selftaped`, or `fellingpal`?"
-
-Read the relevant CLAUDE.md file to load domain context, positioning, terminology,
-and non-negotiables before proceeding.
-
-**Memory:** Also read `/<Product>/memory.md` if it exists. Use prior competitive
-insights to contextualize new findings — note which findings confirm, contradict,
-or extend prior memory entries.
+1. If a product name argument is provided, use it. Otherwise, read the **host
+   repo's `CLAUDE.md`** for product identity.
+2. If the product still cannot be identified, ask:
+   > "Which product should I scan?"
+3. Read the host repo's `CLAUDE.md` for domain context, positioning,
+   terminology, competitors, and non-negotiables.
+4. Use **Notion MCP** to fetch prior competitive insights and strategic signals
+   for this product. Use these to contextualize new findings — note which
+   findings confirm, contradict, or extend prior entries.
 
 ## Step 1: Discover Competitors and Search the Market
 
-Run ALL of the following WebSearch queries **in parallel** in a single message.
-Include `{current_year}` in each query to bias toward the last 2–4 weeks.
+Run ALL search queries **in parallel** in a single message. Include
+`{current_year}` in each query to bias toward the last 2–4 weeks.
 
-### If product is **Sagokraft**:
+### Constructing Queries
 
-1. `"children's reading app" AI adaptive {current_year}` — discover who is active in AI + kids reading
-2. `"children's literacy app" Swedish OR Scandinavian OR Nordic {current_year}` — regional competitors
-3. `"kids reading app" new launch OR update OR release {current_year}` — recent product moves
-4. `"children's reading app" funding OR raised OR seed OR series {current_year}` — business/funding signals
-5. `"children's reading app" OR "kids story app" site:reddit.com {current_year}` — Reddit sentiment
-6. `"children's reading app" OR "kids literacy app" review app store {current_year}` — app store sentiment
-7. `"Sago Mini" OR "Homer" OR "Wanderbooks" OR "Ello" OR "Moonlit" reading app {current_year}` — known-name pulse check
-8. `"AI generated stories" children pedagogical OR educational {current_year}` — adjacent innovation
+Based on the product context loaded in Step 0, construct 6–8 search queries
+covering these categories:
 
-### If product is **Selftaped**:
+1. **Core competitive landscape** — discover who is active in the product's
+   domain (use the product's category keywords)
+2. **Regional competitors** — if the product targets a specific geography,
+   include regional terms
+3. **Recent product moves** — new launches, updates, or releases in the space
+4. **Funding & business signals** — funding rounds, investments, partnerships
+5. **Community sentiment** — Reddit, forums, app store reviews for the
+   product's category
+6. **Known competitor pulse check** — if competitors are listed in the
+   product's CLAUDE.md or Notion context, query them by name
+7. **Adjacent innovation** — AI or technology trends in the product's domain
+8. **User discussions** — community forums, social media discussions about the
+   problem space
 
-1. `"self tape app" actor audition {current_year}` — discover who is active in self-tape tools
-2. `"self tape" OR "selftape" app new launch OR update OR release {current_year}` — recent product moves
-3. `"self tape app" OR "audition app" actor funding OR raised OR investment {current_year}` — business/funding signals
-4. `"self tape app" OR "audition app" site:reddit.com {current_year}` — Reddit sentiment (r/acting is active)
-5. `"self tape app" review actor site:apps.apple.com OR site:play.google.com {current_year}` — app store reviews
-6. `"Slatable" OR "coldRead" OR "ScenePartner" OR "Act-On-Cue" {current_year}` — known-name pulse check
-7. `"self tape" audition tips tools actor forum {current_year}` — community discussions and tool mentions
-8. `"AI scene reader" OR "AI reader lines" OR "AI audition" actor app {current_year}` — adjacent AI innovation
-
-**Important:** Query 7 in the Sagokraft set and query 6 in the Selftaped set use
-known competitor names as a starting point, NOT a fixed list. Treat these as seeds.
-Any new competitors, alternatives, or tools that surface in ANY query result are
-equally valid and should be tracked.
+**Important:** Known competitor names from the product context are starting
+points, NOT a fixed list. Treat these as seeds. Any new competitors,
+alternatives, or tools that surface in ANY query result are equally valid and
+should be tracked.
 
 ## Step 2: Triage and Select Sources
 
@@ -150,9 +142,8 @@ not read. Replace `{product_name}` with the actual product name.
 - Do NOT write the scan to a file unless the user explicitly asks.
   Output it directly in the conversation.
 - **Memory:** After presenting the scan, ask the user: "Would you like me to
-  save any of these findings to {product} memory?" If yes, append selected
-  findings to `/<Product>/memory.md` under the Insights section using the
-  standard format.
+  save any of these findings to Notion?" If yes, use Notion MCP to log selected
+  findings as insights for the product.
 - The seed-name queries are starting points, not exhaustive lists. Always
   surface and report new competitors found through other queries.
 - If the user runs `/market-scan` without a product argument in a conversation

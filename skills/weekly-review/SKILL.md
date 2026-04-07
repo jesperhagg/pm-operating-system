@@ -6,14 +6,12 @@ description: Run a portfolio-level weekly review across all products. Reads memo
 
 ## Before Starting — Self-Hydration
 
-1. Read the root `CLAUDE.md` to confirm the current product set
-2. For each product (Sagokraft, Selftaped, FellingPal):
-   - Read `/<Product>/memory.md` for recent decisions and insights
-   - Read `/<Product>/context.md` if it exists (current build state)
-   - Use Notion MCP to fetch:
-     - Decisions from the last 7 days for this product
-     - Top 5 backlog items by priority
-     - Any signals flagged as "Action Required"
+1. Read the host repo's `CLAUDE.md` to identify the current product(s)
+2. Use **Notion MCP** to fetch context for each product in the portfolio:
+   - Decisions from the last 7 days
+   - Top 5 backlog items by priority
+   - Any signals flagged as "Action Required"
+   - Recent insights and open questions
 3. Read `.claude/memory/shared.md` for cross-product patterns
 4. Note today's date for the review header
 
@@ -57,23 +55,20 @@ Rate this week's focus for each product:
 ```
 # Weekly Review — {date}
 
-## Sagokraft
+## {Product 1}
 ### Shipped: [items or "nothing"]
 ### Blocked: [items or "none"]
 ### Next week: [1-2 priorities]
 
-## Selftaped
+## {Product 2}
 ### Shipped: [items or "nothing"]
 ### Blocked: [items or "none"]
 ### Next week: [1-2 priorities]
 
-## FellingPal
-### Shipped: [items or "nothing"]
-### Blocked: [items or "none"]
-### Next week: [1-2 priorities]
+(repeat for each product in the portfolio)
 
 ## Portfolio
-### Focus scores: Sagokraft [X] | Selftaped [X] | FellingPal [X]
+### Focus scores: {Product 1} [X] | {Product 2} [X] | ...
 ### Cross-product patterns: [if any]
 ### Top priority this week: [single most important thing across all products]
 ```
@@ -84,5 +79,5 @@ Suggest the user might want to:
 - Run `/log-decision` to record any decisions made during the review
 - Run `/memory-review` if memory files are getting long
 - Consult the **startup-advisor** agent if portfolio balance needs rethinking
-- Save the review to memory: offer to append key insights to the relevant
-  product `memory.md` files
+- Save the review to memory: offer to log key insights to Notion via
+  `/log-decision` or directly via Notion MCP

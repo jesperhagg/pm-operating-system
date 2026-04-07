@@ -20,7 +20,7 @@ Capture the decision with these fields:
 
 ### Required Fields
 - **Summary** — one-sentence description of what was decided
-- **Product** — Sagokraft, Selftaped, or FellingPal (multi-select in Notion)
+- **Product** — the product this decision applies to (multi-select in Notion)
 - **Type** — one of: Architecture, Scope, Positioning, Pricing, Go-to-Market,
   Technical, Design, Partnership, Kill/Park
 - **Status** — one of: Active, Superseded, Experimental
@@ -42,9 +42,9 @@ Use Notion MCP to create a new page in the Decisions database:
 - If a linked decision exists, add the reference
 
 If Notion MCP is not available or the write fails:
-- Log the decision to `/<Product>/memory.md` under the Decisions section instead
-- Format: `- [{date}] **{type}**: {summary} — {context} (Impact: {impact})`
-- Respect the 30-decision cap per product
+- Log the decision to `.claude/memory/shared.md` under a Decisions section as
+  a local fallback
+- Format: `- [{date}] **{product}** — **{type}**: {summary} — {context} (Impact: {impact})`
 
 ## Output
 
