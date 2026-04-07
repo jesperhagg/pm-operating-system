@@ -52,6 +52,8 @@ skills/                    # Plugin-exported skills
   break-down/              # PRD → kanban-ready work items
   weekly-review/           # Portfolio-level weekly operating rhythm
   log-decision/            # Log decisions to Notion
+  knowledge/               # Knowledge management (People, Reference, Research)
+  tasks/                   # Task management with session-start loading
 .claude/
   agents/                  # Agent definitions
     startup-advisor/       # GTM, moat, unit economics
@@ -75,6 +77,8 @@ skills/                    # Plugin-exported skills
 | `/break-down` | Decompose PRD into kanban-ready work items |
 | `/weekly-review` | Weekly portfolio review |
 | `/log-decision` | Log a decision to Notion |
+| `/knowledge` | Fetch, store, and review knowledge (People, Reference, Research) |
+| `/tasks` | View active tasks, update status, add new tasks (runs at session start) |
 | `/pm-digest` | Daily PM + AI news digest (internal, requires Tavily) |
 
 ## Agents
@@ -85,3 +89,38 @@ skills/                    # Plugin-exported skills
 | `product-sculptor` | Sculpts MVPs to atomic core, defines backlogs |
 | `growth-engineer` | Distribution-first, pre-launch funnels and copy |
 | `ai-systems-lead` | AI architecture, cost modeling, model selection |
+
+## Notion Database Setup
+
+In addition to the MCP servers, two Notion databases are expected:
+
+### Knowledge Base
+
+A database for persistent knowledge organized by category.
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Entry name (e.g., "David Chen", "Market Trends Q1") |
+| Category | select | `People`, `Reference`, `Research` |
+| Product | multi-select | Which product(s) this applies to |
+| Tags | multi-select | Freeform tags for filtering |
+
+Page body contains the knowledge content in rich text. Used by `/knowledge`.
+
+### Backlog / Tasks
+
+A database for task management. Used by `/tasks` and `/fetch-context`.
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Task name |
+| Status | select | `In Progress`, `To Do`, `Waiting`, `Done` |
+| Priority | select | `High`, `Medium`, `Low` |
+| Product | select | Which product |
+| Blocker | text | What's blocking (optional) |
+| Due Date | date | Target date (optional) |
+
+### Session Start Behavior
+
+By default, `/tasks` runs at the start of every conversation to show
+active work. Say "skip tasks" to bypass this.
