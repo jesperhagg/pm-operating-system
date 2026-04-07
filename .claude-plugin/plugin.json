@@ -1,6 +1,6 @@
 {
   "name": "pm-os",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "PM operating system skills for solo founder startup product management. Skills encode PM frameworks and query Notion via MCP for live product context.",
   "skills": [
     "skills/fetch-context",
@@ -10,7 +10,9 @@
     "skills/memory-review",
     "skills/break-down",
     "skills/weekly-review",
-    "skills/log-decision"
+    "skills/log-decision",
+    "skills/knowledge",
+    "skills/tasks"
   ],
   "agents": [
     ".claude/agents/startup-advisor",
