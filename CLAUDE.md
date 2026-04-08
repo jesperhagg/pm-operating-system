@@ -225,3 +225,128 @@ Agents can spawn each other when they need expertise outside their domain.
 - MCP config template lives in `.mcp.json.example`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
+- When developing skills or agents for this repo, use the
+  `pm-os-creator` agent for architectural guidance and consistency audits.
+
+## Development Standards
+
+These standards govern how skills, agents, and plugin infrastructure are
+built and maintained in this repo. They codify patterns extracted from the
+existing codebase — follow them when creating or modifying any skill or
+agent.
+
+### Skill Design Pattern
+
+Every skill follows a four-phase execution pattern:
+
+1. **Hydration** — Identify the current product from the host repo's
+   CLAUDE.md. Fetch Notion context (decisions, personas, backlog, signals)
+   as needed. Summarize context to the user before proceeding. For internal
+   skills not tied to a product (e.g., pm-digest), hydration means loading
+   memory and scanning existing capabilities instead.
+2. **Framework** — Apply a domain-specific, opinionated structure (scoring
+   rubric, template, decomposition rules, etc.). The framework is the core
+   intellectual property of the skill. It must be concrete and produce a
+   specific output every time — if it reads like generic advice, it is not
+   a skill.
+3. **Output** — Produce structured markdown with a consistent heading
+   format. Specify the destination: conversation (default), a file (only
+   when the skill explicitly says so, e.g., write-prd), or Notion (e.g.,
+   log-decision).
+4. **Follow-ups** — Suggest 1-3 specific next skills to chain. Follow-ups
+   must be contextual (not a generic menu) and reference the skill name
+   with slash-command syntax. Only suggest skills that actually exist.
+
+### Notion Integration Rules
+
+- Notion is the source of truth for all product data. Never fabricate or
+  assume product context.
+- Implement session-level caching: fetch once per product per conversation,
+  reuse unless (a) user requests fresh data or (b) a write operation just
+  completed.
+- If Notion MCP is unavailable for a product-context skill, halt and say
+  so explicitly. Do not proceed with invented context.
+- If a Notion MCP write fails, fall back to local
+  `.claude/memory/shared.md` with structured format.
+- Tavily unavailability degrades gracefully: skip web-sourced sections and
+  note the limitation.
+
+### Multi-Mode Skill Design
+
+When a skill manages a Notion resource, it may have multiple modes:
+
+- Example: `/knowledge` has Fetch/Store/Review; `/tasks` has
+  View/Update/Add.
+- Document trigger phrases for each mode in the SKILL.md.
+- Default mode should be the most common read operation.
+- Modes share the same Notion database schema section.
+- Each mode has its own step-by-step procedure.
+
+### Agent Design Conventions
+
+Standard section order for AGENT.md files:
+
+1. Frontmatter (name, description)
+2. Identity paragraph
+3. Tone and Behavior
+4. Product Context (or Repo Context for internal agents)
+5. Focus Areas
+6. Anti-Patterns to Call Out
+7. Output Format
+8. Collaboration Protocol
+9. Memory Protocol
+10. Boundaries
+
+Rules:
+- Every product-facing agent must include the Product Context block (read
+  host CLAUDE.md, fetch from Notion, ask if ambiguous).
+- Collaboration Protocol is always one-hop, uses
+  `.claude/scratchpad/handoff.md`, requires scoped questions and
+  attribution.
+- Memory Protocol always reads before analysis and writes (with user
+  permission) after significant interactions.
+- Boundaries explicitly redirect to the correct agent/skill for
+  out-of-scope requests.
+
+### Product-Agnostic Principle
+
+- This repo contains zero product data.
+- Skills are frameworks that pull context at runtime via Notion MCP.
+- Product identity comes from the host repo's CLAUDE.md.
+- Never hardcode product names, personas, features, or terminology into
+  skill or agent definitions.
+- Litmus test: "Would this skill work identically for a different product
+  with different Notion data?" If not, it is not product-agnostic.
+
+### Plugin Export Conventions
+
+- `skills/<name>/SKILL.md` — exported via plugin, available in consumer
+  repos.
+- `.claude/skills/<name>/SKILL.md` — internal, only available in this repo.
+- `.claude/agents/<name>/AGENT.md` — internal, agents are not
+  plugin-exported.
+- When adding a new exported skill, also update `.claude-plugin/plugin.json`.
+- When adding a new internal skill or agent, do NOT update plugin.json.
+- Marketplace listing (`.claude-plugin/marketplace.json`) is updated only
+  for significant releases.
+
+### Frontmatter Conventions
+
+- Skills use `description` in frontmatter (required). May optionally
+  include `name`.
+- Agents use both `name` and `description` in frontmatter (required).
+- Descriptions should be one sentence, action-oriented, and mention the
+  key framework or approach.
+
+### Memory Convention
+
+- Skills and agents reference `.claude/memory/shared.md` and
+  `.claude/memory/shared-archive.md` in their Memory Protocol sections.
+- These files are created at runtime in consumer repos (product repos that
+  install this plugin), NOT in this plugin source repo.
+- This repo should never contain memory files — they would hold personal
+  or product-specific data.
+- `.claude/memory/` is gitignored to prevent accidental commits.
+- The `memory-review` skill operates on these files in consumer repos.
+  When running it in this repo, it will correctly report no entries to
+  review.
