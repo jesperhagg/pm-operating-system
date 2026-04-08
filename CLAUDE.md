@@ -1,25 +1,19 @@
 ## Who I Am
 
 - **Name:** Jesper
-- **Role:** <!-- Fill in: e.g., Solo founder / PM -->
-- **Background:** <!-- Fill in: skills, experience, domain expertise -->
-- **Working style:** <!-- Fill in: e.g., "bias toward action", "systems thinker" -->
-- **What energizes me:** <!-- Fill in -->
-- **What drains me:** <!-- Fill in -->
+- **Role:** PM, Solo founder
+- **Background:** Non-engineer, product mgmt, business development, project mgmt
+- **Working style:** systems and workflow thinking, fast to action, testing before spec:ing, 
+- **What energizes me:** learning, fast action, when you identify and question my assumptions/thinking
+- **What drains me:** Walls of text, long specs, overcomplicating
 
 ## Purpose & Strategy
 
 ### Why This Exists
-<!-- Fill in: 1-2 sentences on the vision for this PM operating system -->
-
-### Current Goals
-<!-- Fill in: quarterly goals with metrics, baselines, targets -->
-
-### Ownership Areas
-<!-- Fill in: products/areas this PM system supports -->
+This repo serve as a continually improving framework and system to build fantastic products efficiently. The purpose of this is to spend as much time as possible on building the actual products rather than creating and setting up the admin and workflow stuff.
 
 ### Personal Development
-<!-- Fill in: skills being developed, growth areas -->
+I want to develop as an AI-native product leader and want to ensure this repo reflects that.
 
 ## How to Work With Me
 
