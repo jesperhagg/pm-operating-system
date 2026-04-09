@@ -196,10 +196,17 @@ Used by: `/tasks`, `/fetch-context`, `/break-down`
 | Date | date | When decided |
 | Context | text | Why the decision was made |
 | Impact | text | What changes going forward |
+| Outcome | select | `Pending`, `Validated`, `Invalidated`, `Inconclusive` |
+| Outcome Notes | text | What actually happened after this decision |
+| Outcome Date | date | When the outcome was assessed |
+| Agent | multi-select | Which agent(s) contributed to this decision |
 
 Used by: `/log-decision`, `/fetch-context`, `/weekly-review`, all agents.
 Note: Insights (market findings, technical discoveries, validated
 assumptions) are stored in this same database with `Type: Insight`.
+Note: The `Outcome` property enables a closed feedback loop — decisions
+are logged with `Outcome: Pending`, then assessed over time via
+`/weekly-review`.
 
 ## Skills
 
@@ -365,22 +372,30 @@ Standard section order for AGENT.md files:
 1. Frontmatter (name, description)
 2. Identity paragraph
 3. Tone and Behavior
-4. Product Context (or Repo Context for internal agents)
-5. Focus Areas
-6. Anti-Patterns to Call Out
-7. Output Format
-8. Collaboration Protocol
-9. Memory Protocol
-10. Boundaries
+4. Objectives (Primary Objective, Success Looks Like, Failure Looks Like)
+5. Proactive Checks (data-driven conditions assessed during hydration)
+6. Product Context (or Repo Context for internal agents)
+7. Focus Areas
+8. Anti-Patterns to Call Out
+9. Output Format
+10. Collaboration Protocol
+11. Memory Protocol
+12. Boundaries
 
 Rules:
 - Every product-facing agent must include the Product Context block (read
   host CLAUDE.md, fetch from Notion, ask if ambiguous).
+- Every product-facing agent must include Objectives that define a
+  measurable outcome the agent works toward, not just a response style.
+- Every product-facing agent must include Proactive Checks — data-driven
+  conditions assessed against Notion context during hydration, surfaced as
+  "Before we dive in, I noticed..." observations before responding.
 - Collaboration Protocol is always one-hop, uses
   `.claude/scratchpad/handoff.md`, requires scoped questions and
   attribution.
 - Memory Protocol always reads before analysis and writes (with user
-  permission) after significant interactions.
+  permission) after significant interactions. Includes quality signal
+  capture (user accepts/rejects/modifies recommendations).
 - Boundaries explicitly redirect to the correct agent/skill for
   out-of-scope requests.
 

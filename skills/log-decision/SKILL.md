@@ -27,6 +27,11 @@ with these fields:
   Technical, Design, Partnership, Kill/Park, Insight
 - **Status** — one of: Active, Superseded, Experimental
 - **Date** — today's date
+- **Outcome** — set to `Pending` by default. Updated later via `/weekly-review`
+  to one of: Validated, Invalidated, Inconclusive
+- **Agent** — which agent(s) contributed to this decision (multi-select). Set
+  automatically based on the current conversation context. If no agent was
+  involved, leave empty.
 
 ### Context Fields
 - **Context** — why this decision was made (2-3 sentences). What alternatives
@@ -41,12 +46,14 @@ with these fields:
 Use Notion MCP to create a new page in the Decisions database:
 - Set the Product multi-select to the identified product
 - Set Type, Status, Date, Summary, Context, and Impact fields
+- Set Outcome to `Pending`
+- Set Agent to the agent(s) involved in the current conversation (if any)
 - If a linked decision exists, add the reference
 
 If Notion MCP is not available or the write fails:
 - Log the decision to `.claude/memory/shared.md` under a Decisions section as
   a local fallback
-- Format: `- [{date}] **{product}** — **{type}**: {summary} — {context} (Impact: {impact})`
+- Format: `- [{date}] **{product}** — **{type}**: {summary} — {context} (Impact: {impact}) [Outcome: Pending] [Agent: {agent(s) or "none"}]`
 
 ## Output
 
@@ -59,6 +66,8 @@ Confirm what was logged:
 **Type:** {type}
 **Summary:** {summary}
 **Status:** {status}
+**Outcome:** Pending
+**Agent:** {agent(s) involved, or "none"}
 **Written to:** Notion Decisions database [or local memory fallback]
 ```
 
