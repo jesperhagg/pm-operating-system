@@ -11,17 +11,13 @@ the user always begins with visibility into their current work.
 
 ## Expected Notion Database: Task Management
 
-This skill queries the same Notion backlog database used by `/fetch-context`.
-The database should have these properties (adapt to the user's actual schema):
+This skill queries the shared Task Management database (see **Notion
+Database Schema** in CLAUDE.md for full property definitions). This is a
+single database shared across all products — always filter by the
+**Product** property matching the current product identity.
 
-| Property | Type | Common Values |
-|----------|------|---------------|
-| Title | text | Task name |
-| Status | select | `In Progress`, `Not Started`, `Done` |
-| Priority | select | `Now`, `Next`, `Later` |
-| Product | select or relation | Which product this task belongs to |
-| Blocker | text or relation | What's blocking this task |
-| Due Date | date | Target completion date |
+When no product identity exists or the user asks for a portfolio view,
+show all products grouped by product.
 
 ## How to Identify the Current Product
 
@@ -106,7 +102,11 @@ Per the CLAUDE.md rule "At the start of every conversation, run `/tasks`":
 2. Keep the output concise — no more than 15-20 lines for a typical
    task load.
 3. If the user says "skip tasks", do not show the task view.
-4. After showing tasks, ask: "What would you like to work on?" or
+4. Check if `.claude/memory/shared.md` contains Notion fallback entries
+   (decisions or insights logged locally because Notion was unavailable).
+   If so, prompt the user: "There are {n} entries in local memory that
+   should be synced to Notion. Want me to sync them now?"
+5. After showing tasks, ask: "What would you like to work on?" or
    proceed with whatever the user has already asked.
 
 ## Relationship to /fetch-context

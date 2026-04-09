@@ -16,13 +16,15 @@ description: Log a product decision to Notion and local memory. Captures the dec
 
 ## Decision Structure
 
-Capture the decision with these fields:
+This skill writes to the shared Decisions database (see **Notion Database
+Schema** in CLAUDE.md for full property definitions). Capture the decision
+with these fields:
 
 ### Required Fields
 - **Summary** — one-sentence description of what was decided
 - **Product** — the product this decision applies to (multi-select in Notion)
 - **Type** — one of: Architecture, Scope, Positioning, Pricing, Go-to-Market,
-  Technical, Design, Partnership, Kill/Park
+  Technical, Design, Partnership, Kill/Park, Insight
 - **Status** — one of: Active, Superseded, Experimental
 - **Date** — today's date
 

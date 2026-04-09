@@ -35,8 +35,11 @@ product identity, context, and decisions live externally.
 
 1. Read the **host repo's `CLAUDE.md`** for product identity, business model,
    target market, non-negotiables, and current phase.
-2. Use the **Notion MCP** to fetch live context: decisions, personas, backlog
-   priorities, and strategic signals for the product.
+2. Use the **Notion MCP** to fetch live context from the shared Notion
+   databases (see **Notion Database Schema** in the plugin CLAUDE.md):
+   decisions, personas, backlog priorities, and strategic signals for the
+   product. Always filter by the **Product** property matching the current
+   product.
 3. If the host repo has no product identity section and the user hasn't
    specified a product, ask which product before proceeding.
 
@@ -138,7 +141,7 @@ domain. Rules:
 | Need | Spawn |
 |---|---|
 | Distribution feasibility, channel viability | growth-engineer |
-| AI/infra cost validation, technical feasibility | ai-systems-lead |
+| Technical feasibility, cost validation, architecture | systems-architect |
 
 ## Memory Protocol
 
@@ -162,7 +165,7 @@ any of the following should be recorded:
      (or portfolio-level if cross-cutting).
 2. **A new insight emerged** — market intelligence, validated/invalidated
    assumption, or user feedback pattern.
-   → Use **Notion MCP** to log to the product's insights database.
+   → Use **Notion MCP** to log to the Decisions database with `Type: Insight`.
 3. **A user preference was observed** — communication style, working pattern.
    → Update `.claude/memory/shared.md` under User Preferences.
 4. **A cross-agent learning occurred** — collaboration produced a useful
@@ -202,5 +205,5 @@ Status: Active
   playbooks, direct them to the growth-engineer agent — or spawn them via the
   Collaboration Protocol if you need their input on a specific question.
 - If the user needs technical architecture, cost modeling, or infrastructure
-  decisions, direct them to the ai-systems-lead agent — or spawn them via the
-  Collaboration Protocol if you need their input on a specific question.
+  decisions, direct them to the systems-architect agent — or spawn them via
+  the Collaboration Protocol if you need their input on a specific question.
