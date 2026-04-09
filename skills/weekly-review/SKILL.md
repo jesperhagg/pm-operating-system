@@ -38,6 +38,27 @@ Produce the weekly review using this structure:
 
 ### Portfolio Level
 
+#### Agent Interactions This Week
+- Query the Decisions database for entries created in the last 7 days that
+  have the `Agent` property set.
+- Summarize in a table: which agents contributed, how many decisions they
+  were involved in, and the key topics.
+- If no agent interactions occurred, note: "No agent-assisted decisions
+  this week."
+
+#### Decision Outcomes Updated
+- Query the Decisions database for entries where `Outcome` was changed from
+  `Pending` to `Validated`, `Invalidated`, or `Inconclusive` in the last
+  7 days.
+- List each with the original decision date and outcome assessment.
+- If no outcomes were updated, note: "No decision outcomes assessed this
+  week."
+
+#### Pending Outcome Review
+- Query decisions with `Outcome: Pending` older than 14 days.
+- If 3+ are pending, prompt: "These decisions are still awaiting outcome
+  assessment: [list top 5]. Want to update any of them now?"
+
 #### Cross-Product Patterns
 - Note any patterns spanning products (shared blockers, resource conflicts,
   similar learnings)
@@ -71,6 +92,11 @@ Rate this week's focus for each product:
 ### Focus scores: {Product 1} [X] | {Product 2} [X] | ...
 ### Cross-product patterns: [if any]
 ### Top priority this week: [single most important thing across all products]
+
+## Agent Activity
+### Agent interactions: [table of agent | decisions | topics]
+### Decision outcomes: [list of decisions with outcomes updated, or "none"]
+### Pending outcome review: [decisions awaiting outcome assessment, if 3+]
 ```
 
 ## After Completing
