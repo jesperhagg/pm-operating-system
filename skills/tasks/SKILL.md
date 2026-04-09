@@ -9,7 +9,7 @@ and presents them in a structured sprint-style view. It is designed to run
 at the start of every session (per the CLAUDE.md session start rule) so
 the user always begins with visibility into their current work.
 
-## Expected Notion Database: Backlog / Tasks
+## Expected Notion Database: Task Management
 
 This skill queries the same Notion backlog database used by `/fetch-context`.
 The database should have these properties (adapt to the user's actual schema):
@@ -17,12 +17,11 @@ The database should have these properties (adapt to the user's actual schema):
 | Property | Type | Common Values |
 |----------|------|---------------|
 | Title | text | Task name |
-| Status | select | `In Progress`, `To Do`, `Waiting`, `Done` |
-| Priority | select | `High`, `Medium`, `Low` (or P0/P1/P2) |
+| Status | select | `In Progress`, `Not Started`, `Done` |
+| Priority | select | `Now`, `Next`, `Later` |
 | Product | select or relation | Which product this task belongs to |
 | Blocker | text or relation | What's blocking this task |
 | Due Date | date | Target completion date |
-| Waiting For | text | Person or dependency being waited on |
 
 ## How to Identify the Current Product
 
