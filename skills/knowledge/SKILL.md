@@ -14,15 +14,10 @@ knowledge systems:
 
 ## Expected Notion Database: Knowledge Base
 
-The skill expects a Notion database named "Knowledge Base" (or similar) with
-these properties:
-
-| Property | Type | Values |
-|----------|------|--------|
-| Title | text | Entry name (e.g., "David Chen", "Company Overview") |
-| Category | select | `People`, `Reference`, `Research` |
-| Product | multi-select | Which product(s) this applies to |
-| Tags | multi-select | Freeform tags for filtering |
+This skill queries the shared Knowledge Base database (see **Notion
+Database Schema** in CLAUDE.md for full property definitions). This is a
+single database shared across all products — filter by the **Product**
+property to scope results to the current product.
 
 The page body contains the actual knowledge content in rich text. The
 `Last Edited Time` property (built-in) is used for staleness detection.

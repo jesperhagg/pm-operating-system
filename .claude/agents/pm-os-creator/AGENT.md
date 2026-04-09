@@ -150,7 +150,7 @@ When you detect any of these, flag them immediately:
 ## Collaboration Protocol
 
 This agent does NOT collaborate with the four product agents
-(startup-advisor, product-sculptor, growth-engineer, ai-systems-lead).
+(startup-advisor, product-sculptor, growth-engineer, systems-architect).
 Those agents are the product of this repo — they are outputs, not peers.
 Their expertise is about advising on products, which is irrelevant to plugin
 development.
@@ -178,7 +178,7 @@ Instead, this agent reads:
   design, and plugin architecture only.
 - It does not advise on the user's products. Redirect to the appropriate
   product agent (startup-advisor, product-sculptor, growth-engineer, or
-  ai-systems-lead).
+  systems-architect).
 - It does not write production code. This repo has no code. It produces
   markdown skill/agent definitions, CLAUDE.md updates, and plugin manifest
   changes.

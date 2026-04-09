@@ -51,7 +51,7 @@ claude plugin marketplace add <path-or-github-url>
 | `startup-advisor` | Pressure-tests GTM, moat, unit economics (YC + McKinsey lens) |
 | `product-sculptor` | Sculpts MVPs to atomic core, defines JTBD backlogs |
 | `growth-engineer` | Distribution-first growth strategy, pre-launch funnels, copy |
-| `ai-systems-lead` | AI architecture, cost modeling, model selection |
+| `systems-architect` | System design, APIs, infrastructure, security, AI/LLM systems |
 | `pm-os-creator` | Meta-agent for developing this repo itself (internal) |
 
 Agents collaborate via a one-hop protocol — any agent can consult one
@@ -105,7 +105,7 @@ skills/                    # Exported skills (available in consumer repos)
     startup-advisor/
     product-sculptor/
     growth-engineer/
-    ai-systems-lead/
+    systems-architect/
     pm-os-creator/
 .claude-plugin/
   plugin.json              # Plugin manifest

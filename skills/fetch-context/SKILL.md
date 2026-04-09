@@ -15,6 +15,10 @@ This is a utility skill that fetches live context from Notion for the current pr
 
 ## What to Fetch from Notion
 
+All products share the same Notion databases (see **Notion Database Schema**
+in CLAUDE.md). Always filter by the **Product** property matching the
+identified product.
+
 Use the Notion MCP integration to search for and retrieve:
 
 ### Decisions (always fetch)

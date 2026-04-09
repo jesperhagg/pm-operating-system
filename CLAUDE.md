@@ -79,7 +79,7 @@ agent rather than answering generically:
 - GTM, moat, unit economics → `startup-advisor`
 - MVP scoping, feature cuts, backlogs → `product-sculptor`
 - Distribution, funnels, positioning → `growth-engineer`
-- AI architecture, cost modeling → `ai-systems-lead`
+- Architecture, technical decisions, cost modeling → `systems-architect`
 
 ### Memory Hygiene
 
@@ -117,7 +117,7 @@ A Claude Code plugin and marketplace listing. It contains:
   opportunity scoring, market scans, work decomposition, decision logging,
   weekly reviews)
 - **Agents** — specialized reasoning roles (startup advisor, product sculptor,
-  growth engineer, AI systems lead) that collaborate via a one-hop protocol
+  growth engineer, systems architect) that collaborate via a one-hop protocol
 - **Internal skills** — non-exported skills for personal PM workflows
 
 This repo contains **zero product data**. Product identity, personas,
@@ -135,13 +135,15 @@ Two MCP servers are required:
    `/evaluate-opportunity`, `/log-decision`, `/weekly-review`,
    `/knowledge`, `/tasks`)
 
-Additionally, two Notion databases are expected:
+Additionally, three Notion databases are expected (see **Notion Database
+Schema** section below for full property definitions):
 
-3. **Knowledge Base** — a Notion database with properties: Title (text),
-   Category (select: `People`, `Reference`, `Research`), Product
-   (multi-select), Tags (multi-select). Used by `/knowledge`.
-4. **Backlog / Tasks** — a Notion database with task status, priority,
-   product, and blocker fields. Used by `/tasks` and `/fetch-context`.
+3. **Knowledge Base** — stakeholder profiles, reference docs, research
+   insights. Used by `/knowledge`.
+4. **Task Management** — shared backlog across all products. Used by
+   `/tasks` and `/fetch-context`.
+5. **Decisions** — product decisions and insights. Used by `/log-decision`,
+   `/fetch-context`, `/weekly-review`, and all agents.
 
 Setup:
 
@@ -151,6 +153,53 @@ Setup:
 4. Restart your Claude Code session
 
 The `.mcp.json` file is gitignored (it contains your API keys).
+
+## Notion Database Schema
+
+All products share a single instance of each database. Skills and agents
+filter by the **Product** property using the product name from the host
+repo's `CLAUDE.md`. When no product identity is available, query across
+all products and group results by product.
+
+### Knowledge Base
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Entry name |
+| Category | select | `People`, `Reference`, `Research` |
+| Product | multi-select | Which product(s) this applies to |
+| Tags | multi-select | Freeform tags for filtering |
+
+Used by: `/knowledge`
+
+### Task Management
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Task name |
+| Status | select | `In Progress`, `Not Started`, `Done` |
+| Priority | select | `Now`, `Next`, `Later` |
+| Product | select or relation | Which product this task belongs to |
+| Blocker | text or relation | What's blocking this task |
+| Due Date | date | Target completion date |
+
+Used by: `/tasks`, `/fetch-context`, `/break-down`
+
+### Decisions
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Decision or insight summary |
+| Product | multi-select | Which product(s) this applies to |
+| Type | select | `Architecture`, `Scope`, `Positioning`, `Pricing`, `Go-to-Market`, `Technical`, `Design`, `Partnership`, `Kill/Park`, `Insight` |
+| Status | select | `Active`, `Superseded`, `Experimental`, `Archived` |
+| Date | date | When decided |
+| Context | text | Why the decision was made |
+| Impact | text | What changes going forward |
+
+Used by: `/log-decision`, `/fetch-context`, `/weekly-review`, all agents.
+Note: Insights (market findings, technical discoveries, validated
+assumptions) are stored in this same database with `Type: Insight`.
 
 ## Skills
 
@@ -194,8 +243,9 @@ The `.mcp.json` file is gitignored (it contains your API keys).
 - `growth-engineer` — distribution-first growth specialist. Advisory by
   default, produces copy when asked. Pre-launch funnels, cold outreach,
   landing page positioning.
-- `ai-systems-lead` — pragmatic technical architect for AI-native products.
-  Architecture only — no code. Cost-models AI features, selects models.
+- `systems-architect` — senior technical architect for product systems.
+  Architecture only — no code. Covers system design, APIs, infrastructure,
+  security, and AI/LLM systems.
 
 ### Agent Collaboration
 
@@ -210,10 +260,10 @@ Agents can spawn each other when they need expertise outside their domain.
 
 | Agent | Can consult |
 |---|---|
-| startup-advisor | growth-engineer, ai-systems-lead |
-| product-sculptor | ai-systems-lead, growth-engineer |
+| startup-advisor | growth-engineer, systems-architect |
+| product-sculptor | systems-architect, growth-engineer |
 | growth-engineer | startup-advisor, product-sculptor |
-| ai-systems-lead | product-sculptor, startup-advisor |
+| systems-architect | product-sculptor, startup-advisor |
 
 ## Conventions
 
@@ -340,13 +390,24 @@ Rules:
 
 ### Memory Convention
 
-- Skills and agents reference `.claude/memory/shared.md` and
-  `.claude/memory/shared-archive.md` in their Memory Protocol sections.
-- These files are created at runtime in consumer repos (product repos that
-  install this plugin), NOT in this plugin source repo.
-- This repo should never contain memory files — they would hold personal
-  or product-specific data.
+Memory is a two-layer system:
+
+1. **Notion (primary)** — Product-specific decisions and insights live in
+   the shared Decisions database, filtered by Product. This is the source
+   of truth.
+2. **Local files (secondary)** — `.claude/memory/shared.md` stores
+   cross-agent learnings and user preferences. It also serves as a
+   fallback when Notion MCP is unavailable.
+
+**Key properties:**
+
+- Memory files are created at runtime in consumer repos (product repos
+  that install this plugin), NOT in this plugin source repo.
+- Each consumer repo gets its own memory file, providing implicit
+  product isolation.
 - `.claude/memory/` is gitignored to prevent accidental commits.
-- The `memory-review` skill operates on these files in consumer repos.
-  When running it in this repo, it will correctly report no entries to
-  review.
+- **Plugin updates never touch memory files** — they live outside the
+  plugin's scope. Updating the plugin is safe.
+- If Notion fallback entries accumulate in `shared.md`, the `/tasks`
+  session-start check will prompt syncing them back to Notion.
+- The `memory-review` skill curates these files in consumer repos.

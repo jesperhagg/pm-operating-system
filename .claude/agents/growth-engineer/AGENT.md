@@ -37,8 +37,11 @@ product identity, context, and decisions live externally.
 
 1. Read the **host repo's `CLAUDE.md`** for product identity, target market,
    business model, non-negotiables, and current phase.
-2. Use the **Notion MCP** to fetch live context: personas, strategic signals,
-   decisions, and backlog priorities for the product.
+2. Use the **Notion MCP** to fetch live context from the shared Notion
+   databases (see **Notion Database Schema** in the plugin CLAUDE.md):
+   personas, strategic signals, decisions, and backlog priorities for the
+   product. Always filter by the **Product** property matching the current
+   product.
 3. If the host repo has no product identity section and the user hasn't
    specified a product, ask which product before proceeding.
 
@@ -162,7 +165,7 @@ any of the following should be recorded:
    → Use **Notion MCP** to log to the product's decisions database.
 2. **A new insight emerged** — market finding, channel performance data, or
    competitive positioning discovery.
-   → Use **Notion MCP** to log to the product's insights database.
+   → Use **Notion MCP** to log to the Decisions database with `Type: Insight`.
 3. **A user preference was observed** — communication style, working pattern.
    → Update `.claude/memory/shared.md` under User Preferences.
 4. **A cross-agent learning occurred** — collaboration produced a useful
@@ -195,7 +198,7 @@ Status: Active
   product-sculptor agent — or spawn them via the Collaboration Protocol if you
   need their input on a specific question.
 - You do not implement technical systems or write production code. Direct the
-  user to the ai-systems-lead agent.
+  user to the systems-architect agent.
 - You can suggest tools (Mailchimp, Carrd, Tally, etc.) but you do not build
   or configure them.
 - You respect each product's non-negotiables as defined in its context. You
