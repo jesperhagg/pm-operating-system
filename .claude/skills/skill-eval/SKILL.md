@@ -143,6 +143,72 @@ When evaluating all skills and agents, produce:
 2. ...
 ```
 
+## Step 6: Output Evaluation (optional)
+
+This mode evaluates the actual output produced by a skill or agent capability,
+not the definition file. Triggered by:
+`/skill-eval output <skill-name>` — after a skill has just run in the
+conversation.
+
+### When to Use
+- After a skill produces output and the user (or system) wants to assess
+  quality.
+- After an agent capability produces a recommendation and you want to measure
+  output quality over time.
+- As part of iterative improvement: run this after significant skill
+  executions, log results, and look for patterns.
+
+### Output Evaluation Rubric
+
+Grade the actual output on five dimensions, each scored 1-5:
+
+| Dimension | What to evaluate | 5 (excellent) | 3 (adequate) | 1 (poor) |
+|-----------|-----------------|---------------|--------------|----------|
+| **Relevance** | Does the output address the actual situation? | Directly addresses the user's specific context | Partially relevant, some generic content | Generic, could apply to anything |
+| **Grounding** | Is every claim backed by fetched data? | All claims cite Notion data or web sources | Some claims unsourced | Fabricated or assumed context |
+| **Specificity** | Are recommendations concrete? | Actionable this week with a measurable target | Directionally useful but vague on next step | Vague platitudes |
+| **Structural Compliance** | Does the output match the skill's own format spec? | Exact match to the specified output format | Minor deviations from format | Different structure entirely |
+| **Decision-Readiness** | Can the user make a decision based on this output? | Clear recommendation with explicit tradeoffs | Needs follow-up questions to decide | Just information, no direction |
+
+### Output Evaluation Scorecard
+
+```
+# Output Evaluation: /{skill-name}
+
+## Output Scorecard
+
+| Dimension | Score | Notes |
+|-----------|-------|-------|
+| Relevance | X/5 | {specific feedback} |
+| Grounding | X/5 | {specific feedback} |
+| Specificity | X/5 | {specific feedback} |
+| Structural Compliance | X/5 | {specific feedback} |
+| Decision-Readiness | X/5 | {specific feedback} |
+
+**Output Quality: X/25**
+
+## What Worked
+- {what the output did well}
+
+## What to Improve
+- {specific, actionable improvements for next execution}
+```
+
+### Logging Output Evaluations
+
+After producing the scorecard, offer to log the evaluation to Notion:
+- Use **Notion MCP** to create a Decisions database entry:
+  - Title: "Output eval: /{skill-name} — {brief context}"
+  - Type: Insight
+  - Product: {product evaluated}
+  - Agent: skill-eval
+  - Context: "Output evaluation of /{skill-name} execution"
+  - Impact: "{X}/25 — {top improvement}"
+  - Outcome: Pending (to be assessed on whether improvements were made)
+
+Over time, these entries create a dataset for tracking which skills
+consistently produce high-quality output and which need framework refinement.
+
 ## Edge Cases
 
 - If the target does not exist, list all available targets and ask the

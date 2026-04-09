@@ -375,7 +375,7 @@ Standard section order for AGENT.md files:
 4. Objectives (Primary Objective, Success Looks Like, Failure Looks Like)
 5. Proactive Checks (data-driven conditions assessed during hydration)
 6. Product Context (or Repo Context for internal agents)
-7. Focus Areas
+7. Capabilities (structured as: When, What I Do, Output, Follow-up skills)
 8. Anti-Patterns to Call Out
 9. Output Format
 10. Collaboration Protocol
