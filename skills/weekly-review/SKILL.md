@@ -73,6 +73,32 @@ Rate this week's focus for each product:
 ### Top priority this week: [single most important thing across all products]
 ```
 
+## Agent Performance This Week
+
+After completing the per-product and portfolio sections, query the **Agent
+Interactions** Notion database for entries from the last 7 days. If data
+exists, add this section:
+
+```
+## Agent Performance
+
+### Usage
+- Most used agent: [name] ([N] interactions)
+- Agents used: [list with counts]
+
+### Quality Signals
+- Mission alignment: [X]% Strong across all interactions
+- Clear outcomes: [X]% resulted in Decision Made or Insight Gained
+- Collaboration: [which agents consulted each other, how often]
+
+### Improvement Signal
+- [Any agent with declining satisfaction or frequent "No Clear Outcome"]
+- [Any agent never used this week that might be underutilized]
+```
+
+If no Agent Interactions data exists yet, skip this section silently —
+do not prompt the user about missing data.
+
 ## After Completing
 
 Suggest the user might want to:
@@ -81,3 +107,5 @@ Suggest the user might want to:
 - Consult the **startup-advisor** agent if portfolio balance needs rethinking
 - Save the review to memory: offer to log key insights to Notion via
   `/log-decision` or directly via Notion MCP
+- Run `/skill-eval <agent-name> --performance` if any agent shows weak
+  performance signals

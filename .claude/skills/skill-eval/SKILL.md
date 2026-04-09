@@ -143,6 +143,56 @@ When evaluating all skills and agents, produce:
 2. ...
 ```
 
+## Step 6: Runtime Performance Evaluation (optional)
+
+Only runs when the user invokes with `--performance` flag, e.g.:
+`/skill-eval startup-advisor --performance`
+
+This mode evaluates actual agent performance over time using logged
+interaction data, not just the specification quality.
+
+1. Query the **Agent Interactions** Notion database for the target agent
+   (filter by Agent property, last 30 days).
+2. If fewer than 5 interactions are logged, note insufficient data and
+   skip the performance scorecard. Suggest the user enables interaction
+   logging and revisits after more data accumulates.
+3. Analyze patterns across logged interactions:
+   - **Mission Alignment distribution** — how often Strong vs. Moderate vs. Weak?
+   - **Outcome Type distribution** — decisions and insights vs. no clear outcome?
+   - **User Satisfaction patterns** — accepted vs. pushed back vs. abandoned?
+   - **Collaboration frequency** — does this agent consult others? How often?
+     Does collaboration correlate with better outcomes?
+4. Compare against baseline expectations:
+   - Mission Alignment: target >70% Strong
+   - Clear Outcomes (Decision Made + Insight Gained): target >60%
+   - User Acceptance Rate: target >80%
+5. Generate improvement hypotheses based on patterns observed.
+
+### Performance Scorecard
+
+```
+## Runtime Performance: {agent-name} (last 30 days)
+
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| Interactions | N | — | Volume |
+| Mission Alignment (% Strong) | X% | >70% | [On track / Below target] |
+| Clear Outcomes (% Decision+Insight) | X% | >60% | [On track / Below target] |
+| User Acceptance Rate | X% | >80% | [On track / Below target] |
+| Collaboration Rate | X% | — | Context-dependent |
+
+## Improvement Hypotheses
+1. [Pattern observed → specific change to agent definition]
+2. [Pattern observed → specific change to agent definition]
+
+## Recommended Actions
+- [Specific edit to AGENT.md based on data]
+```
+
+This mode is not applicable to skills (skills don't have interaction logs).
+If invoked for a skill, explain that `--performance` is agent-only and
+offer the standard specification evaluation instead.
+
 ## Edge Cases
 
 - If the target does not exist, list all available targets and ask the

@@ -71,6 +71,15 @@ before asking what I need. Skip if I say "skip tasks".
 - When **context window is getting full** → proactively summarize and
   suggest what to offload to Notion
 
+### Agent Behavior
+
+Agents are outcome-oriented. They have defined missions and success criteria
+and adapt their response depth and format to the conversation. They:
+- Self-assess after significant interactions (mission alignment, actionability, gaps)
+- Proactively flag critical issues even when not asked (without derailing)
+- Log interactions to the Agent Interactions Notion database for performance tracking
+- Consult other agents when they identify gaps in their analysis (goal-directed, not routine)
+
 ### Agent Escalation
 
 If my question is strategic and cross-cutting, suggest the appropriate
@@ -201,6 +210,27 @@ Used by: `/log-decision`, `/fetch-context`, `/weekly-review`, all agents.
 Note: Insights (market findings, technical discoveries, validated
 assumptions) are stored in this same database with `Type: Insight`.
 
+### Agent Interactions
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | text | Brief description of interaction |
+| Product | select | Which product |
+| Agent | select | Which agent led the interaction (`startup-advisor`, `product-sculptor`, `growth-engineer`, `systems-architect`) |
+| Collaborators | multi-select | Other agents consulted during the interaction |
+| Mission Alignment | select | `Strong`, `Moderate`, `Weak` |
+| Outcome Type | select | `Decision Made`, `Insight Gained`, `Question Refined`, `No Clear Outcome` |
+| User Satisfaction | select | `Accepted`, `Pushed Back`, `Iterated`, `Abandoned` |
+| Date | date | When the interaction occurred |
+| Summary | text | 2-3 sentence summary of what happened and what was decided |
+
+Used by: `/skill-eval` (performance mode), `/weekly-review` (agent
+performance section), all agents (write after significant interactions).
+
+This database enables runtime performance tracking of agents over time.
+Query it to identify patterns in mission alignment, outcome clarity, and
+collaboration effectiveness.
+
 ## Skills
 
 ### Plugin-exported skills (in `skills/`)
@@ -250,11 +280,19 @@ assumptions) are stored in this same database with `Type: Insight`.
 ### Agent Collaboration
 
 Agents can spawn each other when they need expertise outside their domain.
+Collaboration is goal-directed — agents must articulate why they need help
+and how it will change their recommendation.
 
-- **One-hop rule:** An agent may spawn exactly one other agent as a
-  consultant. The consulted agent cannot spawn a third.
-- **Scratchpad:** Collaboration uses `.claude/scratchpad/handoff.md` as a
-  shared working file (transient, not committed).
+- **Two-hop limit:** An agent may spawn a consultant. That consultant may
+  spawn one more if needed. The third agent cannot spawn further.
+- **Purpose-driven:** Every handoff must state the gap in analysis and
+  expected impact on the recommendation. If you can't articulate both,
+  you don't need the collaboration.
+- **Parallel spawning:** When questions for different agents are
+  independent, spawn them in parallel rather than sequentially.
+- **Scratchpad:** Collaboration uses `.claude/scratchpad/handoff.md` with
+  a structured trace format (timestamp, purpose, question, response,
+  integration note, value assessment). Transient, not committed.
 - **Attribution:** Agent output clearly labels which parts came from a
   consulted agent.
 
@@ -338,23 +376,39 @@ Standard section order for AGENT.md files:
 
 1. Frontmatter (name, description)
 2. Identity paragraph
-3. Tone and Behavior
-4. Product Context (or Repo Context for internal agents)
-5. Focus Areas
-6. Anti-Patterns to Call Out
-7. Output Format
-8. Collaboration Protocol
-9. Memory Protocol
-10. Boundaries
+3. Mission & Success Criteria
+4. Tone and Behavior
+5. Product Context (or Repo Context for internal agents)
+6. Focus Areas
+7. Anti-Patterns to Call Out
+8. Output Principles
+9. Collaboration Protocol
+10. Memory Protocol
+11. Self-Assessment Protocol
+12. Boundaries
 
 Rules:
+- Every agent must define a Mission (one sentence), Success Criteria
+  (observable outcomes), and Failure Criteria (anti-outcomes). The mission
+  is what the agent optimizes for — not the output format.
 - Every product-facing agent must include the Product Context block (read
   host CLAUDE.md, fetch from Notion, ask if ambiguous).
-- Collaboration Protocol is always one-hop, uses
-  `.claude/scratchpad/handoff.md`, requires scoped questions and
-  attribution.
-- Memory Protocol always reads before analysis and writes (with user
-  permission) after significant interactions.
+- Output Principles replace rigid Output Format templates. Define "always
+  include" guardrails, "format to the conversation" guidance, and "never
+  produce" anti-patterns. Let agents choose response shape based on context.
+- Tone and Behavior includes adaptive reasoning (match depth to stakes),
+  self-assessment (check coverage before delivering), and proactive flags
+  (surface critical issues the user didn't ask about).
+- Collaboration Protocol uses goal-directed multi-hop (2-hop limit) with
+  purpose tracking and collaboration trace format in
+  `.claude/scratchpad/handoff.md`. Agents may spawn consultants in parallel
+  when questions are independent.
+- Memory Protocol always reads before analysis, writes (with user
+  permission) after significant interactions, and logs interactions to
+  the Agent Interactions Notion database after self-assessment.
+- Self-Assessment Protocol fires after significant interactions: 3-line
+  assessment of mission alignment, actionability, and gaps flagged. Visible
+  to user as a transparency mechanism.
 - Boundaries explicitly redirect to the correct agent/skill for
   out-of-scope requests.
 
