@@ -278,6 +278,32 @@ Agents can spawn each other when they need expertise outside their domain.
 - When developing skills or agents for this repo, use the
   `pm-os-creator` agent for architectural guidance and consistency audits.
 
+### PM OS Creator Authority
+
+**The `pm-os-creator` agent is the lead architect for this repo. Its
+architectural recommendations take precedence over ad-hoc analysis.**
+
+When working on this repo (not a consumer repo), follow these rules:
+
+- **Design work:** For ANY modification to agent definitions, skill
+  definitions, plugin architecture, or Development Standards, consult
+  `pm-os-creator` FIRST. It must lead the design — do not bypass it
+  with generic exploration or independent synthesis.
+- **Analysis work:** When analyzing the repo's structure, patterns, or
+  gaps, route through `pm-os-creator` as the primary analyst. Use
+  Explore agents to gather raw data, but `pm-os-creator` interprets
+  the findings and makes the architectural call.
+- **Review gate:** Before committing changes to files in `skills/`,
+  `.claude/skills/`, `.claude/agents/`, or `CLAUDE.md` Development
+  Standards, run `/design-review` to get pm-os-creator's sign-off.
+- **Override:** Only the user (Jesper) can override a pm-os-creator
+  recommendation. If you disagree with its architectural call, present
+  both perspectives to the user and let them decide.
+
+This exists because the pm-os-creator has the full context of the plugin's
+design patterns, conventions, and consistency requirements. Bypassing it
+leads to drift.
+
 ## Development Standards
 
 These standards govern how skills, agents, and plugin infrastructure are
