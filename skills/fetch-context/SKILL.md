@@ -1,10 +1,18 @@
 ---
-description: Fetch live product context from Notion. Foundation skill used by other PM skills to self-hydrate with decisions, personas, and backlog data.
+description: Fetch live product context from Notion. Foundation skill used by other PM skills to self-hydrate with decisions, personas, backlog, recent Signals, and Market Landscape entries.
 ---
 
 # Fetch Product Context
 
 This is a utility skill that fetches live context from Notion for the current product. Other skills call on this pattern before doing their work.
+
+**What this skill reads from:**
+- **Decisions** database — commitments the PM has made
+- **Signals** database — recent time-stamped observations
+- **Knowledge Base** — personas, reference, research, Market Landscape
+- **Task Management** — active backlog and in-progress work
+
+See the **DB Routing Rubric** in CLAUDE.md for what each database holds.
 
 ## How to Identify the Current Product
 
@@ -35,9 +43,21 @@ Use the Notion MCP integration to search for and retrieve:
 - Focus on top 10 items by priority
 - Note current phase (Explore, Validate, Build, Scale)
 
-### Strategic signals (fetch when skill needs market context)
-- Search Notion for competitive analysis or market signals for this product
-- Include any opportunity scoring or evaluation data
+### Recent Signals (fetch when skill needs market or user-feedback context)
+- Query the **Signals** database, filtered by `Product = {product}` and
+  `Date` within the last 30 days (extend to 60 days if thin).
+- Group by `Type`: User Feedback, Technical Constraint, Market Signal,
+  Competitive Move, Internal Learning.
+- Highlight any with `Action Required = true`.
+- Include any opportunity scoring or evaluation data from the Decisions
+  database (type = `Scope` or `Go-to-Market`).
+
+### Market Landscape (fetch when skill needs competitive context)
+- Query the **Knowledge Base** for entries with
+  `Category = Market Landscape AND Product contains {product}`.
+- Surface the most recent `## Scan —` sub-section from the matching entry.
+- If the latest scan is older than 30 days, note it and suggest running
+  `/market-scan` to refresh.
 
 ## Caching Within a Session
 

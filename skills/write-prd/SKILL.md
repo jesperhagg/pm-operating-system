@@ -23,7 +23,9 @@ Write the PRD using this structure:
 ### 1. Problem Statement
 - What specific user problem are we solving?
 - Reference the target persona and their pain points (from Notion)
-- Evidence: what signals or research support this problem?
+- Evidence: cite specific Signals rows (user feedback, competitive moves)
+  or Knowledge Base research entries that support this problem. If you
+  can't cite any, the problem may not be validated yet.
 
 ### 2. Hypothesis
 - "We believe that [solution] will [outcome] for [persona] because [evidence]"

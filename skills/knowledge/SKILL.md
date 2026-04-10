@@ -5,12 +5,19 @@ description: Fetch, store, and review structured knowledge in Notion. Manages th
 # Knowledge Management
 
 This skill manages persistent knowledge in a Notion "Knowledge Base" database.
-Knowledge is organized into three categories inspired by structured PM
-knowledge systems:
+Knowledge is organized into four categories:
 
 - **People** — stakeholder profiles, communication styles, working preferences
 - **Reference** — company info, product overviews, team structure, OKR history
-- **Research** — domain research, market trends, literature reviews, insights
+- **Research** — domain research, literature reviews, one-shot insights
+- **Market Landscape** — living documents of the competitive landscape for a
+  product's market. Written exclusively by `/market-scan` as append-only
+  dated sections. Read by this skill but not typically edited directly.
+
+**Scope boundary:** Knowledge Base stores **durable, synthesized
+understanding**. Time-stamped observations (competitor launched X yesterday,
+user said Y, we discovered Z) belong in the **Signals** database — use
+`/log-signal` for those. See the DB Routing Rubric in CLAUDE.md.
 
 ## Expected Notion Database: Knowledge Base
 
@@ -77,7 +84,8 @@ The page body contains the actual knowledge content in rich text. The
 **Steps:**
 
 1. Ask the user for:
-   - **Category:** People, Reference, or Research
+   - **Category:** People, Reference, or Research (Market Landscape is
+     reserved for `/market-scan` — do not create these manually)
    - **Title:** Name or topic
    - **Product:** Which product this applies to (or "All")
    - **Tags:** Optional freeform tags
@@ -92,6 +100,11 @@ The page body contains the actual knowledge content in rich text. The
    collected properties and content.
 4. Confirm creation and show a summary.
 
+**Redirects:** If the user tries to store content that is clearly a
+time-stamped observation (dated event, recent finding, competitor move),
+redirect them: *"That sounds like a Signal, not a Knowledge Base entry.
+Want to run `/log-signal` instead?"*
+
 ### 3. Review
 
 **Triggers:** `/knowledge review`
@@ -100,7 +113,9 @@ The page body contains the actual knowledge content in rich text. The
 
 1. Fetch all entries from the Notion Knowledge Base.
 2. Analyze for:
-   - **Staleness:** Entries not updated in 90+ days
+   - **Staleness** (category-dependent):
+     - People / Reference / Research: not updated in 90+ days
+     - Market Landscape: not updated in 30+ days (market moves faster)
    - **Gaps:** Categories with few or no entries for a given product
      (e.g., "You have 0 People entries for Product X")
    - **Volume:** Flag if any category exceeds 30 entries (suggest pruning)
@@ -111,10 +126,10 @@ The page body contains the actual knowledge content in rich text. The
 ```
 ## Knowledge Base Review — {date}
 
-**Total entries:** {count} (People: {n}, Reference: {n}, Research: {n})
+**Total entries:** {count} (People: {n}, Reference: {n}, Research: {n}, Market Landscape: {n})
 
-### Stale Entries (not updated in 90+ days)
-- {title} — Category: {cat}, Last updated: {date}
+### Stale Entries
+- {title} — Category: {cat}, Last updated: {date}, Threshold: {30d or 90d}
 
 ### Gaps
 - {product} has no {category} entries
@@ -123,6 +138,7 @@ The page body contains the actual knowledge content in rich text. The
 - Update: {list of stale entries worth refreshing}
 - Archive: {list of entries that may no longer be relevant}
 - Add: {suggested new entries based on gaps}
+- Re-scan: {Market Landscape entries past the 30-day threshold — suggest running /market-scan}
 ```
 
 4. Ask the user if they want to update, archive, or add any entries.
@@ -186,6 +202,34 @@ When storing a new People entry, use this template as the page body structure:
 - {icebreakers, interests, family, relationship context}
 ```
 
+## Market Landscape Entry Structure
+
+Market Landscape entries are maintained by `/market-scan` — this skill
+reads them but does not typically edit them. When fetched, expect the
+following machine-readable structure so heading-based parsing works:
+
+```markdown
+# {Product} — Market Landscape — {Market Category}
+
+_Living document. New scans append dated sections below._
+
+## Scan — {YYYY-MM-DD}
+
+### Competitor Radar
+### Product & Feature Moves
+### Funding & Business Moves
+### Customer Sentiment
+### Strategic Implications
+### What's New vs. Prior Scans
+### Sources
+
+## Scan — {YYYY-MM-DD}
+...
+```
+
+When surfacing a Market Landscape entry in Fetch mode, show only the
+**most recent `## Scan —`** sub-section unless the user asks for history.
+
 ## Suggested Follow-ups
 
 After fetching People knowledge, suggest: "Want me to prep for a meeting
@@ -193,6 +237,9 @@ with {name}?"
 
 After storing Research knowledge, suggest: "Want me to check how this
 connects to your current backlog? Run `/fetch-context`."
+
+After fetching a Market Landscape entry older than 30 days, suggest:
+"This scan is {N} days old. Want to run `/market-scan` to refresh it?"
 
 After a review, suggest: "Want me to help fill the gaps? I can draft
 entries for missing categories."

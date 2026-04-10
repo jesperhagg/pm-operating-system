@@ -84,10 +84,11 @@ product identity, context, and decisions live externally.
 1. Read the **host repo's `CLAUDE.md`** for product identity, target market,
    business model, non-negotiables, and current phase.
 2. Use the **Notion MCP** to fetch live context from the shared Notion
-   databases (see **Notion Database Schema** in the plugin CLAUDE.md):
-   personas, strategic signals, decisions, and backlog priorities for the
-   product. Always filter by the **Product** property matching the current
-   product.
+   databases (see **Notion Database Schema** and **DB Routing Rubric** in
+   the plugin CLAUDE.md): personas, decisions, backlog priorities, and
+   recent rows from the **Signals** database (especially Market Signal,
+   Competitive Move, and User Feedback types) for the product. Always
+   filter by the **Product** property matching the current product.
 3. If the host repo has no product identity section and the user hasn't
    specified a product, ask which product before proceeding.
 
@@ -226,32 +227,40 @@ multi-hop chaining.
 ### Reading (do this before your analysis)
 
 1. Read the **host repo's `CLAUDE.md`** for product identity and context.
-2. Use **Notion MCP** to fetch prior decisions, insights, and open questions
-   for the product.
+2. Use **Notion MCP** to fetch prior decisions (Decisions database), recent
+   observations (Signals database, last 30 days — especially Market Signal,
+   Competitive Move, and User Feedback types), and open questions for the
+   product. See the **DB Routing Rubric** in CLAUDE.md for what each DB holds.
 3. Read `.claude/memory/shared.md` if it exists — for user preferences and
    cross-agent learnings.
-4. Reference prior decisions in your analysis: "Per the [date] decision on
-   X..." rather than re-deriving from scratch.
+4. Reference prior decisions and signals in your analysis: "Per the [date]
+   decision on X..." or "Per the [date] market signal..." rather than
+   re-deriving from scratch.
 
 ### Writing (do this after significant interactions)
 
 After completing a significant interaction (not routine Q&A), evaluate whether
-any of the following should be recorded:
+any of the following should be recorded. **Route writes per the DB Routing
+Rubric in CLAUDE.md** — commitments to Decisions, observations to Signals,
+durable synthesis to Knowledge Base.
 
 1. **A decision was made** — the user committed to a channel, funnel, or
    positioning direction.
-   → Use **Notion MCP** to log to the product's decisions database.
-2. **A new insight emerged** — market finding, channel performance data, or
-   competitive positioning discovery.
-   → Use **Notion MCP** to log to the Decisions database with `Type: Insight`.
+   → Use `/log-decision` or **Notion MCP** to log to the Decisions database.
+2. **A new observation emerged** — market finding, channel performance data,
+   or competitive positioning discovery.
+   → Use `/log-signal` or **Notion MCP** to log to the **Signals** database
+     with the appropriate `Type` (typically `Market Signal`,
+     `Competitive Move`, or `Internal Learning`) and set `Action Required`
+     if it demands a PM response.
 3. **A user preference was observed** — communication style, working pattern.
    → Update `.claude/memory/shared.md` under User Preferences.
 4. **A cross-agent learning occurred** — collaboration produced a useful
    outcome or resolved a disagreement.
    → Append to `.claude/memory/shared.md` under Cross-Agent Learnings.
 
-5. **A quality signal was observed** — the user explicitly accepted, rejected,
-   or modified an agent recommendation.
+5. **A quality feedback moment was observed** — the user explicitly accepted,
+   rejected, or modified an agent recommendation.
    → If the user **rejected** a recommendation, update the relevant decision's
      Outcome to `Invalidated` with notes on why.
    → If the user **modified significantly**, log a new decision noting the
@@ -259,22 +268,32 @@ any of the following should be recorded:
    → If the user **accepted as-is**, leave Outcome as `Pending` (actual
      outcome is still TBD).
 
-**Before writing:** Ask the user: "I'd like to record [brief summary]. Should
-I save this?" Only write after confirmation. Distill to structured entries —
-never dump raw conversation.
+**Before writing:** Ask the user: "I'd like to record [brief summary] as a
+[Decision/Signal]. Should I save this?" Only write after confirmation.
+Distill to structured entries — never dump raw conversation.
 
-**Format for Notion entries:**
+**Format for Decisions entries:**
 ```
-Title: [Decision/Insight title]
+Title: [Decision title]
 Product: [product name]
-Type: Decision | Insight
+Type: [Architecture | Scope | Positioning | Pricing | Go-to-Market | Technical | Design | Partnership | Kill/Park]
 Date: [YYYY-MM-DD]
 Context: Why this came up
-Detail: What was decided/learned
-Rationale: Why this over alternatives (decisions only)
+Impact: What changes going forward
 Agents involved: Which agents contributed
 Status: Active
 Outcome: Pending
+```
+
+**Format for Signals entries:**
+```
+Signal: [one-sentence headline]
+Product: [product name]
+Type: [User Feedback | Technical Constraint | Market Signal | Competitive Move | Internal Learning]
+Date: [source event date, YYYY-MM-DD]
+Source: [URL or reference]
+Implication: What this means for the product or strategy
+Action Required: [true/false]
 ```
 
 ## Boundaries

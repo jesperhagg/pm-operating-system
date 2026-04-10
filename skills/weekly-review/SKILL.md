@@ -8,11 +8,15 @@ description: Run a portfolio-level weekly review across all products. Reads memo
 
 1. Read the host repo's `CLAUDE.md` to identify the current product(s)
 2. Use **Notion MCP** to fetch context for each product in the portfolio:
-   - Decisions from the last 7 days
-   - Top 5 backlog items by priority
-   - Any signals flagged as "Action Required"
-   - Recent insights and open questions
-3. Read `.claude/memory/shared.md` for cross-product patterns
+   - Decisions from the last 7 days (Decisions database)
+   - Top 5 backlog items by priority (Task Management database)
+   - All rows from the **Signals** database with `Action Required = true`
+     (across all dates, not just last 7 days — these are the outstanding
+     observations that need PM response)
+   - New Signals logged in the last 7 days grouped by `Type`
+   - Open questions and pending outcomes from Decisions
+3. Read `.claude/memory/shared.md` for cross-product patterns and any
+   Signals (Notion fallback) entries that need syncing
 4. Note today's date for the review header
 
 ## Review Framework
@@ -58,6 +62,17 @@ Produce the weekly review using this structure:
 - Query decisions with `Outcome: Pending` older than 14 days.
 - If 3+ are pending, prompt: "These decisions are still awaiting outcome
   assessment: [list top 5]. Want to update any of them now?"
+
+#### Action Required Signals
+- Query the Signals database for all rows with `Action Required = true`,
+  across all products and dates.
+- Group by Product, then by Type.
+- For each signal, show: headline, date, source, implication.
+- If any signals have been outstanding for 14+ days, flag them as
+  "stale — triage now."
+- After listing, prompt: "Which of these should we act on this week?
+  I can convert any of them into a decision via `/log-decision` or
+  clear the Action Required flag in Notion."
 
 #### Cross-Product Patterns
 - Note any patterns spanning products (shared blockers, resource conflicts,

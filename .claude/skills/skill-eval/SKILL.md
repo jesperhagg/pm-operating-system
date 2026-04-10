@@ -196,18 +196,24 @@ Grade the actual output on five dimensions, each scored 1-5:
 
 ### Logging Output Evaluations
 
-After producing the scorecard, offer to log the evaluation to Notion:
-- Use **Notion MCP** to create a Decisions database entry:
-  - Title: "Output eval: /{skill-name} — {brief context}"
-  - Type: Insight
+After producing the scorecard, offer to log the evaluation to Notion.
+Output evaluations are **observations** about skill quality, not
+commitments — so they go to the **Signals** database as
+`Type: Internal Learning`, not Decisions.
+
+- Use **Notion MCP** to create a Signals database entry:
+  - Signal: "Output eval: /{skill-name} scored {X}/25 — {top improvement}"
+  - Type: `Internal Learning`
+  - Date: today
+  - Source: "skill-eval run on /{skill-name}"
   - Product: {product evaluated}
-  - Agent: skill-eval
-  - Context: "Output evaluation of /{skill-name} execution"
-  - Impact: "{X}/25 — {top improvement}"
-  - Outcome: Pending (to be assessed on whether improvements were made)
+  - Implication: "{top improvement for framework refinement}"
+  - Action Required: true if score < 15/25, else false
 
 Over time, these entries create a dataset for tracking which skills
 consistently produce high-quality output and which need framework refinement.
+Filter the Signals database by `Source contains "skill-eval"` to review
+the full eval history.
 
 ## Edge Cases
 
