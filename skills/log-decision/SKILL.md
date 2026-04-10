@@ -24,7 +24,9 @@ with these fields:
 - **Summary** — one-sentence description of what was decided
 - **Product** — the product this decision applies to (multi-select in Notion)
 - **Type** — one of: Architecture, Scope, Positioning, Pricing, Go-to-Market,
-  Technical, Design, Partnership, Kill/Park, Insight
+  Technical, Design, Partnership, Kill/Park
+  (Note: `Insight` has been retired. If the user is logging an observation
+  rather than a commitment, redirect to `/log-signal`.)
 - **Status** — one of: Active, Superseded, Experimental
 - **Date** — today's date
 - **Outcome** — set to `Pending` by default. Updated later via `/weekly-review`

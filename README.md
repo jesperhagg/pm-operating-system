@@ -32,14 +32,15 @@ claude plugin marketplace add <path-or-github-url>
 
 | Skill | What it does |
 |-------|-------------|
-| `/fetch-context` | Pulls live product context from Notion (decisions, personas, backlog, signals) |
+| `/fetch-context` | Pulls live product context from Notion (decisions, personas, backlog, recent Signals, Market Landscape) |
 | `/write-prd` | Writes a PRD using a 6-section framework, hydrated with Notion context |
 | `/evaluate-opportunity` | Scores an opportunity on 5 dimensions — Explore, Park, or Kill |
-| `/market-scan <product>` | Scans competitive landscape with parallel web search and source extraction |
+| `/market-scan <product>` | Scans competitive landscape with parallel web search and dual-writes findings to Knowledge Base (Market Landscape) and Signals |
 | `/break-down` | Decomposes a PRD into kanban-ready work items using JTBD framing |
-| `/weekly-review` | Portfolio-level weekly review: what shipped, what's blocked, what's next |
+| `/weekly-review` | Portfolio-level weekly review: what shipped, what's blocked, Action Required signals, what's next |
 | `/log-decision` | Logs a product decision to Notion with structured metadata |
-| `/knowledge` | Manages stakeholder profiles, reference docs, and research in Notion |
+| `/log-signal` | Logs a time-stamped observation (user feedback, competitive move, market signal, technical constraint, internal learning) to the Signals database |
+| `/knowledge` | Manages stakeholder profiles, reference docs, research, and Market Landscape entries in Notion |
 | `/tasks` | Surfaces active tasks from Notion backlog (runs at session start) |
 | `/memory-review` | Reviews and prunes memory files and Notion entries for staleness |
 | `/pm-digest` | Daily PM + AI news digest (internal, not exported) |
@@ -74,7 +75,8 @@ These are only available when working in this repo directly:
 
 Two MCP servers are required:
 
-1. **Notion** — live product context (decisions, personas, backlog, signals)
+1. **Notion** — live product context (decisions, personas, backlog,
+   signals, market landscape)
 2. **Tavily** — web search and content extraction (for `/market-scan`,
    `/pm-digest`)
 
@@ -84,14 +86,24 @@ Steps:
 2. Replace API key placeholders with your keys
 3. Restart your Claude Code session
 
-Two Notion databases are expected:
+Four Notion databases are expected (see the full schema and the **DB
+Routing Rubric** in `CLAUDE.md`):
 
-**Knowledge Base** — Title, Category (`People`/`Reference`/`Research`),
-Product (multi-select), Tags (multi-select). Used by `/knowledge`.
+**Knowledge Base** — durable synthesized knowledge. Categories: `People`,
+`Reference`, `Research`, `Market Landscape`. Used by `/knowledge` and
+`/market-scan`.
 
-**Backlog / Tasks** — Title, Status (`In Progress`/`To Do`/`Waiting`/
-`Done`), Priority (`Now`/`Next`/`Later`), Product, Blocker, Due Date.
-Used by `/tasks` and `/fetch-context`.
+**Task Management** — shared backlog. Status, Priority, Product, Blocker,
+Due Date. Used by `/tasks` and `/fetch-context`.
+
+**Decisions** — commitments the PM has made. Type, Status, Context,
+Impact, Outcome, Agent. Used by `/log-decision`, `/weekly-review`, and
+all agents.
+
+**Signals** — time-stamped observations (user feedback, competitive
+moves, market signals, technical constraints, internal learnings) with an
+Action Required flag. Used by `/log-signal`, `/market-scan`,
+`/fetch-context`, `/weekly-review`, and all agents.
 
 ## Structure
 

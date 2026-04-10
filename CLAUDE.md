@@ -28,6 +28,7 @@ When I mention these keywords, run the corresponding skill:
 | "break down", "decompose", "tasks from this" | `/break-down` |
 | "competitors", "market", "landscape" | `/market-scan` |
 | "decision", "log", "decided" | `/log-decision` |
+| "signal", "competitor moved", "funding round", "user feedback pattern" | `/log-signal` |
 | "review", "weekly", "what shipped" | `/weekly-review` |
 | "memory", "clean up", "stale" | `/memory-review` |
 | "digest", "news", "what's happening" | `/pm-digest` |
@@ -135,15 +136,24 @@ Two MCP servers are required:
    `/evaluate-opportunity`, `/log-decision`, `/weekly-review`,
    `/knowledge`, `/tasks`)
 
-Additionally, three Notion databases are expected (see **Notion Database
+Additionally, four Notion databases are expected (see **Notion Database
 Schema** section below for full property definitions):
 
-3. **Knowledge Base** — stakeholder profiles, reference docs, research
-   insights. Used by `/knowledge`.
+3. **Knowledge Base** — durable structured knowledge: stakeholder profiles,
+   reference docs, research, and market landscape entries. Used by
+   `/knowledge` and `/market-scan`.
 4. **Task Management** — shared backlog across all products. Used by
    `/tasks` and `/fetch-context`.
-5. **Decisions** — product decisions and insights. Used by `/log-decision`,
-   `/fetch-context`, `/weekly-review`, and all agents.
+5. **Decisions** — product decisions (commitments we make). Used by
+   `/log-decision`, `/fetch-context`, `/weekly-review`, and all agents.
+6. **Signals** — time-stamped observations of the world: competitive moves,
+   user feedback patterns, market signals, technical constraints, internal
+   learnings. Used by `/log-signal`, `/market-scan`, `/fetch-context`,
+   `/weekly-review`, and all agents.
+
+**Note:** Two additional databases exist under the same Context Databases
+parent page in Notion (**Personas**, **Opportunity Backlog**) but are not yet
+declared in this schema — they will be integrated in a separate docs pass.
 
 Setup:
 
@@ -161,16 +171,70 @@ filter by the **Product** property using the product name from the host
 repo's `CLAUDE.md`. When no product identity is available, query across
 all products and group results by product.
 
+### DB Routing Rubric
+
+The three context databases (Decisions + Signals + Knowledge Base) are
+distinguished by **three orthogonal axes**. Every skill and agent must
+follow this rubric when writing to Notion.
+
+| Axis | Decisions | Signals | Knowledge Base |
+|---|---|---|---|
+| **What is it?** | A commitment we make | An observation of the world | A synthesized understanding we maintain |
+| **Time shape** | Point in time, immutable | Time-stamped stream | Living document, updated over time |
+| **Agency** | We chose this | The world did this (or we noticed it) | We compiled this |
+| **Read pattern** | "What did we decide about X?" | "What changed recently?" | "What do I know about X?" |
+| **Lifecycle** | Active → Superseded/Archived | Implication extracted → fades | Continually refreshed |
+
+**Decision tree — which DB does this information go to?**
+
+```
+Is this a commitment WE are making (scope, positioning, pricing, kill/park)?
+├── YES → Decisions
+└── NO → Is this a time-stamped observation of something that happened
+         (competitor moved, user said X, we discovered constraint Y)?
+    ├── YES → Signals
+    │         └── Does it also change our durable understanding of a topic?
+    │             └── YES → Also update the relevant Knowledge Base entry
+    └── NO  → Is this durable, re-usable knowledge (who a person is, what
+              the competitive landscape for X looks like, what research has
+              taught us about persona Y)?
+        ├── YES → Knowledge Base
+        └── NO  → Probably doesn't need to be logged. Discard.
+```
+
+**Concrete routing examples:**
+
+| Information | DB | Why |
+|---|---|---|
+| Competitor launched feature yesterday | **Signals** (`Competitive Move`) + update KB Market Landscape entry | Time-stamped event, also changes our view of the landscape |
+| Recurring user complaint across 5 interviews | **Signals** (`User Feedback`, Action Required = true) | Observation that demands a decision |
+| Funding round announced | **Signals** (`Market Signal`) + update KB entry | Event with implication |
+| "State of the market for category X" synthesis | **Knowledge Base** (`Market Landscape`) | Durable synthesis, not an event |
+| Stakeholder's comms preferences | **Knowledge Base** (`People`) | Durable, not time-stamped |
+| Decision to kill a feature | **Decisions** (`Kill/Park`) | A commitment |
+| Technical constraint discovered during build | **Signals** (`Technical Constraint`) → if it forces a scope change, **also** log a Decision | Observation first, commitment second |
+| "We validated that users will pay $X" | **Signals** (`Internal Learning`) → if we then decide to price at $X, log a Decision | Observation → commitment |
+| Market scan output | **Knowledge Base** (Market Landscape entry, append dated section) + **Signals** (individual findings that meet criteria) | Dual-write; see `/market-scan` |
+
 ### Knowledge Base
 
 | Property | Type | Values |
 |----------|------|--------|
 | Title | text | Entry name |
-| Category | select | `People`, `Reference`, `Research` |
+| Category | select | `People`, `Reference`, `Research`, `Market Landscape` |
 | Product | multi-select | Which product(s) this applies to |
 | Tags | multi-select | Freeform tags for filtering |
+| Last Updated | last_edited_time | Auto — used for staleness detection |
 
-Used by: `/knowledge`
+Used by: `/knowledge`, `/market-scan`
+
+**Category guide:**
+- `People` — stakeholder profiles, communication styles, working preferences
+- `Reference` — company info, product overviews, team structure, OKR history
+- `Research` — domain research, literature reviews, one-shot insights
+- `Market Landscape` — living documents of the competitive landscape for a
+  product's market, written exclusively by `/market-scan` as append-only
+  dated sections
 
 ### Task Management
 
@@ -189,9 +253,9 @@ Used by: `/tasks`, `/fetch-context`, `/break-down`
 
 | Property | Type | Values |
 |----------|------|--------|
-| Title | text | Decision or insight summary |
+| Title | text | Decision summary |
 | Product | multi-select | Which product(s) this applies to |
-| Type | select | `Architecture`, `Scope`, `Positioning`, `Pricing`, `Go-to-Market`, `Technical`, `Design`, `Partnership`, `Kill/Park`, `Insight` |
+| Type | select | `Architecture`, `Scope`, `Positioning`, `Pricing`, `Go-to-Market`, `Technical`, `Design`, `Partnership`, `Kill/Park` |
 | Status | select | `Active`, `Superseded`, `Experimental`, `Archived` |
 | Date | date | When decided |
 | Context | text | Why the decision was made |
@@ -202,36 +266,77 @@ Used by: `/tasks`, `/fetch-context`, `/break-down`
 | Agent | multi-select | Which agent(s) contributed to this decision |
 
 Used by: `/log-decision`, `/fetch-context`, `/weekly-review`, all agents.
-Note: Insights (market findings, technical discoveries, validated
-assumptions) are stored in this same database with `Type: Insight`.
+Note: `Type: Insight` has been retired — insights are now logged as **Signals**
+(see below). If legacy `Type: Insight` rows exist, they should be migrated
+into the Signals database with an appropriate `Type`.
 Note: The `Outcome` property enables a closed feedback loop — decisions
 are logged with `Outcome: Pending`, then assessed over time via
 `/weekly-review`.
+
+### Signals
+
+| Property | Type | Values |
+|----------|------|--------|
+| Signal | text (title) | One-sentence headline of the observation |
+| Date | date | When the observation occurred (not today's date — the source date) |
+| Type | select | `User Feedback`, `Technical Constraint`, `Market Signal`, `Competitive Move`, `Internal Learning` |
+| Source | text | Where this signal came from — user interview, analytics, competitor site, build experience, etc. |
+| Implication | text | What this means for the product or strategy |
+| Linked Decision | text | Reference to a decision this signal triggered or should trigger |
+| Action Required | checkbox | Whether this signal demands PM action |
+| Product | multi-select | Which product(s) this applies to |
+
+Used by: `/log-signal`, `/market-scan`, `/fetch-context`, `/weekly-review`,
+all agents.
+
+**When to write to Signals:**
+- A concrete, time-stamped event (launch, funding, release, incident).
+- A recurring user feedback pattern (3+ source mentions, not a one-off).
+- A technical or regulatory constraint discovered during build.
+- A validated or invalidated internal assumption (learning).
+- A competitive move that pressures current positioning.
+
+**When NOT to write to Signals:**
+- Synthesized "trends" with no specific source — those belong in Knowledge
+  Base (`Market Landscape` or `Research`).
+- Commitments *we* are making — those belong in Decisions.
+- One-off forum comments with no corroborating sources.
+
+The feedback loop: Signals → triaged via `/weekly-review` (Action Required
+filter) → either discarded, converted into a Decision via `/log-decision`,
+or summarized into a Knowledge Base entry via `/knowledge add` or the next
+`/market-scan` run.
 
 ## Skills
 
 ### Plugin-exported skills (in `skills/`)
 
 - `/fetch-context` — fetches live product context from Notion (decisions,
-  personas, backlog, signals). Foundation skill used by other PM skills.
+  personas, backlog, recent Signals). Foundation skill used by other PM
+  skills.
 - `/write-prd` — writes a PRD using a 6-section framework, auto-hydrated
   with live Notion context.
 - `/evaluate-opportunity` — scores an opportunity on 5 dimensions (Market,
   Competitive, Founder Fit, Feasibility, Strategic Fit) with Explore/Park/Kill.
-- `/market-scan <product>` — scans the competitive landscape for a product,
-  discovering competitors, recent launches, funding signals, and customer
-  sentiment.
+- `/market-scan <product>` — scans the competitive landscape for a product
+  and dual-writes findings to Notion: durable synthesis to Knowledge Base
+  (`Market Landscape` category, append-only dated sections) and
+  time-stamped findings to the Signals database.
 - `/memory-review` — reviews memory files, identifies stale entries, and
   proposes archival to keep memory lean and relevant.
 - `/break-down` — decomposes a PRD into kanban-ready work items using JTBD
   framing, WIP limits, and pull-based flow.
 - `/weekly-review` — portfolio-level weekly operating rhythm: what shipped,
-  what's blocked, what's next.
+  what's blocked, what's next. Surfaces Action Required signals and pending
+  decision outcomes.
 - `/log-decision` — logs a product decision to Notion with structured
   metadata (product, type, status, impact).
+- `/log-signal` — logs a time-stamped observation to the Notion Signals
+  database (user feedback, competitive move, market signal, technical
+  constraint, or internal learning) with an optional Action Required flag.
 - `/knowledge` — fetches, stores, and reviews structured knowledge in
-  Notion (People, Reference, Research). Inspired by local knowledge
-  directories but backed by Notion as the data layer.
+  Notion (People, Reference, Research, Market Landscape). Inspired by local
+  knowledge directories but backed by Notion as the data layer.
 - `/tasks` — surfaces active tasks from the Notion backlog with sprint-
   style formatting (in progress, waiting on, up next). Runs at session
   start by default.
@@ -323,10 +428,10 @@ agent.
 Every skill follows a four-phase execution pattern:
 
 1. **Hydration** — Identify the current product from the host repo's
-   CLAUDE.md. Fetch Notion context (decisions, personas, backlog, signals)
-   as needed. Summarize context to the user before proceeding. For internal
-   skills not tied to a product (e.g., pm-digest), hydration means loading
-   memory and scanning existing capabilities instead.
+   CLAUDE.md. Fetch Notion context (decisions, personas, backlog, recent
+   Signals) as needed. Summarize context to the user before proceeding.
+   For internal skills not tied to a product (e.g., pm-digest), hydration
+   means loading memory and scanning existing capabilities instead.
 2. **Framework** — Apply a domain-specific, opinionated structure (scoring
    rubric, template, decomposition rules, etc.). The framework is the core
    intellectual property of the skill. It must be concrete and produce a
@@ -433,12 +538,18 @@ Rules:
 
 Memory is a two-layer system:
 
-1. **Notion (primary)** — Product-specific decisions and insights live in
-   the shared Decisions database, filtered by Product. This is the source
-   of truth.
+1. **Notion (primary)** — The three context databases are the source of
+   truth, each with a distinct role per the **DB Routing Rubric** above:
+   - **Decisions** holds commitments the PM has made.
+   - **Signals** holds time-stamped observations (user feedback, competitive
+     moves, market signals, technical constraints, internal learnings).
+   - **Knowledge Base** holds durable, synthesized understanding (people,
+     reference, research, market landscapes).
+   All three are filtered by Product.
 2. **Local files (secondary)** — `.claude/memory/shared.md` stores
    cross-agent learnings and user preferences. It also serves as a
-   fallback when Notion MCP is unavailable.
+   fallback when Notion MCP is unavailable — Signals or Decisions writes
+   that fail should be mirrored here in structured format for later sync.
 
 **Key properties:**
 

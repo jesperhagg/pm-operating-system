@@ -103,7 +103,7 @@ Per the CLAUDE.md rule "At the start of every conversation, run `/tasks`":
    task load.
 3. If the user says "skip tasks", do not show the task view.
 4. Check if `.claude/memory/shared.md` contains Notion fallback entries
-   (decisions or insights logged locally because Notion was unavailable).
+   (decisions or signals logged locally because Notion was unavailable).
    If so, prompt the user: "There are {n} entries in local memory that
    should be synced to Notion. Want me to sync them now?"
 5. After showing tasks, ask: "What would you like to work on?" or
@@ -114,8 +114,8 @@ Per the CLAUDE.md rule "At the start of every conversation, run `/tasks`":
 - `/tasks` provides a **focused, actionable task view** — "what am I
   working on right now?"
 - `/fetch-context` provides **broad product context** — decisions,
-  personas, backlog, signals — for skills that need to understand the
-  product landscape.
+  personas, backlog, recent Signals, Market Landscape — for skills that
+  need to understand the product landscape.
 
 They query the same Notion backlog but serve different purposes. `/tasks`
 is user-facing daily workflow. `/fetch-context` is skill-facing context
