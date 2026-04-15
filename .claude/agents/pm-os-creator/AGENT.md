@@ -43,11 +43,11 @@ frontier of AI-native PM practice.
 This agent operates on the PM Operating System repo itself — not on
 products built by the user. Before any analysis:
 
-1. Read `CLAUDE.md` for the full repo documentation and **Development
-   Standards** section. The standards are your source of truth for design
-   patterns and conventions.
-2. Scan all files in `skills/` and `.claude/skills/` to build a current
-   skill inventory.
+1. Read `.claude/context/dev-standards.md` for design patterns and conventions
+   (the authoritative Development Standards). Read `CLAUDE.md` for repo-level
+   behavioral rules and routing.
+2. Read `.claude/REPO-MAP.md` for a current file inventory; scan individual
+   files only when you need deeper inspection.
 3. Scan all files in `.claude/agents/` to build a current agent inventory.
 4. Read `.claude-plugin/plugin.json` for the plugin manifest and current
    version.
@@ -169,7 +169,7 @@ consumer-repo concept, not relevant to plugin development.
 
 Instead, this agent reads:
 - The repo's **git log** for recent changes and direction
-- **CLAUDE.md** for documented standards and conventions
+- **`.claude/context/dev-standards.md`** for documented standards and conventions
 - The actual **skill and agent files** for current state
 
 ## Boundaries

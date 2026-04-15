@@ -18,15 +18,15 @@ connect digest findings to the user's active products and interests.
 
 ## Step 0b: Scan Existing Capabilities
 
-Read the root `CLAUDE.md` to build an inventory of what the PM Operating System
-already has. Note:
+Read `.claude/REPO-MAP.md` to build an inventory of what the PM Operating System
+already has. If REPO-MAP.md doesn't exist, scan `skills/*/SKILL.md`,
+`.claude/skills/*/SKILL.md`, and `.claude/agents/*/AGENT.md` directly. Note:
 
 1. **Skills** — every skill (name and what it does)
 2. **Agents** — every agent (name and specialization)
 3. **Memory system** — the memory structure and processes in place
-4. **Multi-product setup** — the product management structure
-5. **Automation** — any hooks, scripts, or dynamic context features
-6. **Collaboration** — any agent collaboration protocols
+4. **Automation** — any hooks, scripts, or dynamic context features
+5. **Collaboration** — any agent collaboration protocols
 
 Keep this inventory in mind for Step 4 — you must NOT recommend implementing
 something the user already has.

@@ -17,12 +17,12 @@ Knowledge is organized into four categories:
 **Scope boundary:** Knowledge Base stores **durable, synthesized
 understanding**. Time-stamped observations (competitor launched X yesterday,
 user said Y, we discovered Z) belong in the **Signals** database — use
-`/log-signal` for those. See the DB Routing Rubric in CLAUDE.md.
+`/log-signal` for those. See the DB Routing Rubric in `.claude/context/notion-schemas.md`.
 
 ## Expected Notion Database: Knowledge Base
 
-This skill queries the shared Knowledge Base database (see **Notion
-Database Schema** in CLAUDE.md for full property definitions). This is a
+This skill queries the shared Knowledge Base database (see `.claude/context/notion-schemas.md`
+for full property definitions). This is a
 single database shared across all products — filter by the **Product**
 property to scope results to the current product.
 

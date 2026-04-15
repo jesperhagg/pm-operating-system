@@ -11,8 +11,8 @@ the user always begins with visibility into their current work.
 
 ## Expected Notion Database: Task Management
 
-This skill queries the shared Task Management database (see **Notion
-Database Schema** in CLAUDE.md for full property definitions). This is a
+This skill queries the shared Task Management database (see `.claude/context/notion-schemas.md`
+for full property definitions). This is a
 single database shared across all products — always filter by the
 **Product** property matching the current product identity.
 

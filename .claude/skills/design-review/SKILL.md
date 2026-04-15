@@ -15,7 +15,7 @@ Run `/design-review` before committing changes to any of these paths:
 - `skills/*/SKILL.md` — exported skill definitions
 - `.claude/skills/*/SKILL.md` — internal skill definitions
 - `.claude/agents/*/AGENT.md` — agent definitions
-- `CLAUDE.md` (Development Standards section) — design conventions
+- `.claude/context/dev-standards.md` — design conventions
 - `.claude-plugin/plugin.json` — plugin manifest
 
 You can also run it proactively at any point during a design session to
@@ -31,7 +31,7 @@ get early feedback from pm-os-creator before finalizing changes.
 
 1. Run `git diff --stat` to identify which files have been modified.
 2. Run `git diff` on each modified file that falls within the review
-   scope (skills, agents, CLAUDE.md, plugin.json).
+   scope (skills, agents, `.claude/context/dev-standards.md`, plugin.json).
 3. If no changes are staged or unstaged in the review scope, report
    "No changes in scope for design review" and exit.
 
@@ -39,7 +39,7 @@ get early feedback from pm-os-creator before finalizing changes.
 
 Invoke the `pm-os-creator` agent with the following brief:
 
-1. The agent must read `CLAUDE.md` (Development Standards section) as
+1. The agent must read `.claude/context/dev-standards.md` as
    its rubric source of truth.
 2. The agent must scan the current skill and agent inventory to
    understand the existing patterns.
@@ -69,7 +69,7 @@ The pm-os-creator evaluates each changed file against these checks:
 - **Boundaries** — Explicit, with redirects to real agents/skills?
 - **Consistency** — Does it match the patterns of other agents in the repo?
 
-### For CLAUDE.md (Development Standards changes)
+### For dev-standards.md (Development Standards changes)
 
 - **Backwards compatibility** — Do existing skills and agents still comply
   with the updated standards?
