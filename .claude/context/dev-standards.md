@@ -3,39 +3,25 @@
 ## File Conventions
 
 - Plugin-exported skills live in `skills/<skill-name>/SKILL.md`
-- Internal skills live in `.claude/skills/<skill-name>/SKILL.md`
-- Agents live in `.claude/agents/<agent-name>/AGENT.md`
+- Internal skills (plugin-dev only) live in `.claude/skills/<skill-name>/SKILL.md`
+- Agents live in `agents/<agent-name>/AGENT.md` (top-level — exported to consumer repos)
 - Plugin manifest lives in `.claude-plugin/plugin.json`
 - Marketplace listing lives in `.claude-plugin/marketplace.json`
 - MCP config template lives in `.mcp.json.example`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
 
-## PM OS Creator Authority
+## Architecture — Skills-First
 
-**The `pm-os-creator` agent is the lead architect for this repo. Its
-architectural recommendations take precedence over ad-hoc analysis.**
+**Skills are self-sufficient. Agents are lightweight chat personas.**
 
-When working on this repo (not a consumer repo), follow these rules:
-
-- **Design work:** For ANY modification to agent definitions, skill
-  definitions, plugin architecture, or Development Standards, consult
-  `pm-os-creator` FIRST. It must lead the design — do not bypass it
-  with generic exploration or independent synthesis.
-- **Analysis work:** When analyzing the repo's structure, patterns, or
-  gaps, route through `pm-os-creator` as the primary analyst. Use
-  Explore agents to gather raw data, but `pm-os-creator` interprets
-  the findings and makes the architectural call.
-- **Review gate:** Before committing changes to files in `skills/`,
-  `.claude/skills/`, `.claude/agents/`, or `CLAUDE.md` Development
-  Standards, run `/design-review` to get pm-os-creator's sign-off.
-- **Override:** Only the user (Jesper) can override a pm-os-creator
-  recommendation. If you disagree with its architectural call, present
-  both perspectives to the user and let them decide.
-
-This exists because the pm-os-creator has the full context of the plugin's
-design patterns, conventions, and consistency requirements. Bypassing it
-leads to drift.
+- Skills own their methodology. They do not delegate reasoning to agents.
+  If a skill needs a framework, the framework is embedded in SKILL.md.
+- Agents do not orchestrate workflows. They do not hydrate Notion. They
+  do not spawn peers. They do not write files. They respond as a chat
+  persona — worldview, principles, pushback.
+- If you find yourself writing "the agent will..." in a skill, stop.
+  Rewrite the step so the skill does it itself.
 
 ## Skill Design Pattern
 
@@ -59,7 +45,41 @@ Every skill follows a four-phase execution pattern:
    must be contextual (not a generic menu) and reference the skill name
    with slash-command syntax. Only suggest skills that actually exist.
 
-## Notion Integration Rules
+## Agent Design Pattern — Lightweight Chat Persona
+
+Agents are 40–70 line chat personas. No orchestrator machinery.
+
+**Required section order:**
+
+1. Frontmatter (`name`, `description`)
+2. **Persona** — one paragraph. Grounded in a real mental model (e.g.,
+   "YC partner + McKinsey EM", "Linear/Vercel Lead PM"). Not a generic
+   "helpful advisor."
+3. **Decision Principles** — 3–5 bullets. What this agent optimizes for
+   when faced with a tradeoff.
+4. **Challenge Style** — 2–4 bullets. How the agent pushes back (tone,
+   cadence, what it demands from the user).
+5. **What I Push Back On** — 5–8 specific, quotable anti-patterns. Each
+   is a concrete behavior the agent flags, not a category.
+6. **Out of Scope** — one-line note. What the agent won't try to do
+   (defers to skills, other agents, or the user).
+
+**Forbidden sections (these are orchestrator drift):**
+
+- Objectives (Primary / Success / Failure)
+- Proactive Checks
+- Product Context / Repo Context hydration blocks
+- Capabilities (When / What I Do / Output / Follow-up)
+- Output Format templates
+- Collaboration Protocol (scratchpad, handoffs)
+- Memory Protocol (Notion writes, quality signals)
+- Boundaries with redirect tables
+
+**Why:** Skills own methodology, hydration, output, and memory. Agents
+respond in-chat conversationally. If an agent needs Notion context, the
+user invokes a skill first.
+
+## Notion Integration Rules (Skills Only)
 
 - Notion is the source of truth for all product data. Never fabricate or
   assume product context.
@@ -72,6 +92,8 @@ Every skill follows a four-phase execution pattern:
   `.claude/memory/shared.md` with structured format.
 - Tavily unavailability degrades gracefully: skip web-sourced sections and
   note the limitation.
+- **Agents do NOT call Notion MCP.** If you need Notion context during a
+  conversation, invoke the relevant skill first (e.g., `/fetch-context`).
 
 ## Multi-Mode Skill Design
 
@@ -83,40 +105,6 @@ When a skill manages a Notion resource, it may have multiple modes:
 - Default mode should be the most common read operation.
 - Modes share the same Notion database schema section.
 - Each mode has its own step-by-step procedure.
-
-## Agent Design Conventions
-
-Standard section order for AGENT.md files:
-
-1. Frontmatter (name, description)
-2. Identity paragraph
-3. Tone and Behavior
-4. Objectives (Primary Objective, Success Looks Like, Failure Looks Like)
-5. Proactive Checks (data-driven conditions assessed during hydration)
-6. Product Context (or Repo Context for internal agents)
-7. Capabilities (structured as: When, What I Do, Output, Follow-up skills)
-8. Anti-Patterns to Call Out
-9. Output Format
-10. Collaboration Protocol
-11. Memory Protocol
-12. Boundaries
-
-Rules:
-- Every product-facing agent must include the Product Context block (read
-  host CLAUDE.md, fetch from Notion, ask if ambiguous).
-- Every product-facing agent must include Objectives that define a
-  measurable outcome the agent works toward, not just a response style.
-- Every product-facing agent must include Proactive Checks — data-driven
-  conditions assessed against Notion context during hydration, surfaced as
-  "Before we dive in, I noticed..." observations before responding.
-- Collaboration Protocol is always one-hop, uses
-  `.claude/scratchpad/handoff.md`, requires scoped questions and
-  attribution.
-- Memory Protocol always reads before analysis and writes (with user
-  permission) after significant interactions. Includes quality signal
-  capture (user accepts/rejects/modifies recommendations).
-- Boundaries explicitly redirect to the correct agent/skill for
-  out-of-scope requests.
 
 ## Product-Agnostic Principle
 
@@ -132,13 +120,15 @@ Rules:
 
 - `skills/<name>/SKILL.md` — exported via plugin, available in consumer
   repos.
-- `.claude/skills/<name>/SKILL.md` — internal, only available in this repo.
-- `.claude/agents/<name>/AGENT.md` — internal, agents are not
-  plugin-exported.
-- When adding a new exported skill, also update `.claude-plugin/plugin.json`.
-- When adding a new internal skill or agent, do NOT update plugin.json.
+- `agents/<name>/AGENT.md` — exported via plugin, available in consumer
+  repos.
+- `.claude/skills/<name>/SKILL.md` — internal (plugin-dev only), only
+  available in this repo.
+- Plugin manifest (`.claude-plugin/plugin.json`) gets a version bump when
+  exported skills or agents change materially. Skills and agents are
+  auto-discovered from their directories — no enumeration required.
 - Marketplace listing (`.claude-plugin/marketplace.json`) is updated only
-  for significant releases.
+  for significant releases or description changes.
 
 ## Frontmatter Conventions
 
@@ -178,3 +168,10 @@ Memory is a two-layer system:
 - If Notion fallback entries accumulate in `shared.md`, the `/tasks`
   session-start check will prompt syncing them back to Notion.
 - The `memory-review` skill curates these files in consumer repos.
+
+## Pre-Commit Review
+
+Before committing changes to `skills/`, `.claude/skills/`, `agents/`,
+`.claude/context/dev-standards.md`, or `.claude-plugin/plugin.json`, run
+`/design-review` for an advisory check. It's advisory, not blocking —
+Jesper makes the call.
