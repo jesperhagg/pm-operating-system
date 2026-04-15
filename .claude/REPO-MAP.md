@@ -1,12 +1,12 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-15 | 11 exported skills / 3 internal skills / 5 agents_
+_Last generated: 2026-04-15 | 11 exported skills / 4 internal skills / 5 agents_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
 | `skills/` | Exported skills (available in consumer repos via plugin) | 11 |
-| `.claude/skills/` | Internal skills (this repo only) | 3 |
+| `.claude/skills/` | Internal skills (this repo only) | 4 |
 | `.claude/agents/` | Agents | 5 |
 | `.claude/context/` | Lazy-loaded reference docs | 2 |
 | `.claude-plugin/` | plugin.json (manifest), marketplace.json | 2 |
@@ -14,44 +14,44 @@ _Last generated: 2026-04-15 | 11 exported skills / 3 internal skills / 5 agents_
 ## Exported Skills — `skills/*/SKILL.md`
 
 | Skill | Path | Lines | Purpose |
-|-------|------|-------|---------|
-| /fetch-context | `skills/fetch-context/SKILL.md` | 74 | Foundation skill — hydrates product context from Notion |
-| /write-prd | `skills/write-prd/SKILL.md` | 62 | 6-section PRD template |
-| /evaluate-opportunity | `skills/evaluate-opportunity/SKILL.md` | 55 | Scores on 5 dimensions → Explore/Park/Kill |
-| /market-scan | `skills/market-scan/SKILL.md` | 344 | Competitive scan, dual-writes KB + Signals |
-| /break-down | `skills/break-down/SKILL.md` | 88 | Decomposes PRD → kanban tasks via JTBD |
-| /weekly-review | `skills/weekly-review/SKILL.md` | 124 | Portfolio operating rhythm, surfaces action-required signals |
-| /log-decision | `skills/log-decision/SKILL.md` | 81 | Writes commitment to Notion Decisions DB |
-| /log-signal | `skills/log-signal/SKILL.md` | 137 | Writes observation to Notion Signals DB |
-| /knowledge | `skills/knowledge/SKILL.md` | 245 | Fetch/Store/Review structured knowledge in Notion KB |
-| /tasks | `skills/tasks/SKILL.md` | 141 | Session-start backlog view; sprint-style formatting |
-| /memory-review | `skills/memory-review/SKILL.md` | 77 | Curates `.claude/memory/shared.md` for staleness |
+|-------|------|-------|----------|
+| /break-down | `skills/break-down/SKILL.md` | 88 | Break down a PRD or feature idea into kanban-ready work items. Fetches |
+| /evaluate-opportunity | `skills/evaluate-opportunity/SKILL.md` | 55 | Evaluate a startup or product opportunity against strategic criteria.  |
+| /fetch-context | `skills/fetch-context/SKILL.md` | 74 | Fetch live product context from Notion. Foundation skill used by other |
+| /knowledge | `skills/knowledge/SKILL.md` | 245 | Fetch, store, and review structured knowledge in Notion. Manages three |
+| /log-decision | `skills/log-decision/SKILL.md` | 81 | Log a product decision to Notion and local memory. Captures the decisi |
+| /log-signal | `skills/log-signal/SKILL.md` | 137 | Log a time-stamped observation to the Notion Signals database. Capture |
+| /market-scan | `skills/market-scan/SKILL.md` | 344 | Scan the competitive landscape for a product, discovering active compe |
+| /memory-review | `skills/memory-review/SKILL.md` | 77 | Review memory files across all products and shared memory, identify st |
+| /tasks | `skills/tasks/SKILL.md` | 141 | Surface active tasks from the Notion backlog with sprint-style formatt |
+| /weekly-review | `skills/weekly-review/SKILL.md` | 124 | Run a portfolio-level weekly review across all products. Reads memory, |
+| /write-prd | `skills/write-prd/SKILL.md` | 62 | Write a Product Requirements Document using proven PM frameworks. Auto |
 
 ## Internal Skills — `.claude/skills/*/SKILL.md`
 
 | Skill | Path | Lines | Purpose |
-|-------|------|-------|---------|
-| /pm-digest | `.claude/skills/pm-digest/SKILL.md` | 154 | Daily PM + AI news digest via Tavily |
-| /design-review | `.claude/skills/design-review/SKILL.md` | 123 | Pre-commit review gate via pm-os-creator |
-| /skill-eval | `.claude/skills/skill-eval/SKILL.md` | 224 | Audits skill/agent against design standards |
-| /generate-repo-map | `.claude/skills/generate-repo-map/SKILL.md` | — | Regenerates this file |
+|-------|------|-------|----------|
+| /design-review | `.claude/skills/design-review/SKILL.md` | 123 | Pre-ship review gate that runs pm-os-creator analysis on pending chang |
+| /generate-repo-map | `.claude/skills/generate-repo-map/SKILL.md` | 114 | Regenerate .claude/REPO-MAP.md by scanning current skills, agents, and |
+| /pm-digest | `.claude/skills/pm-digest/SKILL.md` | 154 | Search the web for the latest PM + AI news, discussions, and best prac |
+| /skill-eval | `.claude/skills/skill-eval/SKILL.md` | 224 | Evaluate a skill or agent against PM OS design standards. Grades on pa |
 
 ## Agents — `.claude/agents/*/AGENT.md`
 
 | Agent | Path | Lines | Domain |
 |-------|------|-------|--------|
-| startup-advisor | `.claude/agents/startup-advisor/AGENT.md` | 313 | GTM, moat, unit economics, prioritization |
-| product-sculptor | `.claude/agents/product-sculptor/AGENT.md` | 297 | MVP scoping, feature cuts, backlogs |
-| growth-engineer | `.claude/agents/growth-engineer/AGENT.md` | 312 | Distribution, funnels, landing page positioning |
-| systems-architect | `.claude/agents/systems-architect/AGENT.md` | 338 | System design, APIs, infrastructure, AI/LLM |
-| pm-os-creator | `.claude/agents/pm-os-creator/AGENT.md` | 189 | Meta-architect for this repo |
+| growth-engineer | `.claude/agents/growth-engineer/AGENT.md` | 312 | Distribution-first growth specialist. Advisory by default, produces co |
+| pm-os-creator | `.claude/agents/pm-os-creator/AGENT.md` | 189 | Meta-agent for developing the PM Operating System repo. Expert on Clau |
+| product-sculptor | `.claude/agents/product-sculptor/AGENT.md` | 297 | Minimalist PM who sculpts MVPs to their atomic core. Obsessed with Tim |
+| startup-advisor | `.claude/agents/startup-advisor/AGENT.md` | 313 | Analytical startup advisor (YC + McKinsey lens). Challenges assumption |
+| systems-architect | `.claude/agents/systems-architect/AGENT.md` | 338 | Senior technical architect for product systems. Architecture only —  |
 
 ## Reference Docs — `.claude/context/`
 
 | File | Lines | Load when |
-|------|-------|-----------|
-| `notion-schemas.md` | 152 | Writing to Notion (Decisions, Signals, KB, Tasks) |
-| `dev-standards.md` | 162 | Authoring or reviewing skills, agents, plugin infrastructure |
+|------|-------|----------|
+| `dev-standards.md` | 180 | Authoring or reviewing skills, agents, plugin infrastructure |
+| `notion-schemas.md` | 142 | Writing to Notion (Decisions, Signals, KB, Tasks) |
 
 ## When You Need To...
 
