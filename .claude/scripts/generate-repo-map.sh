@@ -11,7 +11,7 @@ DATE=$(date +%Y-%m-%d)
 # Counts
 EXPORTED_COUNT=$(find "$REPO_ROOT/skills" -name "SKILL.md" -maxdepth 2 2>/dev/null | wc -l | tr -d ' ')
 INTERNAL_COUNT=$(find "$REPO_ROOT/.claude/skills" -name "SKILL.md" -maxdepth 2 2>/dev/null | wc -l | tr -d ' ')
-AGENT_COUNT=$(find "$REPO_ROOT/.claude/agents" -name "AGENT.md" -maxdepth 2 2>/dev/null | wc -l | tr -d ' ')
+AGENT_COUNT=$(find "$REPO_ROOT/agents" -name "AGENT.md" -maxdepth 2 2>/dev/null | wc -l | tr -d ' ')
 CONTEXT_COUNT=$(find "$REPO_ROOT/.claude/context" -name "*.md" -maxdepth 1 2>/dev/null | wc -l | tr -d ' ')
 
 # Extract description from YAML frontmatter (first "description:" line, unquoted, truncated)
@@ -32,7 +32,7 @@ get_desc() {
   printf '|------|----------|-------|\n'
   printf '| `skills/` | Exported skills (available in consumer repos via plugin) | %s |\n' "$EXPORTED_COUNT"
   printf '| `.claude/skills/` | Internal skills (this repo only) | %s |\n' "$INTERNAL_COUNT"
-  printf '| `.claude/agents/` | Agents | %s |\n' "$AGENT_COUNT"
+  printf '| `agents/` | Exported chat-persona agents (available in consumer repos) | %s |\n' "$AGENT_COUNT"
   printf '| `.claude/context/` | Lazy-loaded reference docs | %s |\n' "$CONTEXT_COUNT"
   printf '| `.claude-plugin/` | plugin.json (manifest), marketplace.json | 2 |\n'
 
@@ -56,15 +56,15 @@ get_desc() {
     printf '| /%s | `.claude/skills/%s/SKILL.md` | %s | %s |\n' "$name" "$name" "$lines" "$desc"
   done < <(find "$REPO_ROOT/.claude/skills" -name "SKILL.md" -maxdepth 2 | sort)
 
-  printf '\n## Agents — `.claude/agents/*/AGENT.md`\n\n'
+  printf '\n## Agents — `agents/*/AGENT.md`\n\n'
   printf '| Agent | Path | Lines | Domain |\n'
   printf '|-------|------|-------|--------|\n'
   while IFS= read -r agent_md; do
     name=$(basename "$(dirname "$agent_md")")
     lines=$(wc -l < "$agent_md" | tr -d ' ')
     desc=$(get_desc "$agent_md")
-    printf '| %s | `.claude/agents/%s/AGENT.md` | %s | %s |\n' "$name" "$name" "$lines" "$desc"
-  done < <(find "$REPO_ROOT/.claude/agents" -name "AGENT.md" -maxdepth 2 | sort)
+    printf '| %s | `agents/%s/AGENT.md` | %s | %s |\n' "$name" "$name" "$lines" "$desc"
+  done < <(find "$REPO_ROOT/agents" -name "AGENT.md" -maxdepth 2 | sort)
 
   printf '\n## Reference Docs — `.claude/context/`\n\n'
   printf '| File | Lines | Load when |\n'
@@ -85,13 +85,13 @@ get_desc() {
   printf '|------|-------------------|\n'
   printf '| Modify an exported skill | `skills/<name>/SKILL.md` |\n'
   printf '| Modify an internal skill | `.claude/skills/<name>/SKILL.md` |\n'
-  printf '| Modify an agent | `.claude/agents/<name>/AGENT.md` |\n'
-  printf '| Update plugin export list | `.claude-plugin/plugin.json` |\n'
+  printf '| Modify an agent | `agents/<name>/AGENT.md` |\n'
+  printf '| Update plugin version | `.claude-plugin/plugin.json` |\n'
   printf '| Check Notion DB schemas + routing rubric | `.claude/context/notion-schemas.md` |\n'
   printf '| Check skill design patterns + conventions | `.claude/context/dev-standards.md` |\n'
-  printf '| Add a new exported skill | New `skills/<name>/SKILL.md` + add entry to `plugin.json` |\n'
-  printf '| Add a new internal skill | New `.claude/skills/<name>/SKILL.md` (no plugin.json update) |\n'
-  printf '| Add a new agent | New `.claude/agents/<name>/AGENT.md` (no plugin.json update) |\n'
+  printf '| Add a new exported skill | New `skills/<name>/SKILL.md` (auto-discovered) |\n'
+  printf '| Add a new internal skill | New `.claude/skills/<name>/SKILL.md` |\n'
+  printf '| Add a new agent | New `agents/<name>/AGENT.md` (auto-discovered) |\n'
   printf '| Update marketplace listing | `.claude-plugin/marketplace.json` (major releases only) |\n'
 } > "$OUTPUT"
 

@@ -1,123 +1,125 @@
 ---
-description: "Pre-ship review gate that runs pm-os-creator analysis on pending changes to agent definitions, skill definitions, or plugin architecture. Ensures consistency and quality before commit."
+description: "Advisory review of pending changes to skills, agents, or plugin infrastructure. Flags pattern drift, inconsistency, and product-agnosticism violations. No hard blocks — recommendations only."
 ---
 
 # Design Review
 
-A review gate for changes to the PM Operating System repo. This skill
-invokes the `pm-os-creator` agent's architectural analysis on pending
-changes before they are committed. It is the enforcement mechanism for
-the pm-os-creator's authority over repo design.
+Advisory pre-ship review for PM Operating System changes. Surfaces issues against the design standards so you can decide whether to ship, revise, or defer. **This skill is advisory — it does not block commits.** You make the call.
 
 ## When to Run
 
 Run `/design-review` before committing changes to any of these paths:
-- `skills/*/SKILL.md` — exported skill definitions
-- `.claude/skills/*/SKILL.md` — internal skill definitions
-- `.claude/agents/*/AGENT.md` — agent definitions
+- `skills/*/SKILL.md` — exported skills
+- `.claude/skills/*/SKILL.md` — internal skills
+- `agents/*/AGENT.md` — agents
 - `.claude/context/dev-standards.md` — design conventions
 - `.claude-plugin/plugin.json` — plugin manifest
 
-You can also run it proactively at any point during a design session to
-get early feedback from pm-os-creator before finalizing changes.
+Also useful mid-design to sanity-check a draft before you go further.
 
 ## Trigger Phrases
 
-- "review these changes", "design review", "check before committing"
-- "does this look right?", "is this consistent?"
-- Automatically suggested before any commit touching the paths above
+- "review these changes", "design review", "check this before I commit"
+- "does this look right?", "is this consistent?", "sanity check this skill/agent"
 
-## Step 1: Gather the Changes
+## Step 1: Gather Changes
 
-1. Run `git diff --stat` to identify which files have been modified.
-2. Run `git diff` on each modified file that falls within the review
-   scope (skills, agents, `.claude/context/dev-standards.md`, plugin.json).
-3. If no changes are staged or unstaged in the review scope, report
-   "No changes in scope for design review" and exit.
+1. Run `git diff --stat HEAD` to list modified files.
+2. Run `git diff HEAD` on files within review scope.
+3. If nothing is in scope (only README, scripts, etc.), say "No design-scope changes detected" and exit.
+4. Also list any new, untracked files in scope — `git status --short` catches these.
 
-## Step 2: Load pm-os-creator Context
+## Step 2: Load Rubrics
 
-Invoke the `pm-os-creator` agent with the following brief:
+Read as reference:
+- `.claude/context/dev-standards.md` — authoritative design standards
+- `.claude/REPO-MAP.md` — current inventory (to cross-check follow-ups reference real skills)
 
-1. The agent must read `.claude/context/dev-standards.md` as
-   its rubric source of truth.
-2. The agent must scan the current skill and agent inventory to
-   understand the existing patterns.
-3. The agent must review the specific changes (provided as diffs).
+## Step 3: Review Each Changed File
 
-## Step 3: pm-os-creator Review
+### Skills (SKILL.md)
 
-The pm-os-creator evaluates each changed file against these checks:
+Check the four-phase pattern (Hydration → Framework → Output → Follow-ups):
 
-### For Skills (SKILL.md changes)
+| Check | What to flag |
+|---|---|
+| **Pattern compliance** | Skill skips a phase. Hydration missing for product-context skills. No follow-ups. |
+| **Frontmatter** | Missing `description`. Description not action-oriented or not one sentence. |
+| **Framework depth** | Reads like generic advice. No concrete rubric, template, or decomposition rule that produces a specific output every time. |
+| **Output spec** | No explicit destination (conversation / file / Notion). Output format not shown. |
+| **Notion integration** | No session caching. No fallback when Notion unavailable. Writes without user confirmation. |
+| **Follow-ups** | Generic menu instead of contextual. References skills that don't exist in REPO-MAP. |
+| **Product-agnosticism** | Hardcoded product name, persona, or terminology. Would fail for a different product with different Notion data. |
 
-- **Pattern compliance** — Does it follow hydration-framework-output-follow-ups?
-- **Frontmatter** — Description present, one sentence, action-oriented?
-- **Notion integration** — Proper MCP usage, caching, fallback handling?
-- **Follow-ups** — Reference real, existing skills?
-- **Product-agnosticism** — Would it work for any product with Notion data?
-- **Consistency** — Does it match the patterns of other skills in the repo?
+### Agents (AGENT.md) — new lightweight format
 
-### For Agents (AGENT.md changes)
+Check against the chat-persona format (no orchestrator machinery):
 
-- **Section order** — Does it follow the standard section order from
-  Development Standards?
-- **Frontmatter** — Both name and description present?
-- **Collaboration protocol** — Correct hop limit, scratchpad usage,
-  consultation matrix references real agents?
-- **Memory protocol** — Reads before analysis, writes with permission?
-- **Boundaries** — Explicit, with redirects to real agents/skills?
-- **Consistency** — Does it match the patterns of other agents in the repo?
+| Check | What to flag |
+|---|---|
+| **Section order** | Required order: Persona → Decision Principles → Challenge Style → What I Push Back On → Out of Scope. |
+| **Frontmatter** | Missing `name` or `description`. |
+| **Length** | Target 40–70 lines. If an agent is over ~100 lines, it's probably creeping back toward orchestrator shape. |
+| **Forbidden sections** | Objectives, Proactive Checks, Product Context, Capabilities (When/What/Output/Follow-up), Output Format templates, Collaboration Protocol, Memory Protocol, Boundaries redirect tables. If any appear, flag as drift back to orchestrator pattern. |
+| **Persona specificity** | Generic "you are a helpful PM advisor." Not grounded in a real mental model (e.g., "YC partner + McKinsey EM"). |
+| **Push-back concreteness** | Anti-patterns too vague to trigger pushback. Should be specific, quotable one-liners. |
+| **No Notion hydration** | Agent tries to fetch Notion context itself. That's the user's job (via skills). |
 
-### For dev-standards.md (Development Standards changes)
+### dev-standards.md
 
-- **Backwards compatibility** — Do existing skills and agents still comply
-  with the updated standards?
-- **Completeness** — Are all impacted sections updated consistently?
-- **No drift** — Does the change maintain the product-agnostic principle?
+| Check | What to flag |
+|---|---|
+| **Backwards compatibility** | Existing skills/agents no longer comply with the updated standards. List which ones break. |
+| **Completeness** | Related sections not updated (e.g., file conventions changed but agent design section still references old paths). |
+| **Product-agnostic drift** | Change introduces product-specific assumptions. |
 
-### For Plugin Manifest (plugin.json changes)
+### plugin.json
 
-- **Version bump** — Is the version updated appropriately?
-- **Skill list** — Does it match the actual files in `skills/`?
+| Check | What to flag |
+|---|---|
+| **Version bump** | Exported skills added/changed without version bump. |
+| **Skill list drift** | Manifest doesn't match actual files in `skills/`. |
+| **Agent export** | If `agents/` is now exported, manifest reflects it. |
 
-## Step 4: Output the Verdict
+## Step 4: Output (Advisory Format)
 
 ```
-# Design Review
-
-## Verdict: [SHIP / REVISE / BLOCK]
+# Design Review — {date}
 
 ## Files Reviewed
-- [file path] — [status: OK / Issues found]
+- {path} — {lines changed} — {one-line status}
 
-## Issues (if any, ordered by severity)
-1. [BLOCK] [issue + specific fix]
-2. [REVISE] [issue + specific fix]
-3. [NOTE] [observation, non-blocking]
+## Observations
+*(ordered by impact, not by severity enum)*
+
+### 1. {Observation title}
+**File:** {path}
+**Issue:** {what's off and why it matters}
+**Suggested fix:** {specific edit}
+
+### 2. ...
 
 ## Consistency Check
-- [Any pattern drift detected across the library]
+- {Cross-file drift: e.g., 3 skills follow X pattern, this new one does Y}
+- {Or: "No cross-file inconsistencies detected."}
 
 ## Recommendation
-[One sentence: what to do before committing]
+{One to three sentences. Ship as-is? Revise first? Defer? Your call — here's the tradeoff.}
 ```
 
-### Verdict Definitions
-
-- **SHIP** — Changes are consistent with design standards. No issues found.
-  Proceed with commit.
-- **REVISE** — Minor issues found that should be fixed before committing.
-  None are architectural violations, but they reduce quality or consistency.
-- **BLOCK** — Architectural violation detected (broken pattern, product-
-  specific data hardcoded, inconsistent section order, missing required
-  sections). Must fix before committing.
+**No SHIP/REVISE/BLOCK enum.** Present observations + a recommendation; the user decides.
 
 ## Step 5: Follow-ups
 
-After the review:
-- If SHIP → proceed with commit
-- If REVISE → fix the listed issues, then run `/design-review` again
-- If BLOCK → fix the architectural violations, then run `/design-review` again
-- Optionally run `/skill-eval <target>` for a deeper 6-dimension evaluation
-  of a specific skill or agent
+Contextual to what was reviewed:
+
+- If framework depth flagged on a skill → `/skill-eval {skill-name}` for the full 6-dimension evaluation
+- If agent drift toward orchestrator shape → re-read the agent section of `dev-standards.md` and trim
+- If plugin.json changes → confirm version bump intent
+- If nothing flagged → "Looks consistent. Ship when ready."
+
+## Edge Cases
+
+- **No git history yet** (fresh clone, new file never committed): review the file contents as-is against the rubrics. Skip the `git diff` step.
+- **Large diff (10+ files)**: review in batches by type — all skills first, then all agents, then standards/manifest. Summarize per batch.
+- **File deleted** (e.g., removing an agent): note the deletion, check if anything references it (follow-ups in skills, routing in CLAUDE.md, REPO-MAP entries). Flag dangling references.

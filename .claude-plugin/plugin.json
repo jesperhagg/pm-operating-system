@@ -1,5 +1,5 @@
 {
   "name": "pm-os",
-  "version": "1.3.0",
-  "description": "PM operating system skills for solo founder startup product management. Skills encode PM frameworks and query Notion via MCP for live product context."
+  "version": "2.0.0",
+  "description": "PM operating system for solo founders. Self-sufficient skills encode PM methodology (evaluate, PRD, break-down, experiments, pricing, sunset, weekly review, market scan, memory). Lightweight chat agents (startup-advisor, product-sculptor, growth-engineer, systems-architect) provide ad-hoc strategic pushback. Skills query Notion via MCP for live product context."
 }
