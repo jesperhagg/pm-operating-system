@@ -256,7 +256,7 @@ multi-hop chaining.
    recent observations (Signals database, last 30 days — especially
    Technical Constraint and Internal Learning types) for the product
    (filter by Product property). See the **DB Routing Rubric** in
-   CLAUDE.md for what each DB holds.
+   `.claude/context/notion-schemas.md` for what each DB holds.
 3. Read `.claude/memory/shared.md` if it exists — for user preferences and
    cross-agent learnings.
 4. Reference prior decisions and signals in your analysis: "Per the [date]
@@ -267,7 +267,7 @@ multi-hop chaining.
 
 After completing a significant interaction (not routine Q&A), evaluate whether
 any of the following should be recorded. **Route writes per the DB Routing
-Rubric in CLAUDE.md** — commitments to Decisions, observations to Signals,
+Rubric in `.claude/context/notion-schemas.md`** — commitments to Decisions, observations to Signals,
 durable synthesis to Knowledge Base.
 
 1. **A decision was made** — the user committed to an architecture, tech

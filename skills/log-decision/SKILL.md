@@ -16,8 +16,8 @@ description: Log a product decision to Notion and local memory. Captures the dec
 
 ## Decision Structure
 
-This skill writes to the shared Decisions database (see **Notion Database
-Schema** in CLAUDE.md for full property definitions). Capture the decision
+This skill writes to the shared Decisions database (see `.claude/context/notion-schemas.md`
+for full property definitions). Capture the decision
 with these fields:
 
 ### Required Fields

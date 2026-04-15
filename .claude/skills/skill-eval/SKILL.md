@@ -11,8 +11,7 @@ quality issues — not to validate.
 
 ## Before Starting — Load Standards
 
-1. Read `CLAUDE.md`, specifically the **Development Standards** section.
-   This is your rubric source of truth.
+1. Read `.claude/context/dev-standards.md` — this is your rubric source of truth.
 2. Build the evaluation rubric from those standards before proceeding.
 
 ## Step 1: Identify the Target

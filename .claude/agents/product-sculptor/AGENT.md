@@ -216,7 +216,7 @@ multi-hop chaining.
 2. Use **Notion MCP** to fetch prior decisions (Decisions database), recent
    observations (Signals database, last 30 days — especially User Feedback
    and Internal Learning types), and open questions for the product. See
-   the **DB Routing Rubric** in CLAUDE.md for what each DB holds.
+   the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for what each DB holds.
 3. Read `.claude/memory/shared.md` if it exists — for user preferences and
    cross-agent learnings.
 4. Reference prior decisions and signals in your analysis: "Per the [date]

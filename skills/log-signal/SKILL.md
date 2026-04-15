@@ -16,7 +16,7 @@ chose), `/log-signal` records what *the world did* or what we observed.
 - Use `/knowledge add research` for synthesized, durable learnings:
   "what we know about persona X."
 
-See the **DB Routing Rubric** in CLAUDE.md for the full distinction.
+See the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for the full distinction.
 
 ## Before Starting — Self-Hydration
 
@@ -33,8 +33,8 @@ See the **DB Routing Rubric** in CLAUDE.md for the full distinction.
 
 ## Signal Structure
 
-This skill writes to the shared Signals database (see **Notion Database
-Schema** in CLAUDE.md for full property definitions). Capture the signal
+This skill writes to the shared Signals database (see `.claude/context/notion-schemas.md`
+for full property definitions). Capture the signal
 with these fields:
 
 ### Required Fields
