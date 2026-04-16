@@ -53,19 +53,9 @@ claude plugin marketplace add <path-or-github-url>
 | `product-sculptor` | Sculpts MVPs to atomic core, defines JTBD backlogs |
 | `growth-engineer` | Distribution-first growth strategy, pre-launch funnels, copy |
 | `systems-architect` | System design, APIs, infrastructure, security, AI/LLM systems |
-| `pm-os-creator` | Meta-agent for developing this repo itself (internal) |
 
 Agents collaborate via a one-hop protocol — any agent can consult one
 other agent for cross-domain input, using a shared scratchpad for handoff.
-
-## Internal development tools
-
-These are only available when working in this repo directly:
-
-- `/pm-digest` — Daily digest of PM + AI news and trends.
-- `pm-os-creator` agent — Architectural guidance for designing new skills,
-  auditing consistency, and keeping the plugin at the frontier of PM AI
-  tooling.
 
 ## Setup
 
@@ -101,20 +91,3 @@ moves, market signals, technical constraints, internal learnings) with an
 Action Required flag. Used by `/log-signal`, `/market-scan`,
 `/fetch-context`, `/weekly-review`, and all agents.
 
-## Structure
-
-```
-skills/                    # Exported skills (available in consumer repos)
-.claude/
-  skills/                  # Internal skills (this repo only)
-    pm-digest/
-  agents/                  # Agent definitions (not exported)
-    startup-advisor/
-    product-sculptor/
-    growth-engineer/
-    systems-architect/
-    pm-os-creator/
-.claude-plugin/
-  plugin.json              # Plugin manifest
-  marketplace.json         # Marketplace listing
-```
