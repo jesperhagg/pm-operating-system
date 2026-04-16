@@ -1,12 +1,12 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-15 | 15 exported skills / 4 internal skills / 4 agents_
+_Last generated: 2026-04-16 | 15 exported skills / 2 internal skills / 4 agents_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
 | `skills/` | Exported skills (available in consumer repos via plugin) | 15 |
-| `.claude/skills/` | Internal skills (this repo only) | 4 |
+| `.claude/skills/` | Internal skills (this repo only) | 2 |
 | `agents/` | Exported chat-persona agents (available in consumer repos) | 4 |
 | `.claude/context/` | Lazy-loaded reference docs | 2 |
 | `.claude-plugin/` | plugin.json (manifest), marketplace.json | 2 |
@@ -35,10 +35,8 @@ _Last generated: 2026-04-15 | 15 exported skills / 4 internal skills / 4 agents_
 
 | Skill | Path | Lines | Purpose |
 |-------|------|-------|----------|
-| /design-review | `.claude/skills/design-review/SKILL.md` | 125 | Advisory review of pending changes to skills, agents, or plugin infras |
 | /generate-repo-map | `.claude/skills/generate-repo-map/SKILL.md` | 114 | Regenerate .claude/REPO-MAP.md by scanning current skills, agents, and |
 | /pm-digest | `.claude/skills/pm-digest/SKILL.md` | 154 | Search the web for the latest PM + AI news, discussions, and best prac |
-| /skill-eval | `.claude/skills/skill-eval/SKILL.md` | 224 | Evaluate a skill or agent against PM OS design standards. Grades on pa |
 
 ## Agents — `agents/*/AGENT.md`
 
@@ -53,7 +51,7 @@ _Last generated: 2026-04-15 | 15 exported skills / 4 internal skills / 4 agents_
 
 | File | Lines | Load when |
 |------|-------|----------|
-| `dev-standards.md` | 177 | Authoring or reviewing skills, agents, plugin infrastructure |
+| `dev-standards.md` | 185 | Authoring or reviewing skills, agents, plugin infrastructure |
 | `notion-schemas.md` | 142 | Writing to Notion (Decisions, Signals, KB, Tasks) |
 
 ## When You Need To...

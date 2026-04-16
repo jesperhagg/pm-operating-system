@@ -169,9 +169,17 @@ Memory is a two-layer system:
   session-start check will prompt syncing them back to Notion.
 - The `memory-review` skill curates these files in consumer repos.
 
-## Pre-Commit Review
+## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
 Before committing changes to `skills/`, `.claude/skills/`, `agents/`,
-`.claude/context/dev-standards.md`, or `.claude-plugin/plugin.json`, run
-`/design-review` for an advisory check. It's advisory, not blocking —
-Jesper makes the call.
+`dev-standards.md`, or `plugin.json`:
+
+1. **Diff check** — `git diff --stat HEAD` to confirm scope of changes.
+2. **Standards compliance** — verify changed files against the relevant
+   section above (Skill Design Pattern, Agent Design Pattern, etc.).
+3. **Cross-file consistency** — if multiple skills/agents changed, check
+   they follow the same patterns. If a new skill is added, confirm
+   follow-ups in other skills reference it correctly.
+4. **REPO-MAP** — run `/generate-repo-map` if files were added or removed.
+
+Advisory — Jesper makes the call.

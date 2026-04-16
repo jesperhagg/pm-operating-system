@@ -111,4 +111,4 @@ Changes since last map: added {skill/agent name}, removed {name}
 
 - If this was run after adding a new exported skill: "Don't forget to update
   `.claude-plugin/plugin.json` with the new skill entry."
-- If structural changes were made: "Run `/design-review` before committing."
+- If structural changes were made: "Verify against the pre-commit checklist in `dev-standards.md` before committing."
