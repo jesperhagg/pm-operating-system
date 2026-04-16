@@ -62,10 +62,6 @@ other agent for cross-domain input, using a shared scratchpad for handoff.
 
 These are only available when working in this repo directly:
 
-- `/skill-eval` — Evaluates any skill or agent against the repo's design
-  standards. Scores on 6 dimensions (pattern compliance, completeness,
-  specificity, actionability, context grounding, composability). Supports
-  batch evaluation across the full plugin.
 - `/pm-digest` — Daily digest of PM + AI news and trends.
 - `pm-os-creator` agent — Architectural guidance for designing new skills,
   auditing consistency, and keeping the plugin at the frontier of PM AI
@@ -112,7 +108,6 @@ skills/                    # Exported skills (available in consumer repos)
 .claude/
   skills/                  # Internal skills (this repo only)
     pm-digest/
-    skill-eval/
   agents/                  # Agent definitions (not exported)
     startup-advisor/
     product-sculptor/

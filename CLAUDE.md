@@ -88,7 +88,7 @@ After a session with a significant decision, prompt me to `/log-decision`. Never
 
 For dev work on this repo — modifying skills, agents, or plugin infrastructure:
 
-- Run `/design-review` before committing to `skills/`, `.claude/skills/`, `agents/`, `dev-standards.md`, or `plugin.json`. It's advisory — I make the call.
+- Before committing, verify changes against the pre-commit checklist in `dev-standards.md`.
 - Dev standards: `.claude/context/dev-standards.md`
 - Notion DB schemas + routing rubric: `.claude/context/notion-schemas.md`
 - Repo structure and file index: `.claude/REPO-MAP.md`
