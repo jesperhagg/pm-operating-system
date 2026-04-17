@@ -21,31 +21,58 @@ See the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for what ea
 3. Extract the product name
 4. If no Repo Identity section exists, ask the user which product they're working on
 
+## How to Resolve Notion Database IDs
+
+Before querying any Notion database, resolve its ID using this lookup order:
+
+1. **Check `.claude/context/notion-routing.md`** in the consumer repo.
+   - Find the row where "Logical Name" matches the database you need
+     (Decisions, Signals, Knowledge Base, or Task Management).
+   - Extract the 32-character ID from the "Notion Database ID" column.
+   - Use `notion-fetch` with that explicit ID + `Product` filter for direct,
+     reliable access.
+
+2. **If the file does not exist or the relevant row is missing**, fall back to
+   `notion-search` with the logical name and product filter (current behavior).
+   - Note once per session: "No routing table found — using search-based
+     discovery. Copy `.claude/context/notion-routing.example.md` to
+     `.claude/context/notion-routing.md` and fill in your database IDs for
+     faster, rename-proof fetches."
+
+Never hardcode database IDs in skill instructions. Always resolve at runtime
+from the routing table or fall back to search.
+
 ## What to Fetch from Notion
 
 All products share the same Notion databases (see `.claude/context/notion-schemas.md`
 for schema). Always filter by the **Product** property matching the
 identified product.
 
-Use the Notion MCP integration to search for and retrieve:
+Resolve each database ID via the routing table above, then fetch:
 
 ### Decisions (always fetch)
-- Search Notion for pages related to "decisions" for the identified product
-- Filter to active/recent decisions (last 90 days preferred)
+- Resolve the **Decisions** database ID from the routing table, then fetch
+  pages filtered by `Product = {product}`, limited to active/recent decisions
+  (last 90 days preferred). Fall back to searching "decisions" if no ID found.
 - Summarize: what was decided, when, and any constraints imposed
 
 ### Personas (fetch when skill needs user context)
-- Search Notion for the target persona associated with this product
+- Resolve the **Knowledge Base** database ID from the routing table, then
+  fetch entries with `Category = People AND Product contains {product}`.
+  Fall back to searching "persona {product}" if no ID found.
 - Extract: who they are, key pain points, jobs to be done
 
 ### Backlog priorities (fetch when skill needs scope context)
-- Search Notion for the product backlog
+- Resolve the **Task Management** database ID from the routing table, then
+  fetch pages filtered by `Product = {product}`, sorted by Priority.
+  Fall back to searching the product backlog if no ID found.
 - Focus on top 10 items by priority
 - Note current phase (Explore, Validate, Build, Scale)
 
 ### Recent Signals (fetch when skill needs market or user-feedback context)
-- Query the **Signals** database, filtered by `Product = {product}` and
-  `Date` within the last 30 days (extend to 60 days if thin).
+- Resolve the **Signals** database ID from the routing table, then fetch
+  pages filtered by `Product = {product}` and `Date` within the last 30 days
+  (extend to 60 days if thin). Fall back to searching "signals {product}".
 - Group by `Type`: User Feedback, Technical Constraint, Market Signal,
   Competitive Move, Internal Learning.
 - Highlight any with `Action Required = true`.
@@ -53,8 +80,9 @@ Use the Notion MCP integration to search for and retrieve:
   database (type = `Scope` or `Go-to-Market`).
 
 ### Market Landscape (fetch when skill needs competitive context)
-- Query the **Knowledge Base** for entries with
-  `Category = Market Landscape AND Product contains {product}`.
+- Resolve the **Knowledge Base** database ID from the routing table, then
+  fetch entries with `Category = Market Landscape AND Product contains {product}`.
+  Fall back to searching "market landscape {product}" if no ID found.
 - Surface the most recent `## Scan —` sub-section from the matching entry.
 - If the latest scan is older than 30 days, note it and suggest running
   `/market-scan` to refresh.

@@ -1,5 +1,5 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-16 | 15 exported skills / 2 internal skills / 4 agents_
+_Last generated: 2026-04-17 | 15 exported skills / 2 internal skills / 4 agents_
 
 ## Structure
 
@@ -8,7 +8,7 @@ _Last generated: 2026-04-16 | 15 exported skills / 2 internal skills / 4 agents_
 | `skills/` | Exported skills (available in consumer repos via plugin) | 15 |
 | `.claude/skills/` | Internal skills (this repo only) | 2 |
 | `agents/` | Exported chat-persona agents (available in consumer repos) | 4 |
-| `.claude/context/` | Lazy-loaded reference docs | 2 |
+| `.claude/context/` | Lazy-loaded reference docs | 3 |
 | `.claude-plugin/` | plugin.json (manifest), marketplace.json | 2 |
 
 ## Exported Skills — `skills/*/SKILL.md`
@@ -19,7 +19,7 @@ _Last generated: 2026-04-16 | 15 exported skills / 2 internal skills / 4 agents_
 | /define-persona | `skills/define-persona/SKILL.md` | 185 | Define a customer persona grounded in real evidence — not demographi |
 | /design-experiment | `skills/design-experiment/SKILL.md` | 167 | Structure a fast, falsifiable experiment to validate a hypothesis. For |
 | /evaluate-opportunity | `skills/evaluate-opportunity/SKILL.md` | 139 | Evaluate a startup or product opportunity against strategic criteria.  |
-| /fetch-context | `skills/fetch-context/SKILL.md` | 74 | Fetch live product context from Notion. Foundation skill used by other |
+| /fetch-context | `skills/fetch-context/SKILL.md` | 102 | Fetch live product context from Notion. Foundation skill used by other |
 | /knowledge | `skills/knowledge/SKILL.md` | 245 | Fetch, store, and review structured knowledge in Notion. Manages three |
 | /log-decision | `skills/log-decision/SKILL.md` | 81 | Log a product decision to Notion and local memory. Captures the decisi |
 | /log-signal | `skills/log-signal/SKILL.md` | 137 | Log a time-stamped observation to the Notion Signals database. Capture |
@@ -52,6 +52,7 @@ _Last generated: 2026-04-16 | 15 exported skills / 2 internal skills / 4 agents_
 | File | Lines | Load when |
 |------|-------|----------|
 | `dev-standards.md` | 185 | Authoring or reviewing skills, agents, plugin infrastructure |
+| `notion-routing.example.md` | 33 | On demand |
 | `notion-schemas.md` | 142 | Writing to Notion (Decisions, Signals, KB, Tasks) |
 
 ## When You Need To...
