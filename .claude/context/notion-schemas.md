@@ -1,5 +1,9 @@
 # Notion Database Schema
 
+> **Database IDs:** Store your workspace's Notion database IDs in
+> `.claude/context/notion-routing.md` (copy from `notion-routing.example.md`).
+> Skills resolve IDs from there at runtime — see `fetch-context/SKILL.md`.
+
 All products share a single instance of each database. Skills and agents
 filter by the **Product** property using the product name from the host
 repo's `CLAUDE.md`. When no product identity is available, query across

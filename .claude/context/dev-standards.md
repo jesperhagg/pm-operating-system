@@ -95,6 +95,32 @@ user invokes a skill first.
 - **Agents do NOT call Notion MCP.** If you need Notion context during a
   conversation, invoke the relevant skill first (e.g., `/fetch-context`).
 
+## Notion Routing Table Convention
+
+Consumer repos maintain `.claude/context/notion-routing.md` (based on the
+plugin template at `.claude/context/notion-routing.example.md`) mapping
+logical database names to their Notion database IDs.
+
+**When present:** Skills resolve IDs from the table and use `notion-fetch`
+with the explicit ID + Product filter. This is faster and immune to database
+renames.
+
+**When absent:** Skills fall back to `notion-search` with descriptive terms
+(current behavior). A one-time setup hint is shown per session.
+
+**The lookup pattern** is defined in `skills/fetch-context/SKILL.md` under
+"How to Resolve Notion Database IDs". All skills that query Notion follow
+this pattern.
+
+**Security:** Database IDs are not credentials — the API token is the secret,
+and it lives in `.mcp.json` (gitignored). The routing table is safe to commit.
+Gitignore it only if org policy requires enumeration hygiene.
+
+**Consumer repo setup:**
+1. Copy `.claude/context/notion-routing.example.md` → `.claude/context/notion-routing.md`
+2. Open each database in Notion → Share → Copy link → extract the 32-char ID
+3. Fill in the table and commit
+
 ## Multi-Mode Skill Design
 
 When a skill manages a Notion resource, it may have multiple modes:
