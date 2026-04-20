@@ -1,11 +1,11 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-20 | 15 exported skills / 3 internal skills / 4 agents_
+_Last generated: 2026-04-20 | 18 exported skills / 3 internal skills / 4 agents_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `skills/` | Exported skills (available in consumer repos via plugin) | 15 |
+| `skills/` | Exported skills (available in consumer repos via plugin) | 18 |
 | `.claude/skills/` | Internal skills (this repo only) | 3 |
 | `agents/` | Exported chat-persona agents (available in consumer repos) | 4 |
 | `.claude/context/` | Lazy-loaded reference docs | 2 |
@@ -22,9 +22,12 @@ _Last generated: 2026-04-20 | 15 exported skills / 3 internal skills / 4 agents_
 | /fetch-context | `skills/fetch-context/SKILL.md` | 98 | Fetch live product context from the consumer repo's data/ files. Found |
 | /knowledge | `skills/knowledge/SKILL.md` | 259 | Fetch, store, and review structured knowledge in data/knowledge/. Mana |
 | /log-decision | `skills/log-decision/SKILL.md` | 88 | Log a product decision to data/decisions/ as a markdown file with stru |
+| /log-interaction | `skills/log-interaction/SKILL.md` | 142 | Append a dated interaction (email, reply, call, demo, meeting) to an e |
+| /log-lead | `skills/log-lead/SKILL.md` | 137 | Log a new prospect or customer to data/leads/ as a markdown file with  |
 | /log-signal | `skills/log-signal/SKILL.md` | 135 | Log a time-stamped observation to data/signals/active.md as an H3 sect |
 | /market-scan | `skills/market-scan/SKILL.md` | 338 | Scan the competitive landscape for the product, discovering active com |
-| /memory-review | `skills/memory-review/SKILL.md` | 162 | Review memory across data/ (Decisions, Signals, Knowledge, Personas, T |
+| /memory-review | `skills/memory-review/SKILL.md` | 173 | Review memory across data/ (Decisions, Signals, Knowledge, Personas, L |
+| /pipeline | `skills/pipeline/SKILL.md` | 159 | Read-only view of the sales pipeline from data/leads/. Groups leads by |
 | /pricing | `skills/pricing/SKILL.md` | 211 | Structure a pricing decision. Picks a value metric, sets an anchor pri |
 | /sunset-product | `skills/sunset-product/SKILL.md` | 204 | Guided kill-or-park workflow for a product or bet that isn't working.  |
 | /tasks | `skills/tasks/SKILL.md` | 139 | Surface active tasks from data/tasks/active.md with sprint-style forma |
@@ -52,7 +55,7 @@ _Last generated: 2026-04-20 | 15 exported skills / 3 internal skills / 4 agents_
 
 | File | Lines | Load when |
 |------|-------|----------|
-| `data-schemas.md` | 286 | Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks) |
+| `data-schemas.md` | 383 | Writing to data/ (Decisions, Signals, Knowledge, Personas, Leads, Tasks) |
 | `dev-standards.md` | 180 | Authoring or reviewing skills, agents, plugin infrastructure |
 
 ## When You Need To...

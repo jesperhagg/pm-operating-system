@@ -27,44 +27,59 @@ no fallback buffers.
     ├── personas/
     │   ├── index.md                  # One-line-per-persona scannable manifest
     │   └── {slug}.md                 # JTBD + evidence per persona
+    ├── leads/
+    │   ├── index.md                  # Pipeline board: one row per lead
+    │   ├── {slug}.md                 # One file per lead (prospect / customer in pipeline)
+    │   └── archive/
+    │       └── {slug}.md             # Won/Lost leads moved here by /memory-review
     └── tasks/
         ├── active.md                 # Now / Next / Later H2 sections; checkboxes + HTML-comment metadata
         └── done.md                   # Flat chronological completed-task list
 ```
 
 `index.md` files live only where they pay off: `decisions/` (cited
-constantly by PRDs, experiments) and `personas/` (referenced by PRDs,
-pricing, opportunity evaluations). Knowledge subfolders skip indexes —
-glob + frontmatter is enough and avoids drift.
+constantly by PRDs, experiments), `personas/` (referenced by PRDs,
+pricing, opportunity evaluations), and `leads/` (the pipeline board is
+the primary read pattern). Knowledge subfolders skip indexes — glob +
+frontmatter is enough and avoids drift.
 
 ## DB Routing Rubric
 
 Three orthogonal axes distinguish the entity types. Every skill must
 follow this rubric when writing data.
 
-| Axis | Decisions | Signals | Knowledge / Personas |
-|---|---|---|---|
-| **What is it?** | A commitment we make | An observation of the world | A synthesized understanding we maintain |
-| **Time shape** | Point in time, immutable | Time-stamped stream | Living document, updated over time |
-| **Agency** | We chose this | The world did this (or we noticed it) | We compiled this |
-| **Read pattern** | "What did we decide about X?" | "What changed recently?" | "What do I know about X?" |
-| **Lifecycle** | Active → Superseded/Archived (frontmatter) | Active → Archived (file move) | Continually refreshed |
+| Axis | Decisions | Signals | Knowledge / Personas | Leads |
+|---|---|---|---|---|
+| **What is it?** | A commitment we make | An observation of the world | A synthesized understanding we maintain | A tracked relationship under active cultivation |
+| **Time shape** | Point in time, immutable | Time-stamped stream | Living document, updated over time | Hybrid — living frontmatter + append-only interaction log |
+| **Agency** | We chose this | The world did this (or we noticed it) | We compiled this | Mixed — we act, they react |
+| **Read pattern** | "What did we decide about X?" | "What changed recently?" | "What do I know about X?" | "What's in my pipeline?" / "Where does X stand?" |
+| **Lifecycle** | Active → Superseded/Archived (frontmatter) | Active → Archived (file move) | Continually refreshed | Uncontacted → … → Won/Lost → archived (file move) |
+
+**Note on Leads:** Leads are a hybrid shape. Pipeline state lives in
+frontmatter (status, last_contact, next_action) so the index and skills
+can filter without reading bodies. Interaction history lives in an
+append-only `## Interactions` section in each lead file (H3 per event,
+newest first) — signal-style, but scoped to the lead.
 
 **Decision tree — where does this information go?**
 
 ```
-Is this a commitment WE are making (scope, positioning, pricing, kill/park)?
-├── YES → data/decisions/YYYY-MM-DD-slug.md
-└── NO → Is this a time-stamped observation of something that happened
-         (competitor moved, user said X, we discovered constraint Y)?
-    ├── YES → data/signals/active.md (append H3)
-    │         └── Does it also change our durable understanding of a topic?
-    │             └── YES → Also update the relevant data/knowledge/ entry
-    └── NO  → Is this durable, re-usable knowledge (who a person is,
-              what the competitive landscape for X looks like, what
-              research has taught us, who the persona is)?
-        ├── YES → data/knowledge/{category}/{slug}.md  (or data/personas/{slug}.md for personas)
-        └── NO  → Probably doesn't need to be logged. Discard.
+Is this about a specific prospect/customer we're cultivating
+(contact details, outreach event, pipeline status change)?
+├── YES → data/leads/ (new lead → /log-lead; interaction → /log-interaction)
+└── NO → Is this a commitment WE are making (scope, positioning, pricing, kill/park)?
+    ├── YES → data/decisions/YYYY-MM-DD-slug.md
+    └── NO → Is this a time-stamped observation of something that happened
+             (competitor moved, user said X, we discovered constraint Y)?
+        ├── YES → data/signals/active.md (append H3)
+        │         └── Does it also change our durable understanding of a topic?
+        │             └── YES → Also update the relevant data/knowledge/ entry
+        └── NO  → Is this durable, re-usable knowledge (who a person is,
+                  what the competitive landscape for X looks like, what
+                  research has taught us, who the persona is)?
+            ├── YES → data/knowledge/{category}/{slug}.md  (or data/personas/{slug}.md for personas)
+            └── NO  → Probably doesn't need to be logged. Discard.
 ```
 
 ## File conventions
@@ -149,6 +164,86 @@ evidence: [../signals/active.md#three-tasks-missed-2026-03-02, ../signals/active
 (Body is the 6-field persona template defined in /define-persona.)
 ```
 
+### Lead entry — `data/leads/<slug>.md`
+
+```markdown
+---
+title: Jane Doe — Acme Co
+company: Acme Co
+contact:
+  name: Jane Doe
+  role: Head of Product
+  email: jane@acme.co
+  linkedin: linkedin.com/in/janedoe
+status: Contacted            # Uncontacted | Contacted | Responded | Qualified | Demo | Negotiating | Won | Lost
+source: cold-email           # cold-email | referral | inbound | event | linkedin | other
+fit: High                    # High | Medium | Low
+persona: solo-pm             # slug ref to data/personas/ (optional, empty string if none)
+last_contact: 2026-04-18     # date of most recent interaction
+next_action: "Send follow-up if no reply by 2026-04-25"
+next_action_date: 2026-04-25 # null if no dated action pending
+tags: [pm-tools, series-a]
+---
+
+## Interactions
+<!-- Newest first. Append-only. One H3 per event. -->
+
+### 2026-04-18 — Sent cold email
+<!-- channel:email outcome:sent -->
+
+Pitched PM OS for solo PMs. Referenced her tweet on context-switching pain.
+
+### 2026-04-12 — Identified via LinkedIn
+<!-- channel:research outcome:added -->
+
+Saw post on managing 3 products. Strong ICP match.
+
+## Notes
+
+Free-form context: pain points, budget signals, objections raised,
+decision-makers, personal details worth remembering.
+```
+
+**Field rules:**
+
+- `status` — the 8-state pipeline above. Skills may write any string but
+  the index formatter sorts by this ordering.
+- `source` — how the lead entered the pipeline. One of: `cold-email`,
+  `referral`, `inbound`, `event`, `linkedin`, `other`.
+- `fit` — gut-calibrated ICP match. Update freely as you learn more.
+- `persona` — slug of a persona in `data/personas/`, or empty string.
+  Enables "which personas are converting" analysis.
+- `last_contact` — date of the most recent Interactions entry. Skills
+  bump this automatically when `/log-interaction` appends an entry.
+- `next_action_date` — used by `/pipeline` to surface overdue follow-ups.
+
+**Interaction H3 conventions:**
+
+- Heading format: `### YYYY-MM-DD — {Short verb-led headline}`.
+- Metadata comment: `channel:{email|call|linkedin|demo|meeting|research|other} outcome:{sent|replied|no-reply|booked|cancelled|added|other}`.
+- Body: 1–3 sentences of what happened and what you learned.
+- **Newest first** — prepend inside `## Interactions`, mirroring the
+  ordering rule in `signals/active.md`.
+
+### Leads index — `data/leads/index.md`
+
+Compact pipeline board. One row per active lead, grouped/sorted by
+`status` (pipeline order), then by `next_action_date` asc.
+
+```markdown
+# Leads
+
+| Status | Company | Contact | Fit | Last Contact | Next Action | File |
+|---|---|---|---|---|---|---|
+| Demo | Acme Co | Jane Doe | High | 2026-04-18 | Demo 2026-04-22 | acme-co.md |
+| Contacted | Beta Inc | Sam Lee | Med | 2026-04-15 | FU by 2026-04-22 | beta-inc.md |
+| Responded | Gamma | Kit Ono | High | 2026-04-19 | Book call | gamma.md |
+```
+
+The writer skills (`/log-lead`, `/log-interaction`) are responsible for
+keeping the index in sync. Won/Lost leads move to `archive/` via
+`/memory-review` and are dropped from `index.md`.
+
 ### Task entries — `data/tasks/active.md` and `done.md`
 
 Markdown checkboxes with HTML-comment metadata. Grouped by H2 in
@@ -175,7 +270,7 @@ Markdown checkboxes with HTML-comment metadata. Grouped by H2 in
 - [x] Interview 3 design agencies <!-- priority:now done:2026-04-18 -->
 ```
 
-### Index files — `data/decisions/index.md`, `data/personas/index.md`
+### Index files — `data/decisions/index.md`, `data/personas/index.md`, `data/leads/index.md`
 
 Compact one-line-per-row scannable tables. Updated by the writer skill
 when a new entry is created. Format:
@@ -275,12 +370,14 @@ When a skill needs the latest scan, it reads only the most recent
 
 ## Token-efficiency rules for skills
 
-1. **Read indexes first.** Decisions and personas have `index.md`.
+1. **Read indexes first.** Decisions, personas, and leads have `index.md`.
    Glob the index, pick the rows you need, then open targeted files.
 2. **Read frontmatter, not bodies, when filtering.** `Grep -B 0 -A 8`
    the frontmatter block. Only open the body when the entry passes the
    filter.
 3. **Use `data/signals/active.md` for recent signals.** Never load the
-   archive unless explicitly looking up history.
+   archive unless explicitly looking up history. Same rule for
+   `data/leads/archive/` — only open when the user asks about a
+   historical Won/Lost lead.
 4. **Cache nothing across skill invocations.** Files are cheap; staleness
    is dangerous. Always read fresh.
