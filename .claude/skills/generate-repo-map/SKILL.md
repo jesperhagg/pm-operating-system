@@ -31,7 +31,7 @@ Run these four scans in parallel:
 4. **Context files** — list all `.claude/context/*.md` files. For each, record:
    - Filename
    - Line count
-   - When to load (infer from filename: notion-schemas → "Writing to Notion",
+   - When to load (infer from filename: data-schemas → "Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks)",
      dev-standards → "Authoring or reviewing skills/agents")
 
 ## Step 2: Build the Map
@@ -84,7 +84,7 @@ _Last generated: {today's date} | {N} exported skills / {M} internal skills / {K
 | Modify an internal skill | `.claude/skills/<name>/SKILL.md` |
 | Modify an agent | `.claude/agents/<name>/AGENT.md` |
 | Update plugin export list | `.claude-plugin/plugin.json` |
-| Check Notion DB schemas + routing rubric | `.claude/context/notion-schemas.md` |
+| Check data layer schemas (frontmatter, file shapes, routing rubric) | `.claude/context/data-schemas.md` |
 | Check skill design patterns + conventions | `.claude/context/dev-standards.md` |
 | Add a new exported skill | New `skills/<name>/SKILL.md` + add entry to `plugin.json` |
 | Add a new internal skill | New `.claude/skills/<name>/SKILL.md` (no plugin.json update) |

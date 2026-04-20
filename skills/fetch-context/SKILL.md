@@ -1,102 +1,98 @@
 ---
-description: Fetch live product context from Notion. Foundation skill used by other PM skills to self-hydrate with decisions, personas, backlog, recent Signals, and Market Landscape entries.
+description: Fetch live product context from the consumer repo's data/ files. Foundation skill used by other PM skills to self-hydrate with decisions, personas, backlog, recent Signals, and Market Landscape entries.
 ---
 
 # Fetch Product Context
 
-This is a utility skill that fetches live context from Notion for the current product. Other skills call on this pattern before doing their work.
+This is a utility skill that loads product context from the consumer
+repo's `data/` directory. Other skills call this pattern before doing
+their work.
 
-**What this skill reads from:**
-- **Decisions** database — commitments the PM has made
-- **Signals** database — recent time-stamped observations
-- **Knowledge Base** — personas, reference, research, Market Landscape
-- **Task Management** — active backlog and in-progress work
+**What this skill reads:**
+- `data/decisions/` — commitments the PM has made
+- `data/signals/active.md` — recent time-stamped observations
+- `data/knowledge/` — people, reference, research, market-landscape
+- `data/personas/` — defined customer personas
+- `data/tasks/active.md` — active backlog and in-progress work
 
-See the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for what each database holds.
+See the **DB Routing Rubric** in `.claude/context/data-schemas.md` for
+what each entity type holds.
 
 ## How to Identify the Current Product
 
 1. Read the repo's CLAUDE.md file
 2. Look for the "Repo Identity" section
 3. Extract the product name
-4. If no Repo Identity section exists, ask the user which product they're working on
+4. If no Repo Identity section exists, ask the user which product they're
+   working on. (One product per repo: the repo *is* the product.)
 
-## How to Resolve Notion Database IDs
+## How to Read Data Files
 
-Before querying any Notion database, resolve its ID using this lookup order:
-
-1. **Check `.claude/context/notion-routing.md`** in the consumer repo.
-   - Find the row where "Logical Name" matches the database you need
-     (Decisions, Signals, Knowledge Base, or Task Management).
-   - Extract the 32-character ID from the "Notion Database ID" column.
-   - Use `notion-fetch` with that explicit ID + `Product` filter for direct,
-     reliable access.
-
-2. **If the file does not exist or the relevant row is missing**, fall back to
-   `notion-search` with the logical name and product filter (current behavior).
-   - Note once per session: "No routing table found — using search-based
-     discovery. Copy `.claude/context/notion-routing.example.md` to
-     `.claude/context/notion-routing.md` and fill in your database IDs for
-     faster, rename-proof fetches."
-
-Never hardcode database IDs in skill instructions. Always resolve at runtime
-from the routing table or fall back to search.
-
-## What to Fetch from Notion
-
-All products share the same Notion databases (see `.claude/context/notion-schemas.md`
-for schema). Always filter by the **Product** property matching the
-identified product.
-
-Resolve each database ID via the routing table above, then fetch:
+The consumer repo follows the layout in `.claude/context/data-schemas.md`.
+Always read indexes before opening individual files — this keeps token
+usage bounded.
 
 ### Decisions (always fetch)
-- Resolve the **Decisions** database ID from the routing table, then fetch
-  pages filtered by `Product = {product}`, limited to active/recent decisions
-  (last 90 days preferred). Fall back to searching "decisions" if no ID found.
-- Summarize: what was decided, when, and any constraints imposed
+
+1. Read `data/decisions/index.md` (one-line-per-decision table).
+2. Filter rows by `Status = Active` and `Date` within the last 90 days
+   (extend if thin). Keep all `Status = Active` regardless of age if the
+   decision is type Positioning, Pricing, or Architecture (these are
+   long-lived constraints).
+3. Open the 3–10 most relevant decision files referenced from the index.
+4. Summarize: what was decided, when, and any constraints imposed.
+
+If `data/decisions/` does not exist, note it: *"No decisions logged yet
+for this product."*
 
 ### Personas (fetch when skill needs user context)
-- Resolve the **Knowledge Base** database ID from the routing table, then
-  fetch entries with `Category = People AND Product contains {product}`.
-  Fall back to searching "persona {product}" if no ID found.
-- Extract: who they are, key pain points, jobs to be done
+
+1. Read `data/personas/index.md`.
+2. Open the primary persona file (or all if multiple are clearly distinct).
+3. Extract: who they are, JTBD, pain, evidence strength.
+
+If `data/personas/` is empty, suggest running `/define-persona`.
 
 ### Backlog priorities (fetch when skill needs scope context)
-- Resolve the **Task Management** database ID from the routing table, then
-  fetch pages filtered by `Product = {product}`, sorted by Priority.
-  Fall back to searching the product backlog if no ID found.
-- Focus on top 10 items by priority
-- Note current phase (Explore, Validate, Build, Scale)
+
+1. Read `data/tasks/active.md`.
+2. Extract the top 10 items by priority order (Now → Next → Later H2
+   sections, in order).
+3. Note current phase from the host CLAUDE.md if specified (Explore,
+   Validate, Build, Scale).
 
 ### Recent Signals (fetch when skill needs market or user-feedback context)
-- Resolve the **Signals** database ID from the routing table, then fetch
-  pages filtered by `Product = {product}` and `Date` within the last 30 days
-  (extend to 60 days if thin). Fall back to searching "signals {product}".
-- Group by `Type`: User Feedback, Technical Constraint, Market Signal,
-  Competitive Move, Internal Learning.
-- Highlight any with `Action Required = true`.
-- Include any opportunity scoring or evaluation data from the Decisions
-  database (type = `Scope` or `Go-to-Market`).
+
+1. Grep `data/signals/active.md` for H3 headings with `date:` metadata
+   within the last 30 days (extend to 60 if thin).
+2. Group by `type` from the metadata: User Feedback, Technical Constraint,
+   Market Signal, Competitive Move, Internal Learning.
+3. Highlight any with `action_required:true`.
+4. If looking for evaluation context, also note any decisions of type
+   `Scope` or `Go-to-Market` from the decisions step.
 
 ### Market Landscape (fetch when skill needs competitive context)
-- Resolve the **Knowledge Base** database ID from the routing table, then
-  fetch entries with `Category = Market Landscape AND Product contains {product}`.
-  Fall back to searching "market landscape {product}" if no ID found.
-- Surface the most recent `## Scan —` sub-section from the matching entry.
-- If the latest scan is older than 30 days, note it and suggest running
-  `/market-scan` to refresh.
 
-## Caching Within a Session
+1. Glob `data/knowledge/market-landscape/*.md`.
+2. Pick the file matching the current product's market category (the file
+   name is typically `{market-slug}.md`).
+3. Read only the most recent `## Scan — {date}` H2 section, not the full
+   file history.
+4. If the latest scan is older than 30 days, note it and suggest running
+   `/market-scan` to refresh.
 
-If context for this product has already been fetched in this conversation, reuse it rather than re-querying Notion. Only re-fetch if the user explicitly asks for fresh context or if a different product is being discussed.
+If no Market Landscape file exists, note it: *"No prior scans on file —
+suggest running /market-scan."*
 
 ## Output
 
 Present a brief context summary to the user:
 - Product: [name]
-- Key decisions: [2-3 bullet summary]
+- Key decisions: [2-3 bullet summary, cite by file path]
 - Persona: [one-line summary]
 - Current focus: [phase + top priorities]
+- Recent signals: [count by type, highlight any action-required]
+- Market scan freshness: [date of last scan, or "none on file"]
 
-This skill can be invoked directly for a quick context briefing, or used as a foundation step by other skills.
+This skill can be invoked directly for a quick context briefing, or used
+as a foundation step by other skills.

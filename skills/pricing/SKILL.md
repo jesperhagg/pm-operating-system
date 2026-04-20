@@ -19,15 +19,15 @@ If you have no persona yet → run `/define-persona` first. Pricing without a pe
 ## Before Starting — Self-Hydration
 
 1. Identify the product being priced (read host repo's CLAUDE.md, or ask).
-2. Use Notion MCP to fetch:
-   - The primary persona (from Knowledge Base → Research → Persona page).
-   - Recent Signals (User Feedback with WTP or "too expensive" / "worth it" language).
-   - Prior pricing Decisions for this or adjacent products.
-   - Current cost-per-user estimate from any PRD or `systems-architect` consultation.
-   - Competitor pricing (from `/market-scan` or Knowledge Base → Market Landscape).
+2. Read:
+   - `data/personas/index.md` and the primary persona file at `data/personas/{slug}.md`.
+   - Grep `data/signals/active.md` for WTP or "too expensive" / "worth it" / pricing language (last 90 days).
+   - `data/decisions/index.md` — filter `Type: Pricing` (all history) and open relevant decision files.
+   - Current cost-per-user estimate from any PRD in `docs/` or prior `systems-architect` notes in `data/knowledge/reference/`.
+   - `data/knowledge/market-landscape/*.md` — most recent `## Scan —` section, looking for competitor price points.
 3. Briefly recap to the user: *"Pricing for {product}. Persona: {name}. Unit cost: {$X or unknown}. {N} competitor price points on file. Proceed?"*
 
-If Notion MCP is unavailable, halt and say so.
+If `data/personas/` is empty, halt and suggest `/define-persona` first — pricing without a persona is guessing.
 
 ## Framework — 5 Decisions
 

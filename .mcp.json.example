@@ -7,14 +7,6 @@
         "@anthropic-ai/mcp-remote@latest",
         "https://mcp.tavily.com/mcp/?tavilyApiKey=API_KEY"
       ]
-    },
-    "notion": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic-ai/mcp-remote@latest",
-        "https://mcp.notion.so/mcp/?ntn_token=API_KEY"
-      ]
     }
   }
 }

@@ -1,5 +1,5 @@
 ---
-description: Evaluate a startup or product opportunity from a solo-founder / indie-builder lens. Scores 4 dimensions (Market, Competition, Founder Fit, Feasibility) on indie-scale anchors, then generates 2–3 concrete go-to-market strategies and ranks them by likelihood of success. Fetches existing opportunity backlog and competitive landscape from Notion.
+description: Evaluate a startup or product opportunity from a solo-founder / indie-builder lens. Scores 4 dimensions (Market, Competition, Founder Fit, Feasibility) on indie-scale anchors, then generates 2–3 concrete go-to-market strategies and ranks them by likelihood of success. Hydrates from data/ before scoring.
 ---
 
 # Evaluate Opportunity
@@ -11,18 +11,18 @@ The lens: **not chasing $B markets**. Optimizing for "buildable by one person, m
 ## Before Starting — Self-Hydration
 
 1. Identify whether this is for an existing product or a new exploration (read host repo's CLAUDE.md; ask if ambiguous).
-2. Use Notion MCP to fetch:
-   - Current opportunity backlog (all products/bets)
-   - Prior evaluations or scoring for similar opportunities
-   - Competitive landscape (Knowledge Base → Market Landscape) if one exists
-   - Active Decisions about market focus or resource allocation
+2. Read:
+   - `data/tasks/active.md` — grep for opportunity-tagged items in Now/Next/Later (current bets on the table).
+   - `data/decisions/index.md` — filter rows where `Type` is Scope, Positioning, Kill/Park, or Pricing (last 180 days). Open the most relevant decision files.
+   - `data/knowledge/market-landscape/*.md` — read the most recent `## Scan — YYYY-MM-DD` section for the relevant market.
+   - Grep `data/signals/active.md` for entries from the last 60 days matching the opportunity area.
 3. Briefly summarize what's already in the portfolio before scoring the new opportunity.
 
-If Notion MCP is unavailable, halt and say so — do not score without portfolio context.
+If `data/decisions/` is empty AND `data/knowledge/market-landscape/` is empty, warn the user — scoring without any prior context is guesswork. Suggest running `/market-scan` first, or proceed with assumptions flagged explicitly.
 
 ## Scoring Framework
 
-Score each dimension 1–5 using the anchors below. **A score must cite specific evidence** (Notion Signal, KB entry, public data, or stated assumption). Unsupported scores default to the lower anchor.
+Score each dimension 1–5 using the anchors below. **A score must cite specific evidence** (signal anchor, knowledge file, public data, or stated assumption). Unsupported scores default to the lower anchor.
 
 ### 1. Market (indie-scaled)
 
@@ -138,9 +138,9 @@ Strategies should be genuinely different — varying the buyer, the channel, the
 2. {...}
 3. {...}
 
-## Suggested Notion Update
-- Add to Opportunity Backlog with status: {Pursue / Park / Kill} and the chosen strategy name.
-- Log a Decision (Type: Kill/Park) if this supersedes an active bet.
+## Suggested Follow-ups
+- Add a task to `data/tasks/active.md` for the first validation step with `priority:now`.
+- Log a Decision via `/log-decision` (Type: Kill/Park/Scope/Positioning) if this supersedes an active bet.
 ```
 
 ## Worked Example
@@ -200,4 +200,4 @@ Contextual to the recommendation:
 - **Pursue narrow** + low Feasibility → suggest consulting the **systems-architect** agent on the tech cost ceiling.
 - **Park** → `/log-decision` with Type: Park, noting the trigger to revisit.
 - **Kill** → `/log-decision` with Type: Kill, linking the evaluation as context.
-- Any verdict: suggest updating the Notion opportunity backlog with the chosen strategy name.
+- Any verdict: add the chosen strategy (or the "revisit" trigger) as a task in `data/tasks/active.md`.

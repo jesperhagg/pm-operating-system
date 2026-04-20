@@ -1,5 +1,5 @@
 ---
-description: Break down a PRD or feature idea into kanban-ready work items. Fetches current backlog from Notion and decomposes work into small, independently deliverable tasks using JTBD framing.
+description: Break down a PRD or feature idea into kanban-ready work items. Reads current backlog from data/tasks/ and decomposes work into small, independently deliverable tasks using JTBD framing.
 ---
 
 # Break Down
@@ -11,10 +11,10 @@ description: Break down a PRD or feature idea into kanban-ready work items. Fetc
    - If the user specifies a PRD file path, read it
    - If a PRD was just generated in this conversation, use it
    - If neither, ask the user what feature or idea to break down
-3. Use Notion MCP to search for and retrieve:
-   - Current backlog for this product (to avoid duplicating existing work)
-   - Active decisions that constrain implementation
-   - The target persona (to ground JTBD framing)
+3. Read:
+   - `data/tasks/active.md` — scan Now/Next/Later to avoid duplicating existing tasks.
+   - `data/decisions/index.md` — filter rows where `Type` is Scope, Architecture, or Technical and `Status` is Active (last 90 days). Open the 2–4 most relevant decision files.
+   - `data/personas/index.md` and the primary persona file (to ground JTBD framing).
 4. Briefly summarize context before proceeding
 
 ## Decomposition Framework
@@ -83,6 +83,6 @@ After generating the breakdown:
 ## After Completing
 
 Suggest the user might want to:
-- Start building the top "Pull next" item
-- Run `/log-decision` to record the scope decision in Notion
-- Consult the **product-sculptor** agent if further scope reduction is needed
+- Append the top "Pull Next" items to `data/tasks/active.md` under the Now section (using `/tasks add` or directly, with `priority:now`).
+- Run `/log-decision` if the breakdown committed to a scope choice worth recording.
+- Consult the **product-sculptor** agent if further scope reduction is needed.

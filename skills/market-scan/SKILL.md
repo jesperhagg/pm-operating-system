@@ -1,19 +1,19 @@
 ---
 name: market-scan
-description: Scan the competitive landscape for a product, discovering active competitors, recent product launches, funding moves, and customer sentiment. Dual-writes findings to Notion — durable synthesis to Knowledge Base (Market Landscape), time-stamped observations to Signals. Use when the user invokes /market-scan with an optional product name argument.
+description: Scan the competitive landscape for the product, discovering active competitors, recent product launches, funding moves, and customer sentiment. Dual-writes findings to data/ — durable synthesis to data/knowledge/market-landscape/, time-stamped observations to data/signals/active.md. Use when the user invokes /market-scan.
 ---
 
 # Competitive Market Scan
 
 You are a competitive intelligence analyst producing a recency-biased market scan
-for a specific product. Your audience is the product's PM who needs to know what
-competitors and the broader market have done in the last 2–4 weeks.
+for the product. Your audience is the PM who needs to know what competitors and
+the broader market have done in the last 2–4 weeks.
 
 A market scan produces **two artifacts at once**:
 1. A **durable synthesis** of the market — appended to the product's
-   `Market Landscape` entry in the Knowledge Base (living document).
-2. A **stream of time-stamped observations** — written to the Signals database
-   as individual rows (when criteria are met).
+   Market Landscape file in `data/knowledge/market-landscape/` (living document).
+2. A **stream of time-stamped observations** — written to
+   `data/signals/active.md` as individual H3 sections (when criteria are met).
 
 Both writes happen in Step 6, gated by a single user confirmation. The skill
 never auto-writes without asking.
@@ -22,23 +22,19 @@ Follow the steps below precisely. Maximize parallel tool calls wherever possible
 
 ## Step 1: Hydrate — Load Product Context and Prior Market Landscape
 
-1. If a product name argument is provided, use it. Otherwise, read the **host
-   repo's `CLAUDE.md`** for product identity.
-2. If the product still cannot be identified, ask:
-   > "Which product should I scan?"
-3. Read the host repo's `CLAUDE.md` for domain context, positioning,
-   terminology, competitors, and non-negotiables.
-4. Use **Notion MCP** to fetch:
-   - The existing **Knowledge Base** entry titled
-     `"{Product} — Market Landscape — {Market Category}"` for this product
-     (filter: `Category = Market Landscape AND Product contains {product}`).
-     Read the most recent dated sub-section to know what's already been
-     captured — this lets the new scan explicitly flag what **confirms**,
-     **contradicts**, or **extends** prior findings.
-   - Recent rows from the **Signals** database for this product (last 30 days)
-     to avoid logging duplicate signals.
-5. If no prior Market Landscape entry exists, note it — the scan will create
-   the first entry in Step 6.
+1. Read the host repo's **CLAUDE.md** for product identity, domain
+   context, positioning, terminology, competitors, and non-negotiables.
+2. If a market category argument is provided (e.g., `/market-scan
+   "AI Video Tools"`), use it. Otherwise infer from CLAUDE.md.
+3. Glob `data/knowledge/market-landscape/*.md` and open the file
+   matching the product's market category. Read **only the most recent
+   `## Scan — {date}` H2 section** to know what's already been
+   captured — this lets the new scan explicitly flag what **confirms**,
+   **contradicts**, or **extends** prior findings.
+4. Grep `data/signals/active.md` for entries from the last 30 days to
+   avoid logging duplicate signals.
+5. If no prior Market Landscape file exists, note it — the scan will
+   create the first file in Step 6.
 
 ## Step 2: Discover Competitors and Search the Market
 
@@ -144,7 +140,7 @@ not read. Replace `{product_name}` with the actual product name.
 
 ## What's New vs. Prior Scans
 - 1–3 bullet points explicitly calling out: what's **new** since the last
-  dated section in the Market Landscape entry, what **confirms** prior
+  dated section in the Market Landscape file, what **confirms** prior
   findings, and what **contradicts** them. If this is the first scan for the
   product, say "First scan — no prior entries to compare against."
 
@@ -158,33 +154,43 @@ not read. Replace `{product_name}` with the actual product name.
 After presenting the scan in the conversation, run the persist procedure. This
 is the phase where the scan's value is captured long-term.
 
-### 6a. Knowledge Base write (append-only, living document)
+### 6a. Market Landscape file write (append-only, living document)
 
 The scan is saved as a new **dated sub-section** inside the product's
-Market Landscape entry in the Knowledge Base.
+Market Landscape file under `data/knowledge/market-landscape/`.
 
 **Dedup procedure:**
 
-1. Compute the canonical entry title:
-   `"{Product} — Market Landscape — {Market Category}"`. `{Market Category}` is
-   inferred from the scan's primary competitive set (e.g., "AI Video Tools",
-   "Regional Fintech"). If nothing specific emerges, fall back to `"General"`.
-2. Query Knowledge Base with filter:
-   `Category = Market Landscape AND Product contains {product} AND Title = {computed title}`.
-3. **If exactly one match:** append a new dated sub-section (`## Scan — {today}`)
-   to the existing page body. **Never** edit or delete prior sub-sections.
-4. **If zero matches:** create a new page with the computed title,
-   `Category = Market Landscape`, `Product = {product}`, and the scan body as
-   the initial content.
-5. **If multiple matches:** halt and ask the user which to update. This should
-   be rare and signals title drift.
+1. Compute the canonical title:
+   `"{Product} — Market Landscape — {Market Category}"`. `{Market Category}`
+   is inferred from the scan's primary competitive set (e.g., "AI Video
+   Tools", "Regional Fintech"). If nothing specific emerges, fall back to
+   `"General"`.
+2. Compute the file path:
+   `data/knowledge/market-landscape/{market-slug}.md` (slug = lowercased
+   `{Market Category}` with hyphens).
+3. **If the file exists:** append a new dated sub-section
+   (`## Scan — {today}`) to the end. **Never** edit or delete prior
+   sub-sections. Update the `last_updated` frontmatter field to today.
+4. **If the file does not exist:** create it with frontmatter
+   (`title`, `category: market-landscape`, `tags`, `last_updated: today`,
+   `status: active`), the H1 header, the "_Living document_" line, and
+   the first scan body.
 
-**Body structure for Market Landscape entries:**
+**Body structure:**
 
-Every Market Landscape entry follows this strict two-level structure so other
-skills can parse it by heading:
+Every Market Landscape file follows this strict two-level structure so
+other skills can parse it by heading:
 
 ```markdown
+---
+title: {Product} — Market Landscape — {Market Category}
+category: market-landscape
+tags: [...]
+last_updated: YYYY-MM-DD
+status: active
+---
+
 # {Product} — Market Landscape — {Market Category}
 
 _Living document. New scans append dated sections below._
@@ -232,16 +238,16 @@ at H3) is what makes this machine-readable. `/fetch-context`,
 most recent scan without fuzzy matching.
 
 **Category mismatch handling:** If the scan surfaces coherent content that
-doesn't fit under `Market Landscape` (e.g., a new research insight better
-suited to `Research`), flag it in the conversation: `"This scan surfaced
-content that fits better under a '{Category}' category. I'd suggest logging
-it separately via /knowledge add research. Want me to note it now?"` Do NOT
-auto-create new Knowledge Base categories — that is a schema-level decision
-for the user.
+doesn't fit under `market-landscape` (e.g., a new research insight better
+suited to `research`), flag it in the conversation: *"This scan surfaced
+content that fits better under a 'research' entry. I'd suggest logging
+it separately via /knowledge add research. Want me to note it now?"* Do
+NOT auto-create new knowledge categories — that is a schema-level
+decision for the user.
 
 ### 6b. Signals write (dated, per-finding, high-bar)
 
-A finding from the scan becomes a candidate **Signals** row if and only if it
+A finding from the scan becomes a candidate **Signal** if and only if it
 meets at least one of these criteria:
 
 1. **It's dated within the last 30 days** and names a specific event (launch,
@@ -254,12 +260,12 @@ meets at least one of these criteria:
 4. **It's a technical or regulatory constraint** that affects the product's build.
 
 Generic industry commentary, "trends," and the Strategic Implications section
-**do not** become Signals. Those live only in Knowledge Base. Signals must be
-concrete, time-stamped, and traceable to a specific source.
+**do not** become Signals. Those live only in the Market Landscape file.
+Signals must be concrete, time-stamped, and traceable to a specific source.
 
-**Mapping scan sections to Signals `Type`:**
+**Mapping scan sections to Signal `type`:**
 
-| Scan section | Candidate Signals `Type` |
+| Scan section | Candidate Signal `type` |
 |---|---|
 | Competitor Radar (active moves) | `Competitive Move` |
 | Product & Feature Moves | `Competitive Move` |
@@ -272,9 +278,8 @@ concrete, time-stamped, and traceable to a specific source.
 Surface both writes in a single prompt. Do NOT auto-write. Example:
 
 ```
-I'll save this scan to Knowledge Base:
-  → "{Product} — Market Landscape — {Market Category}"
-     (append new dated section, or create new entry)
+I'll save this scan to data/knowledge/market-landscape/{market-slug}.md
+  → append new "## Scan — {date}" section, or create the file.
 
 I also identified {N} candidate Signals worth logging separately:
 
@@ -286,31 +291,26 @@ I also identified {N} candidate Signals worth logging separately:
    Action Required? [y/n]
 ...
 
-Proceed with the Knowledge Base write? (y/n)
+Proceed with the Market Landscape write? (y/n)
 Which Signals should I log? (all / none / 1,3,5)
 ```
 
-For each accepted Signal, write a Notion page to the Signals database with:
-- `Signal` — the headline (one sentence)
-- `Date` — the source content's date, not today
-- `Type` — per the mapping above
-- `Source` — the URL or source type
-- `Implication` — the skill's inferred implication (editable by user)
-- `Linked Decision` — empty unless an existing Decisions row is clearly referenced
-- `Action Required` — per user response
-- `Product` — current product
-
-If Notion MCP write fails for any row, fall back to
-`.claude/memory/shared.md` under a `Signals (Notion fallback)` section with
-the same fields in structured format.
+For each accepted Signal, use `/log-signal` logic to append an H3 block to
+`data/signals/active.md` with:
+- **Headline** — the one-sentence summary
+- **date** — the source content's date, not today
+- **type** — per the mapping above
+- **source** — the URL or source type
+- **action_required** — per user response
+- **Implication** — the skill's inferred implication (editable by user)
 
 ## Follow-ups
 
 After persisting, suggest 1–3 contextual next skills (not a generic menu):
 
-- If any Signal had `Action Required = true`:
-  → "Want to run `/weekly-review` to see all Action Required signals across
-  the portfolio, or `/log-decision` to commit to a response?"
+- If any Signal had `action_required:true`:
+  → "Want to run `/weekly-review` to see all Action Required signals
+  alongside the rest, or `/log-decision` to commit to a response?"
 - If Strategic Implications surfaced a new opportunity:
   → "Want to run `/evaluate-opportunity` on the {opportunity} thread?"
 - If the scan contradicted a prior positioning decision:
@@ -323,22 +323,16 @@ After persisting, suggest 1–3 contextual next skills (not a generic menu):
 
 - If fewer than 3 substantial sources are found, widen the date range to 8 weeks
   and retry with broader queries (drop the year, use more general terms).
-- If a product argument is misspelled or ambiguous, ask the user to clarify
-  rather than guessing.
+- If a market category argument is misspelled or ambiguous, ask the user to
+  clarify rather than guessing.
 - Always ground every claim in the sources you actually read.
 - If a source is paywalled or inaccessible, skip it and note it in the Sources
   section as "[inaccessible]".
 - The scan body is output to the conversation in Step 5. The persist step
-  (Step 6) is what writes to Notion. Do NOT write the scan to a local file
-  unless the user explicitly asks.
+  (Step 6) is what writes to disk. Do NOT save a separate copy unless the
+  user explicitly asks.
 - The seed-name queries are starting points, not exhaustive lists. Always
   surface and report new competitors found through other queries.
-- If the user runs `/market-scan` without a product argument in a conversation
-  where they are already clearly working on one product, infer the product from
-  context but confirm before proceeding.
-- If **Notion MCP is unavailable**, halt before Step 6 and tell the user
-  explicitly. Present the scan in the conversation only and note that persist
-  was skipped. Do not silently proceed.
 - If **Tavily MCP is unavailable**, degrade gracefully: attempt the scan with
   whatever web tools are available and note the limitation in the Sources
   section.

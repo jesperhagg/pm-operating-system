@@ -11,13 +11,12 @@ Use this before building anything non-trivial. Faster, cheaper, and more honest 
 ## Before Starting — Self-Hydration
 
 1. Identify the current product (read host repo's CLAUDE.md, or ask).
-2. Use Notion MCP to fetch:
-   - Recent Signals (last 30 days) — especially Internal Learning and User Feedback
-   - Active Decisions — to anchor what's already committed
-   - Prior experiments (Decisions with Type: Go-to-Market or Scope + Outcome: Pending/Validated/Invalidated)
+2. Read:
+   - Grep `data/signals/active.md` for entries from the last 30 days — especially `type:"Internal Learning"` and `type:"User Feedback"`.
+   - `data/decisions/index.md` — filter `Status = Active` (all types) to anchor what's already committed, plus any prior experiments (`Type: Go-to-Market` or `Type: Scope` with `Outcome` set). Open relevant decision files.
 3. Brief the user on any prior experiment that touched this hypothesis — don't re-run what's already been tested.
 
-If Notion MCP is unavailable, proceed but flag: *"No prior-experiment context available — risk of duplication."*
+If `data/decisions/` and `data/signals/` are both empty, proceed but flag: *"No prior-experiment context available — risk of duplication."*
 
 ## Framework
 

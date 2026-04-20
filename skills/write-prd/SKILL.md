@@ -1,5 +1,5 @@
 ---
-description: Write a Product Requirements Document using opinionated per-section templates. Forces falsifiable hypotheses and measurable success metrics. Hydrates from Notion before writing.
+description: Write a Product Requirements Document using opinionated per-section templates. Forces falsifiable hypotheses and measurable success metrics. Hydrates from data/ before writing.
 ---
 
 # Write PRD
@@ -9,14 +9,14 @@ Produces a PRD with explicit templates for every section. Each section requires 
 ## Before Starting — Self-Hydration
 
 1. Identify the current product (read host repo's CLAUDE.md for Repo Identity, or ask the user).
-2. Use Notion MCP to fetch:
-   - Active Decisions for this product (last 90 days), especially Type: Scope, Positioning, Architecture
-   - The target persona (Knowledge Base → People, or the product's defined persona)
-   - Current backlog (top 10 by priority)
-   - Recent Signals (last 30 days) — especially User Feedback and Technical Constraint
+2. Read:
+   - `data/decisions/index.md` — filter rows where `Status = Active` and `Type` is Scope, Positioning, or Architecture (last 90 days). Open the 3–6 most relevant decision files.
+   - `data/personas/index.md` and the primary persona file at `data/personas/{slug}.md`.
+   - `data/tasks/active.md` — top 10 items from Now → Next → Later sections.
+   - Grep `data/signals/active.md` for entries from the last 30 days, especially `type:"User Feedback"` and `type:"Technical Constraint"`.
 3. Summarize context briefly to the user before proceeding: *"Writing PRD for {product}. Persona: {name}. Active constraints: {list}. Recent user feedback: {summary}. Proceed?"*
 
-If Notion MCP is unavailable, halt and say so — do not write a PRD without grounded context.
+If `data/personas/` or `data/decisions/` is empty, halt and say so — do not write a PRD without grounded context. Suggest running `/define-persona` or capturing prior decisions first.
 
 ## PRD Structure — Per-Section Templates
 
@@ -26,7 +26,8 @@ If Notion MCP is unavailable, halt and say so — do not write a PRD without gro
 > {Persona name} currently {current behavior/workaround} when they need to {job-to-be-done}. This is painful because {specific cost — time / money / missed outcome}. We know this because {evidence: cite 2+ specific Signals rows OR a KB research entry OR quantified user data}.
 
 **Rules:**
-- Must cite at least 2 Signals or 1 KB research entry. If you can't, the problem isn't validated — flag this in the PRD and propose discovery before build.
+- Must cite at least 2 signal anchors from `data/signals/active.md` (or `archive/`) or 1 research file from `data/knowledge/research/`. If you can't, the problem isn't validated — flag this in the PRD and propose discovery before build.
+- Cite signals by relative path + anchor (e.g. `../signals/active.md#three-tasks-missed-2026-03-02`) and research by relative file path.
 - "This is painful because" must name a concrete cost, not a feeling.
 
 ### 2. Hypothesis
@@ -52,7 +53,7 @@ If Notion MCP is unavailable, halt and say so — do not write a PRD without gro
 - **Core user flow:** Entry → {action 1} → {action 2} → Completion. Target ≤ 5 steps.
 - **In scope (v1):** {bullet list, max 5 items}.
 - **Out of scope (v1):** {explicit list of things you considered and cut, with one-line rationale each}.
-- **Prior decisions that constrain this:** {cite Decisions by date + title, e.g., "2026-02-14 / Mobile-first only — excludes desktop flow."}
+- **Prior decisions that constrain this:** {cite decision files by relative path + title, e.g., `../decisions/2026-02-14-mobile-first-only.md` — "Mobile-first only — excludes desktop flow."}
 
 **Rules:**
 - "Out of scope" must be non-empty. If there's nothing you cut, you haven't scoped hard enough.
@@ -69,7 +70,7 @@ If Notion MCP is unavailable, halt and say so — do not write a PRD without gro
 
 **Rules:**
 - North Star must be an outcome metric (activation, retention, revenue), not an output metric (signups, page views).
-- Every metric must specify its measurement source (analytics tool, Notion query, user survey).
+- Every metric must specify its measurement source (analytics tool, in-app telemetry, user survey).
 - "Good enough" protects against gold-plating v1.
 
 ### 5. Technical Context
@@ -77,9 +78,9 @@ If Notion MCP is unavailable, halt and say so — do not write a PRD without gro
 **Template:**
 - **Stack:** {from CLAUDE.md — "already uses X, Y, Z"}.
 - **New dependencies this introduces:** {list + reason for each, or "none"}.
-- **Known constraints:** {cite Technical Constraint Signals by date, or "none flagged"}.
+- **Known constraints:** {cite Technical Constraint signals by relative path + anchor, or "none flagged"}.
 - **Cost-per-user estimate (if AI/infra heavy):** ${X}/user/month at 100 MAU, ${Y} at 1K, ${Z} at 10K. If unknown, flag for systems-architect consultation.
-- **Integration points:** {external systems, APIs, Notion DBs touched}.
+- **Integration points:** {external systems, APIs, data stores touched}.
 
 ### 6. Open Questions & Risks
 
@@ -115,7 +116,7 @@ Output format:
 ## Worked Example — Excerpts
 
 **Problem Statement (for `/weekly-review` SaaS):**
-> Solo PMs managing 2+ products currently stitch together Notion views, Linear filters, and memory when doing their weekly review. This is painful because it takes 45–90 minutes every Monday AND features slip through the cracks (cited: 2026-03-02 Internal Learning signal — "three tasks missed last week," 2026-03-15 User Feedback signal — "reviewer forgot competitor move from prior week"). We know this because 4 of 5 interviewed solo PMs described a similar workaround.
+> Solo PMs managing 2+ products currently stitch together Notion views, Linear filters, and memory when doing their weekly review. This is painful because it takes 45–90 minutes every Monday AND features slip through the cracks (cited: `../signals/active.md#three-tasks-missed-2026-03-02` Internal Learning, `../signals/active.md#forgot-competitor-move-2026-03-15` User Feedback). We know this because 4 of 5 interviewed solo PMs described a similar workaround.
 
 **Hypothesis:**
 > We believe solo PMs with 2+ products will run a hosted `/weekly-review` every Monday because they already block Monday time for review but hate the manual aggregation.

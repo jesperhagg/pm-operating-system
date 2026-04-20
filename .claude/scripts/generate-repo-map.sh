@@ -73,7 +73,7 @@ get_desc() {
     filename=$(basename "$ctx_file")
     lines=$(wc -l < "$ctx_file" | tr -d ' ')
     case "$filename" in
-      notion-schemas.md) when="Writing to Notion (Decisions, Signals, KB, Tasks)" ;;
+      data-schemas.md)   when="Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks)" ;;
       dev-standards.md)  when="Authoring or reviewing skills, agents, plugin infrastructure" ;;
       *)                 when="On demand" ;;
     esac
@@ -87,7 +87,7 @@ get_desc() {
   printf '| Modify an internal skill | `.claude/skills/<name>/SKILL.md` |\n'
   printf '| Modify an agent | `agents/<name>/AGENT.md` |\n'
   printf '| Update plugin version | `.claude-plugin/plugin.json` |\n'
-  printf '| Check Notion DB schemas + routing rubric | `.claude/context/notion-schemas.md` |\n'
+  printf '| Check data layer schemas (frontmatter, file shapes, routing rubric) | `.claude/context/data-schemas.md` |\n'
   printf '| Check skill design patterns + conventions | `.claude/context/dev-standards.md` |\n'
   printf '| Add a new exported skill | New `skills/<name>/SKILL.md` (auto-discovered) |\n'
   printf '| Add a new internal skill | New `.claude/skills/<name>/SKILL.md` |\n'
