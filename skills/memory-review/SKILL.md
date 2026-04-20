@@ -1,5 +1,5 @@
 ---
-description: Review memory across data/ (Decisions, Signals, Knowledge, Personas, Tasks) and local shared memory, identify stale or superseded entries, and archive them so memory stays lean.
+description: Review memory across data/ (Decisions, Signals, Knowledge, Personas, Leads, Tasks) and local shared memory, identify stale or superseded entries, and archive them so memory stays lean.
 ---
 
 # Memory Review
@@ -15,7 +15,7 @@ Follow the steps below precisely.
 1. Glob `data/**/*.md` and read **frontmatter only** for every file (don't read bodies yet — saves tokens).
 2. Read `data/signals/active.md` — parse H3 sections and their `<!-- ... -->` metadata comments.
 3. Read `data/tasks/active.md` — parse checkbox lines and metadata comments.
-4. Read `data/decisions/index.md` and `data/personas/index.md` if they exist.
+4. Read `data/decisions/index.md`, `data/personas/index.md`, and `data/leads/index.md` if they exist.
 5. Read `.claude/memory/shared.md` if it exists (cross-agent user preferences / learnings — not a data store).
 
 If `data/` does not exist, halt and say so — nothing to review yet.
@@ -54,6 +54,15 @@ If `data/` does not exist, halt and say so — nothing to review yet.
 | **Stale persona** | `last_updated` older than 180 days — rerun `/define-persona` or confirm still accurate. |
 | **Thin evidence** | `evidence_strength: Thin` AND older than 60 days — either fill evidence or archive. |
 
+### Leads (`data/leads/*.md`)
+
+| Flag | Condition |
+|---|---|
+| **Closed** | `status: Won` OR `status: Lost` — move file to `data/leads/archive/` and drop the row from `data/leads/index.md`. |
+| **Stale active** | `status` is not Won/Lost/Uncontacted AND `last_contact` older than 45 days AND `next_action_date` empty or past — prompt: bump status to `Lost` or set a new `next_action`. |
+| **Orphaned Uncontacted** | `status: Uncontacted` AND `last_contact` empty AND file age > 30 days — likely forgotten. Prompt: reach out or archive. |
+| **Volume warning** | > 60 active leads — thin the pipeline or move older Lost entries to archive. |
+
 ### Tasks (`data/tasks/active.md`)
 
 | Flag | Condition |
@@ -82,6 +91,7 @@ prefs and cross-agent learnings. Product data belongs in `data/`.
 - Signals (active.md): {N total} — {M flagged}
 - Knowledge: {N total} across {K} categories — {M flagged}
 - Personas: {N total} — {M flagged}
+- Leads: {N total active} — {M flagged}
 - Tasks (active.md): {N total} — {M flagged}
 - Local shared memory: {N lines} — {M flagged}
 
@@ -141,6 +151,7 @@ After presenting the review:
    - **Signals** — cut the H3 section (headline + metadata comment + Implication block) from `data/signals/active.md` and append it to `data/signals/archive/YYYY-QN.md` (create if missing, where `QN` = current quarter). Preserve original ordering within the archive file (newest first).
    - **Knowledge** — edit the file's frontmatter: set `status: archived`. Do not move the file.
    - **Personas** — for thin/stale, flag in frontmatter (`last_updated` bumped only if actually refreshed; otherwise leave and note in suggestions).
+   - **Leads (Won/Lost)** — move the file from `data/leads/{slug}.md` to `data/leads/archive/{slug}.md` (create `archive/` if missing). Remove the matching row from `data/leads/index.md`. For stale-active flags, prompt per item: mark `Lost`, set a new `next_action`, or keep as-is.
    - **Tasks** — for overdue/stale Later items, ask per item: drop, move to Next, or push out the due date.
    - **`.claude/memory/shared.md`** — move flagged entries to `.claude/memory/shared-archive.md` under a `## Archived — {date}` heading, then delete from the active file.
 3. For Pending-Outcome Decisions: do NOT auto-archive. Prompt per entry: *"{title} — Outcome: Validated / Invalidated / Inconclusive? Notes?"* Then edit the frontmatter `outcome:` and `outcome_date:`, and append the notes to the `## Outcome Notes` section of the decision file.

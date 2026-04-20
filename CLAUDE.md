@@ -42,6 +42,9 @@ When I mention these keywords, run the corresponding skill:
 | "competitors", "market", "landscape" | `/market-scan` |
 | "decision", "log", "decided" | `/log-decision` |
 | "signal", "competitor moved", "funding round", "user feedback pattern" | `/log-signal` |
+| "lead", "prospect", "new contact", "add lead" | `/log-lead` |
+| "outreach", "sent email to", "followed up", "they replied", "log interaction" | `/log-interaction` |
+| "pipeline", "deal flow", "who should I follow up with", "overdue leads" | `/pipeline` |
 | "review", "weekly", "what shipped" | `/weekly-review` |
 | "memory", "clean up", "stale" | `/memory-review` |
 | "digest", "news", "what's happening" | `/pm-digest` |
@@ -60,6 +63,7 @@ directly — no external database, no MCP fetch, no caching across calls.
 | Signals | `data/signals/active.md` (+ `archive/YYYY-QN.md`) | H3 per signal, inline HTML-comment metadata |
 | Knowledge | `data/knowledge/{people,reference,research,market-landscape}/` | One file per entry; market-landscape is append-only `## Scan —` sections |
 | Personas | `data/personas/` | One file per persona + `index.md` |
+| Leads | `data/leads/` (+ `index.md`, `archive/`) | One file per lead; frontmatter for pipeline state, `## Interactions` for append-only event log |
 | Tasks | `data/tasks/active.md`, `data/tasks/done.md` | Markdown checkboxes + HTML-comment metadata |
 
 One product per repo — there is no `Product` field. The repo IS the product.
