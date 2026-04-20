@@ -1,11 +1,11 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-20 | 18 exported skills / 3 internal skills / 4 agents_
+_Last generated: 2026-04-20 | 19 exported skills / 3 internal skills / 4 agents_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `skills/` | Exported skills (available in consumer repos via plugin) | 18 |
+| `skills/` | Exported skills (available in consumer repos via plugin) | 19 |
 | `.claude/skills/` | Internal skills (this repo only) | 3 |
 | `agents/` | Exported chat-persona agents (available in consumer repos) | 4 |
 | `.claude/context/` | Lazy-loaded reference docs | 2 |
@@ -28,6 +28,7 @@ _Last generated: 2026-04-20 | 18 exported skills / 3 internal skills / 4 agents_
 | /market-scan | `skills/market-scan/SKILL.md` | 338 | Scan the competitive landscape for the product, discovering active com |
 | /memory-review | `skills/memory-review/SKILL.md` | 173 | Review memory across data/ (Decisions, Signals, Knowledge, Personas, L |
 | /pipeline | `skills/pipeline/SKILL.md` | 159 | Read-only view of the sales pipeline from data/leads/. Groups leads by |
+| /pm-init | `skills/pm-init/SKILL.md` | 174 | Initialize the data/ directory tree in a consumer repo with all subfol |
 | /pricing | `skills/pricing/SKILL.md` | 211 | Structure a pricing decision. Picks a value metric, sets an anchor pri |
 | /sunset-product | `skills/sunset-product/SKILL.md` | 204 | Guided kill-or-park workflow for a product or bet that isn't working.  |
 | /tasks | `skills/tasks/SKILL.md` | 139 | Surface active tasks from data/tasks/active.md with sprint-style forma |
@@ -55,7 +56,7 @@ _Last generated: 2026-04-20 | 18 exported skills / 3 internal skills / 4 agents_
 
 | File | Lines | Load when |
 |------|-------|----------|
-| `data-schemas.md` | 383 | Writing to data/ (Decisions, Signals, Knowledge, Personas, Leads, Tasks) |
+| `data-schemas.md` | 383 | Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks) |
 | `dev-standards.md` | 180 | Authoring or reviewing skills, agents, plugin infrastructure |
 
 ## When You Need To...
