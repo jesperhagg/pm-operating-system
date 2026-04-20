@@ -1,41 +1,42 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-19 | 15 exported skills / 2 internal skills / 4 agents_
+_Last generated: 2026-04-20 | 15 exported skills / 3 internal skills / 4 agents_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
 | `skills/` | Exported skills (available in consumer repos via plugin) | 15 |
-| `.claude/skills/` | Internal skills (this repo only) | 2 |
+| `.claude/skills/` | Internal skills (this repo only) | 3 |
 | `agents/` | Exported chat-persona agents (available in consumer repos) | 4 |
-| `.claude/context/` | Lazy-loaded reference docs | 4 |
+| `.claude/context/` | Lazy-loaded reference docs | 2 |
 | `.claude-plugin/` | plugin.json (manifest), marketplace.json | 2 |
 
 ## Exported Skills — `skills/*/SKILL.md`
 
 | Skill | Path | Lines | Purpose |
 |-------|------|-------|----------|
-| /break-down | `skills/break-down/SKILL.md` | 88 | Break down a PRD or feature idea into kanban-ready work items. Fetches |
-| /define-persona | `skills/define-persona/SKILL.md` | 185 | Define a customer persona grounded in real evidence — not demographi |
-| /design-experiment | `skills/design-experiment/SKILL.md` | 167 | Structure a fast, falsifiable experiment to validate a hypothesis. For |
+| /break-down | `skills/break-down/SKILL.md` | 88 | Break down a PRD or feature idea into kanban-ready work items. Reads c |
+| /define-persona | `skills/define-persona/SKILL.md` | 200 | Define a customer persona grounded in real evidence — not demographi |
+| /design-experiment | `skills/design-experiment/SKILL.md` | 166 | Structure a fast, falsifiable experiment to validate a hypothesis. For |
 | /evaluate-opportunity | `skills/evaluate-opportunity/SKILL.md` | 203 | Evaluate a startup or product opportunity from a solo-founder / indie- |
-| /fetch-context | `skills/fetch-context/SKILL.md` | 102 | Fetch live product context from Notion. Foundation skill used by other |
-| /knowledge | `skills/knowledge/SKILL.md` | 245 | Fetch, store, and review structured knowledge in Notion. Manages three |
-| /log-decision | `skills/log-decision/SKILL.md` | 81 | Log a product decision to Notion and local memory. Captures the decisi |
-| /log-signal | `skills/log-signal/SKILL.md` | 137 | Log a time-stamped observation to the Notion Signals database. Capture |
-| /market-scan | `skills/market-scan/SKILL.md` | 344 | Scan the competitive landscape for a product, discovering active compe |
-| /memory-review | `skills/memory-review/SKILL.md` | 132 | Review memory across Notion (Decisions, Signals, Knowledge Base) and l |
+| /fetch-context | `skills/fetch-context/SKILL.md` | 98 | Fetch live product context from the consumer repo's data/ files. Found |
+| /knowledge | `skills/knowledge/SKILL.md` | 259 | Fetch, store, and review structured knowledge in data/knowledge/. Mana |
+| /log-decision | `skills/log-decision/SKILL.md` | 88 | Log a product decision to data/decisions/ as a markdown file with stru |
+| /log-signal | `skills/log-signal/SKILL.md` | 135 | Log a time-stamped observation to data/signals/active.md as an H3 sect |
+| /market-scan | `skills/market-scan/SKILL.md` | 338 | Scan the competitive landscape for the product, discovering active com |
+| /memory-review | `skills/memory-review/SKILL.md` | 162 | Review memory across data/ (Decisions, Signals, Knowledge, Personas, T |
 | /pricing | `skills/pricing/SKILL.md` | 211 | Structure a pricing decision. Picks a value metric, sets an anchor pri |
-| /sunset-product | `skills/sunset-product/SKILL.md` | 187 | Guided kill-or-park workflow for a product, feature, or bet that isn't |
-| /tasks | `skills/tasks/SKILL.md` | 141 | Surface active tasks from the Notion backlog with sprint-style formatt |
-| /weekly-review | `skills/weekly-review/SKILL.md` | 124 | Run a portfolio-level weekly review across all products. Reads memory, |
-| /write-prd | `skills/write-prd/SKILL.md` | 142 | Write a Product Requirements Document using opinionated per-section te |
+| /sunset-product | `skills/sunset-product/SKILL.md` | 204 | Guided kill-or-park workflow for a product or bet that isn't working.  |
+| /tasks | `skills/tasks/SKILL.md` | 139 | Surface active tasks from data/tasks/active.md with sprint-style forma |
+| /weekly-review | `skills/weekly-review/SKILL.md` | 134 | Run a weekly review — single-product (default) or portfolio (across  |
+| /write-prd | `skills/write-prd/SKILL.md` | 143 | Write a Product Requirements Document using opinionated per-section te |
 
 ## Internal Skills — `.claude/skills/*/SKILL.md`
 
 | Skill | Path | Lines | Purpose |
 |-------|------|-------|----------|
 | /generate-repo-map | `.claude/skills/generate-repo-map/SKILL.md` | 114 | Regenerate .claude/REPO-MAP.md by scanning current skills, agents, and |
+| /migrate-from-notion | `.claude/skills/migrate-from-notion/SKILL.md` | 191 | One-shot migration of legacy Notion product data (Decisions, Signals,  |
 | /pm-digest | `.claude/skills/pm-digest/SKILL.md` | 154 | Search the web for the latest PM + AI news, discussions, and best prac |
 
 ## Agents — `agents/*/AGENT.md`
@@ -51,10 +52,8 @@ _Last generated: 2026-04-19 | 15 exported skills / 2 internal skills / 4 agents_
 
 | File | Lines | Load when |
 |------|-------|----------|
-| `dev-standards.md` | 211 | Authoring or reviewing skills, agents, plugin infrastructure |
-| `notion-routing.example.md` | 33 | On demand |
-| `notion-routing.md` | 15 | On demand |
-| `notion-schemas.md` | 146 | Writing to Notion (Decisions, Signals, KB, Tasks) |
+| `data-schemas.md` | 286 | Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks) |
+| `dev-standards.md` | 180 | Authoring or reviewing skills, agents, plugin infrastructure |
 
 ## When You Need To...
 
@@ -64,7 +63,7 @@ _Last generated: 2026-04-19 | 15 exported skills / 2 internal skills / 4 agents_
 | Modify an internal skill | `.claude/skills/<name>/SKILL.md` |
 | Modify an agent | `agents/<name>/AGENT.md` |
 | Update plugin version | `.claude-plugin/plugin.json` |
-| Check Notion DB schemas + routing rubric | `.claude/context/notion-schemas.md` |
+| Check data layer schemas (frontmatter, file shapes, routing rubric) | `.claude/context/data-schemas.md` |
 | Check skill design patterns + conventions | `.claude/context/dev-standards.md` |
 | Add a new exported skill | New `skills/<name>/SKILL.md` (auto-discovered) |
 | Add a new internal skill | New `.claude/skills/<name>/SKILL.md` |

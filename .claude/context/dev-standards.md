@@ -17,7 +17,7 @@
 
 - Skills own their methodology. They do not delegate reasoning to agents.
   If a skill needs a framework, the framework is embedded in SKILL.md.
-- Agents do not orchestrate workflows. They do not hydrate Notion. They
+- Agents do not orchestrate workflows. They do not hydrate data. They
   do not spawn peers. They do not write files. They respond as a chat
   persona — worldview, principles, pushback.
 - If you find yourself writing "the agent will..." in a skill, stop.
@@ -28,19 +28,20 @@
 Every skill follows a four-phase execution pattern:
 
 1. **Hydration** — Identify the current product from the host repo's
-   CLAUDE.md. Fetch Notion context (decisions, personas, backlog, recent
-   Signals) as needed. Summarize context to the user before proceeding.
+   CLAUDE.md (one product per repo). Read targeted files from `data/`
+   (decisions, signals, personas, knowledge, tasks). Read indexes
+   (`data/decisions/index.md`, `data/personas/index.md`) before opening
+   individual files. Summarize context to the user before proceeding.
    For internal skills not tied to a product (e.g., pm-digest), hydration
-   means loading memory and scanning existing capabilities instead.
+   means loading any local context and scanning existing capabilities.
 2. **Framework** — Apply a domain-specific, opinionated structure (scoring
    rubric, template, decomposition rules, etc.). The framework is the core
    intellectual property of the skill. It must be concrete and produce a
    specific output every time — if it reads like generic advice, it is not
    a skill.
 3. **Output** — Produce structured markdown with a consistent heading
-   format. Specify the destination: conversation (default), a file (only
-   when the skill explicitly says so, e.g., write-prd), or Notion (e.g.,
-   log-decision).
+   format. Specify the destination: conversation (default), a `data/`
+   file (writer skills), or a `docs/` artifact (e.g., `/write-prd`).
 4. **Follow-ups** — Suggest 1-3 specific next skills to chain. Follow-ups
    must be contextual (not a generic menu) and reference the skill name
    with slash-command syntax. Only suggest skills that actually exist.
@@ -72,75 +73,52 @@ Agents are 40–70 line chat personas. No orchestrator machinery.
 - Capabilities (When / What I Do / Output / Follow-up)
 - Output Format templates
 - Collaboration Protocol (scratchpad, handoffs)
-- Memory Protocol (Notion writes, quality signals)
+- Memory Protocol (data writes, quality signals)
 - Boundaries with redirect tables
 
 **Why:** Skills own methodology, hydration, output, and memory. Agents
-respond in-chat conversationally. If an agent needs Notion context, the
+respond in-chat conversationally. If an agent needs product context, the
 user invokes a skill first.
 
-## Notion Integration Rules (Skills Only)
+## Data Layer Rules (Skills Only)
 
-- Notion is the source of truth for all product data. Never fabricate or
-  assume product context.
-- Implement session-level caching: fetch once per product per conversation,
-  reuse unless (a) user requests fresh data or (b) a write operation just
-  completed.
-- If Notion MCP is unavailable for a product-context skill, halt and say
-  so explicitly. Do not proceed with invented context.
-- If a Notion MCP write fails, fall back to local
-  `.claude/memory/shared.md` with structured format.
-- Tavily unavailability degrades gracefully: skip web-sourced sections and
-  note the limitation.
-- **Agents do NOT call Notion MCP.** If you need Notion context during a
-  conversation, invoke the relevant skill first (e.g., `/fetch-context`).
-
-## Notion Routing Table Convention
-
-Consumer repos maintain `.claude/context/notion-routing.md` (based on the
-plugin template at `.claude/context/notion-routing.example.md`) mapping
-logical database names to their Notion database IDs.
-
-**When present:** Skills resolve IDs from the table and use `notion-fetch`
-with the explicit ID + Product filter. This is faster and immune to database
-renames.
-
-**When absent:** Skills fall back to `notion-search` with descriptive terms
-(current behavior). A one-time setup hint is shown per session.
-
-**The lookup pattern** is defined in `skills/fetch-context/SKILL.md` under
-"How to Resolve Notion Database IDs". All skills that query Notion follow
-this pattern.
-
-**Security:** Database IDs are not credentials — the API token is the secret,
-and it lives in `.mcp.json` (gitignored). The routing table is safe to commit.
-Gitignore it only if org policy requires enumeration hygiene.
-
-**Consumer repo setup:**
-1. Copy `.claude/context/notion-routing.example.md` → `.claude/context/notion-routing.md`
-2. Open each database in Notion → Share → Copy link → extract the 32-char ID
-3. Fill in the table and commit
+- Product data lives in the consumer repo at `data/`. The repo IS the
+  product — one product per repo. There is no `Product` filter field.
+- Skills read and write `data/` directly via Read, Write, Edit, Glob,
+  Grep. No MCP fetch, no external database, no fallback buffer.
+- Hydrate from indexes first (`data/decisions/index.md`,
+  `data/personas/index.md`), then open targeted files.
+- Filter by frontmatter, not by reading bodies. Open a body only when
+  the entry passes the filter.
+- If a `data/` directory or specific file is missing for the current
+  task, surface that explicitly to the user — do not invent context.
+- Caching across skill invocations is forbidden. Files are cheap; stale
+  reads are dangerous. Always read fresh.
+- **Agents do NOT touch `data/`.** Agents are chat personas — they react
+  to whatever the user pasted. If an agent needs context, the user
+  invokes a skill first.
 
 ## Multi-Mode Skill Design
 
-When a skill manages a Notion resource, it may have multiple modes:
+When a skill manages a `data/` resource type, it may have multiple modes:
 
 - Example: `/knowledge` has Fetch/Store/Review; `/tasks` has
   View/Update/Add.
 - Document trigger phrases for each mode in the SKILL.md.
 - Default mode should be the most common read operation.
-- Modes share the same Notion database schema section.
+- Modes share the same on-disk schema section.
 - Each mode has its own step-by-step procedure.
 
 ## Product-Agnostic Principle
 
-- This repo contains zero product data.
-- Skills are frameworks that pull context at runtime via Notion MCP.
+- This plugin repo contains zero product data.
+- Skills are frameworks that read product data from `data/` at runtime
+  in the consumer repo.
 - Product identity comes from the host repo's CLAUDE.md.
 - Never hardcode product names, personas, features, or terminology into
   skill or agent definitions.
 - Litmus test: "Would this skill work identically for a different product
-  with different Notion data?" If not, it is not product-agnostic.
+  with different `data/` content?" If not, it is not product-agnostic.
 
 ## Plugin Export Conventions
 
@@ -166,34 +144,25 @@ When a skill manages a Notion resource, it may have multiple modes:
 
 ## Memory Convention
 
-Memory is a two-layer system:
+The `data/` directory is the durable memory of the consumer repo. It
+holds product facts: decisions, signals, knowledge, personas, tasks.
+See `.claude/context/data-schemas.md` for the full layout.
 
-1. **Notion (primary)** — The three context databases are the source of
-   truth, each with a distinct role per the **DB Routing Rubric** in
-   `.claude/context/notion-schemas.md`:
-   - **Decisions** holds commitments the PM has made.
-   - **Signals** holds time-stamped observations (user feedback, competitive
-     moves, market signals, technical constraints, internal learnings).
-   - **Knowledge Base** holds durable, synthesized understanding (people,
-     reference, research, market landscapes).
-   All three are filtered by Product.
-2. **Local files (secondary)** — `.claude/memory/shared.md` stores
-   cross-agent learnings and user preferences. It also serves as a
-   fallback when Notion MCP is unavailable — Signals or Decisions writes
-   that fail should be mirrored here in structured format for later sync.
+`.claude/memory/shared.md` is a lightweight local buffer for **cross-agent
+learnings and user preferences** that don't belong in product data
+(e.g., "Jesper prefers digests as bullets, not prose"). It is NOT a
+fallback for failed `data/` writes — there are no failures to fall back
+from. The `/memory-review` skill curates this file alongside `data/`.
 
 **Key properties:**
 
-- Memory files are created at runtime in consumer repos (product repos
-  that install this plugin), NOT in this plugin source repo.
-- Each consumer repo gets its own memory file, providing implicit
-  product isolation.
-- `.claude/memory/` is gitignored to prevent accidental commits.
-- **Plugin updates never touch memory files** — they live outside the
-  plugin's scope. Updating the plugin is safe.
-- If Notion fallback entries accumulate in `shared.md`, the `/tasks`
-  session-start check will prompt syncing them back to Notion.
-- The `memory-review` skill curates these files in consumer repos.
+- `data/` is created and committed in the consumer repo (one product
+  per repo). Plugin updates never touch it.
+- `.claude/memory/shared.md` lives in the consumer repo and is
+  gitignored to prevent accidental commits of personal learnings.
+- Plugin updates never touch consumer-repo `data/` or memory files.
+- The `/memory-review` skill walks `data/**/*.md` and `shared.md` for
+  staleness, redundancy, and pruning candidates.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 

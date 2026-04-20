@@ -1,5 +1,5 @@
 ---
-description: Define a customer persona grounded in real evidence — not demographics. Produces a one-pager with job-to-be-done, pain, current workaround, and buying trigger. Used for PRDs, positioning, and targeting.
+description: Define a customer persona grounded in real evidence — not demographics. Produces a one-pager with job-to-be-done, pain, current workaround, and buying trigger. Used for PRDs, positioning, and targeting. Writes to data/personas/.
 ---
 
 # Define Persona
@@ -10,14 +10,15 @@ Use this before a PRD, before a positioning exercise, or when a target user has 
 
 ## Before Starting — Self-Hydration
 
-1. Identify the product or opportunity this persona serves (read host repo's CLAUDE.md, or ask).
-2. Use Notion MCP to fetch:
-   - Existing personas in Knowledge Base (People category — stakeholders) AND any prior persona pages (customer-side).
-   - Signals tagged User Feedback for this product (last 90 days).
-   - Recent Decisions (Type: Positioning or Scope) for this product.
-3. Briefly recap to the user: *"Defining persona for {product}. {N} user-feedback signals, {M} prior persona docs. Building new persona, refining existing, or replacing?"*
+1. Identify the product this persona serves (read host repo's CLAUDE.md, or ask).
+2. Read:
+   - `data/personas/index.md` and any existing persona files (to refine vs. replace).
+   - `data/knowledge/people/` (stakeholders — to avoid confusing with customer personas).
+   - Grep `data/signals/active.md` for `type:"User Feedback"` entries from the last 90 days.
+   - `data/decisions/index.md` filtered by `type: Positioning` or `type: Scope`.
+3. Briefly recap to the user: *"Defining persona for {product}. {N} user-feedback signals, {M} existing persona files. Building new persona, refining existing, or replacing?"*
 
-If Notion MCP is unavailable, halt and say so — a persona without signal evidence is a guess.
+If `data/signals/active.md` does not exist, halt and say so — a persona without signal evidence is a guess.
 
 ## Persona ≠ Stakeholder
 
@@ -57,12 +58,12 @@ Every persona has these 6 fields. Fill each one concretely, with evidence. Any f
 **Template:**
 > **Cost:** {time / money / missed outcome — quantified}.
 > **Frequency:** {daily / weekly / per-event}.
-> **Evidence:** {cite ≥2 User Feedback Signals by date, or 1 KB research entry}.
+> **Evidence:** {cite ≥2 User Feedback signals by anchor, or 1 research entry}.
 
 **Rules:**
 - Pain must be measured: hours per week, $ lost, deals missed. "It's annoying" doesn't cut it.
 - Frequency matters: once-a-year pain doesn't justify a weekly SaaS.
-- If you can't cite 2+ signals, the pain is assumed not validated — flag `discovery-needed`.
+- If you can't cite 2+ signals, the pain is assumed not validated — flag `discovery-needed` and mark evidence_strength as `Thin`.
 
 ### 4. Current Workaround
 
@@ -99,11 +100,22 @@ Every persona has these 6 fields. Fill each one concretely, with evidence. Any f
 
 ## Output
 
-Save to Notion Knowledge Base as a new page (Category: Research, subcategory: Persona), AND save a local copy to `docs/persona-{slug}.md` in the consumer repo if requested.
+Write a new file at `data/personas/{slug}.md` (slug derived from the
+short name). Append a row to `data/personas/index.md` (create the
+index if missing).
 
-**Format:**
-```
-# Persona — {short name} — {product}
+**File contents:**
+
+```markdown
+---
+title: {short name}
+jtbd: {one-line JTBD}
+last_updated: YYYY-MM-DD
+evidence_strength: {Strong | Moderate | Thin}
+evidence: [../signals/active.md#anchor-1, ../signals/active.md#anchor-2]
+---
+
+# Persona — {short name}
 
 **Who:** {one sentence}
 
@@ -113,7 +125,7 @@ When {situation}, I want to {motivation}, so I can {outcome}.
 **Pain:**
 - Cost: {quantified}
 - Frequency: {...}
-- Evidence: {Signal citations}
+- Evidence: {Signal anchors}
 
 **Current Workaround:**
 {tools + time + why}
@@ -124,18 +136,21 @@ When {situation}, I want to {motivation}, so I can {outcome}.
 **Anti-Persona (NOT this):**
 - {adjacent persona} — {why excluded}
 
-**Evidence strength:** {Strong / Moderate / Thin — based on # signals cited}
 **Discovery gaps:** {list any fields marked TODO, or "none"}
 ```
 
-Also return a summary to the user:
+**Index row:**
+`| {slug} | {short name} | {evidence_strength} | YYYY-MM-DD |`
+
+Then return a summary to the user:
+
 ```
 ## Persona Defined
 
 **Name:** {short name}
-**Product:** {...}
 **Evidence strength:** {Strong ≥5 signals / Moderate 2–4 / Thin <2}
-**Saved to:** Notion KB page "{title}" {+ docs/persona-{slug}.md if local}
+**Saved to:** data/personas/{slug}.md
+**Index updated:** data/personas/index.md
 **Open gaps:** {any TODOs}
 ```
 
@@ -150,7 +165,7 @@ Also return a summary to the user:
 **Pain:**
 - Cost: 45–90 minutes every Monday on manual aggregation; ~3 tasks/month slip through the cracks.
 - Frequency: weekly (the review) + daily low-grade anxiety about what's dropping.
-- Evidence: 2026-03-02 Internal Learning — "three tasks missed last week"; 2026-03-15 User Feedback — "forgot competitor move from prior week"; 4 of 5 interviewed solo PMs described the same ritual.
+- Evidence: `../signals/active.md#three-tasks-missed-2026-03-02`, `../signals/active.md#forgot-competitor-move-2026-03-15`; 4 of 5 interviewed solo PMs described the same ritual.
 
 **Current Workaround:** Stitching together Notion views, Linear filters, and memory. Takes 60+ minutes. It's the least-bad option because no tool today aggregates across multi-product indie setups.
 
@@ -179,7 +194,7 @@ Reject or redirect these:
 Contextual to what the persona surfaced:
 
 - Evidence is Thin → `/log-signal` after each user interview; run this skill again in 30 days.
-- Persona is sharp + product needs specing → `/write-prd` referencing this persona.
+- Persona is sharp + product needs specing → `/write-prd` referencing this persona file.
 - Persona reveals a distribution trigger → consult **growth-engineer** on how to reach them at that trigger moment.
 - Persona conflicts with existing positioning → `/log-decision` (Type: Positioning) to resolve the conflict.
 - Anti-persona is actually the bigger market → reconsider the bet via `/evaluate-opportunity`.

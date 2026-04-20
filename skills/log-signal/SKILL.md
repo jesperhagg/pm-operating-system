@@ -1,10 +1,10 @@
 ---
-description: Log a time-stamped observation to the Notion Signals database. Captures user feedback, competitive moves, market signals, technical constraints, or internal learnings with structured metadata and an optional Action Required flag.
+description: Log a time-stamped observation to data/signals/active.md as an H3 section with structured metadata. Captures user feedback, competitive moves, market signals, technical constraints, or internal learnings with an optional Action Required flag.
 ---
 
 # Log Signal
 
-This skill writes a single observation to the Notion Signals database.
+This skill appends a single observation to `data/signals/active.md`.
 Use it when something **happened** that a PM should notice but isn't
 (yet) a commitment. Unlike `/log-decision` (which records what *we*
 chose), `/log-signal` records what *the world did* or what we observed.
@@ -16,7 +16,8 @@ chose), `/log-signal` records what *the world did* or what we observed.
 - Use `/knowledge add research` for synthesized, durable learnings:
   "what we know about persona X."
 
-See the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for the full distinction.
+See the **DB Routing Rubric** in `.claude/context/data-schemas.md` for
+the full distinction.
 
 ## Before Starting — Self-Hydration
 
@@ -28,66 +29,64 @@ See the **DB Routing Rubric** in `.claude/context/notion-schemas.md` for the ful
    - What did you observe? (one-sentence headline)
    - When did it happen? (date of the source event, not today)
    - Where did you see it? (source)
-4. Use Notion MCP to fetch recent Signals for this product (last 30 days)
-   to check for duplicates.
+4. Grep `data/signals/active.md` for similar headlines from the last
+   30 days to check for duplicates.
 
 ## Signal Structure
 
-This skill writes to the shared Signals database (see `.claude/context/notion-schemas.md`
-for full property definitions). Capture the signal
-with these fields:
+This skill writes an H3 section to `data/signals/active.md`. See
+`.claude/context/data-schemas.md` for the full format.
 
-### Required Fields
-- **Signal** — one-sentence headline of the observation.
-- **Date** — when the observation occurred (the source event's date, NOT
-  today's date).
-- **Type** — one of:
-  - `User Feedback` — recurring user complaint, praise, or behavior pattern
-    (3+ source mentions, not a one-off)
+### Required Fields (in the metadata comment)
+- **date** — when the observation occurred (the source event's date,
+  NOT today's date).
+- **type** — one of:
+  - `User Feedback` — recurring user complaint, praise, or behavior
+    pattern (3+ source mentions, not a one-off)
   - `Technical Constraint` — a build-time discovery (API limit, latency
     surprise, cost ceiling, platform restriction)
-  - `Market Signal` — funding round, market movement, regulatory change,
-    macro shift
-  - `Competitive Move` — competitor launched, priced, pivoted, or acquired
-  - `Internal Learning` — a validated or invalidated assumption from our
-    own experiments, builds, or analysis
-- **Source** — where this signal came from (URL, interview reference,
+  - `Market Signal` — funding round, market movement, regulatory
+    change, macro shift
+  - `Competitive Move` — competitor launched, priced, pivoted, or
+    acquired
+  - `Internal Learning` — a validated or invalidated assumption from
+    our own experiments, builds, or analysis
+- **source** — where this signal came from (URL, interview reference,
   analytics dashboard, competitor site, etc.). Must be concrete.
-- **Product** — which product(s) this applies to (multi-select).
 
-### Context Fields
+### Body
 - **Implication** — what this means for the product or strategy
   (1–2 sentences). Be concrete about what changes or what we need to
   watch.
-- **Linked Decision** — if this signal connects to a prior decision
-  (supports it, contradicts it, or should trigger a new one), reference
-  the decision title or date.
-- **Action Required** — checkbox. Set to `true` if this signal demands
-  an explicit PM response (a decision, an experiment, a scope change).
-  If it's just observational context for later, leave `false`.
+
+### Optional Fields (in metadata comment)
+- **action_required** — `true` if this signal demands an explicit PM
+  response (a decision, an experiment, a scope change). Default `false`.
+- **linked_decision** — relative path to a decision this signal connects
+  to (supports, contradicts, or should trigger).
 
 ## The "Action Required" Test
 
-Before setting `Action Required = true`, the signal must pass this test:
+Before setting `action_required:true`, the signal must pass this test:
 *"If I ignore this signal for 2 weeks, something meaningful goes wrong."*
 If the answer is no, leave it `false`. Action Required signals surface in
 `/weekly-review` and are meant to be triaged — overusing the flag defeats
 the purpose.
 
-## Writing to Notion
+## Writing the Signal
 
-Use Notion MCP to create a new page in the Signals database:
-- Set `Signal` (title) to the one-sentence headline
-- Set `Date` to the source event's date
-- Set `Type`, `Source`, `Implication`, `Action Required`
-- Set `Product` multi-select to the identified product
-- Set `Linked Decision` if one was identified
+1. Read the current `data/signals/active.md` (or create it with a `# Active Signals` H1 header if missing).
+2. Construct the H3 block:
 
-If Notion MCP is not available or the write fails:
-- Log the signal to `.claude/memory/shared.md` under a
-  `Signals (Notion fallback)` section.
-- Format: `- [{date}] **{product}** — **{type}**: {signal} — Source: {source} — Implication: {implication} — Action: {yes/no}`
-- At next session start, `/tasks` will prompt to sync these to Notion.
+   ```markdown
+   ### {Headline one-liner}
+   <!-- date:YYYY-MM-DD type:"{Type}" source:"{source}" action_required:{true|false}{ linked_decision:"../decisions/...md" if set} -->
+
+   **Implication:** {1–2 sentences}.
+   ```
+
+3. Insert the new block at the top of the file (immediately after the H1
+   header, before any existing H3 sections). Newest-first ordering.
 
 ## Output
 
@@ -96,31 +95,30 @@ Confirm what was logged:
 ```
 ## Signal Logged
 
-**Product:** {product}
 **Type:** {type}
 **Signal:** {headline}
 **Date:** {source date}
 **Source:** {source}
 **Implication:** {implication}
 **Action Required:** {yes/no}
-**Written to:** Notion Signals database [or local memory fallback]
+**Written to:** data/signals/active.md (top of file)
 ```
 
 ## Follow-ups
 
 Suggest 1–3 contextual next steps based on the signal just logged:
 
-- If `Action Required = true`:
+- If `action_required:true`:
   → "This signal demands a response. Want to run `/log-decision` now to
   commit to a direction, or `/weekly-review` to see it alongside other
   action-required signals?"
-- If `Type = Competitive Move` or `Market Signal`:
+- If `type = Competitive Move` or `Market Signal`:
   → "Want me to run `/market-scan` to pull fresh context on this market?"
-- If `Type = User Feedback` and it's the 3rd+ similar signal in 30 days:
+- If `type = User Feedback` and it's the 3rd+ similar signal in 30 days:
   → "This is a recurring pattern. Want to run `/evaluate-opportunity` on
   the underlying user job?"
-- If `Type = Internal Learning` and it invalidates a prior decision:
-  → "Want me to update the Outcome on the linked decision to
+- If `type = Internal Learning` and it invalidates a prior decision:
+  → "Want me to update the outcome on the linked decision to
   `Invalidated` via `/log-decision`?"
 
 ## Anti-Patterns

@@ -3,7 +3,7 @@
 My personal AI-native product management operating system, built as a
 Claude Code plugin. It encodes the PM frameworks I actually use into
 reusable slash commands and specialized agents — grounded in live product
-data from Notion, not templates or hypotheticals.
+data from the repo's `data/` directory, not templates or hypotheticals.
 
 ## Why this exists
 
@@ -11,7 +11,7 @@ I manage multiple products as a solo founder. Repeatable PM work — PRDs,
 opportunity scoring, market scans, decision logging, weekly reviews —
 follows the same frameworks every time, but needs fresh product context
 each time. This plugin solves that: the frameworks are codified here, the
-context is pulled live from Notion at runtime.
+context is read from markdown files in the product repo itself.
 
 I also use this repo to develop the operating system itself — with a
 meta-agent for architectural guidance and an eval skill for quality
@@ -20,9 +20,9 @@ auditing.
 ## How I use it
 
 I install this as a Claude Code plugin in each of my product repos. The
-skills and agents become available as slash commands in any repo, pulling
-that product's context from Notion automatically. No product data lives
-here — every skill is product-agnostic by design.
+skills and agents become available as slash commands in any repo, reading
+that product's `data/` files automatically. One product per repo — the
+repo IS the product.
 
 ```
 claude plugin marketplace add <path-or-github-url>
@@ -32,17 +32,21 @@ claude plugin marketplace add <path-or-github-url>
 
 | Skill | What it does |
 |-------|-------------|
-| `/fetch-context` | Pulls live product context from Notion (decisions, personas, backlog, recent Signals, Market Landscape) |
-| `/write-prd` | Writes a PRD using a 6-section framework, hydrated with Notion context |
-| `/evaluate-opportunity` | Scores an opportunity on 5 dimensions — Explore, Park, or Kill |
-| `/market-scan <product>` | Scans competitive landscape with parallel web search and dual-writes findings to Knowledge Base (Market Landscape) and Signals |
+| `/fetch-context` | Reads product context from `data/` (decisions, personas, backlog, recent Signals, Market Landscape) |
+| `/write-prd` | Writes a PRD using a 6-section framework, hydrated from `data/` |
+| `/evaluate-opportunity` | Scores an opportunity on 4 dimensions — Pursue, Pursue narrow, Park, or Kill |
+| `/market-scan <market>` | Scans competitive landscape with parallel web search and appends findings to `data/knowledge/market-landscape/` and `data/signals/active.md` |
 | `/break-down` | Decomposes a PRD into kanban-ready work items using JTBD framing |
-| `/weekly-review` | Portfolio-level weekly review: what shipped, what's blocked, Action Required signals, what's next |
-| `/log-decision` | Logs a product decision to Notion with structured metadata |
-| `/log-signal` | Logs a time-stamped observation (user feedback, competitive move, market signal, technical constraint, internal learning) to the Signals database |
-| `/knowledge` | Manages stakeholder profiles, reference docs, research, and Market Landscape entries in Notion |
-| `/tasks` | Surfaces active tasks from Notion backlog (runs at session start) |
-| `/memory-review` | Reviews and prunes memory files and Notion entries for staleness |
+| `/weekly-review` | Weekly review: what shipped, what's blocked, Action Required signals, what's next. Portfolio mode supports multi-repo rollup. |
+| `/log-decision` | Writes a structured decision file to `data/decisions/` |
+| `/log-signal` | Appends a time-stamped observation (user feedback, competitive move, market signal, technical constraint, internal learning) to `data/signals/active.md` |
+| `/knowledge` | Manages stakeholder profiles, reference docs, research, and Market Landscape entries in `data/knowledge/` |
+| `/tasks` | Surfaces active tasks from `data/tasks/active.md` (runs at session start) |
+| `/define-persona` | Writes a persona file grounded in evidence to `data/personas/` |
+| `/design-experiment` | Structures a falsifiable experiment with pre-committed thresholds |
+| `/pricing` | Structures a pricing decision: value metric, anchor, tiers, WTP validation plan |
+| `/sunset-product` | Guided kill/park/graduate workflow with retro + archival |
+| `/memory-review` | Reviews and prunes `data/` entries for staleness |
 | `/pm-digest` | Daily PM + AI news digest (internal, not exported) |
 
 ## Agents
@@ -59,12 +63,9 @@ other agent for cross-domain input, using a shared scratchpad for handoff.
 
 ## Setup
 
-Two MCP servers are required:
+One MCP server is required:
 
-1. **Notion** — live product context (decisions, personas, backlog,
-   signals, market landscape)
-2. **Tavily** — web search and content extraction (for `/market-scan`,
-   `/pm-digest`)
+- **Tavily** — web search and content extraction (for `/market-scan` and `/pm-digest`)
 
 Steps:
 
@@ -72,22 +73,34 @@ Steps:
 2. Replace API key placeholders with your keys
 3. Restart your Claude Code session
 
-Four Notion databases are expected (see the full schema and the **DB
-Routing Rubric** in `CLAUDE.md`):
+## Data layout (in the consumer repo)
 
-**Knowledge Base** — durable synthesized knowledge. Categories: `People`,
-`Reference`, `Research`, `Market Landscape`. Used by `/knowledge` and
-`/market-scan`.
+Product data lives in markdown under `data/`:
 
-**Task Management** — shared backlog. Status, Priority, Product, Blocker,
-Due Date. Used by `/tasks` and `/fetch-context`.
+```
+data/
+├── signals/active.md              # H3 per signal, newest first, inline metadata
+├── decisions/
+│   ├── index.md                   # One-line-per-decision manifest
+│   └── YYYY-MM-DD-slug.md         # One file per decision
+├── knowledge/
+│   ├── people/
+│   ├── reference/
+│   ├── research/
+│   └── market-landscape/          # Living docs, `## Scan —` append-only
+├── personas/
+│   ├── index.md
+│   └── {slug}.md                  # One file per persona
+└── tasks/
+    ├── active.md                  # Now / Next / Later checkboxes
+    └── done.md                    # Completed tasks
+```
 
-**Decisions** — commitments the PM has made. Type, Status, Context,
-Impact, Outcome, Agent. Used by `/log-decision`, `/weekly-review`, and
-all agents.
+See `.claude/context/data-schemas.md` for full frontmatter and file
+conventions.
 
-**Signals** — time-stamped observations (user feedback, competitive
-moves, market signals, technical constraints, internal learnings) with an
-Action Required flag. Used by `/log-signal`, `/market-scan`,
-`/fetch-context`, `/weekly-review`, and all agents.
+### Migrating from Notion
 
+If you previously ran this plugin against Notion databases, run
+`/migrate-from-notion` once to export pages into the `data/` layout.
+It's idempotent — safe to re-run.

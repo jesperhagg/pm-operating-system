@@ -22,7 +22,7 @@
 **Don't:**
 
 - Write files, create PRs, or take irreversible actions without asking.
-- Assume product details — always fetch from Notion.
+- Assume product details — always read from `data/`.
 - Recommend capabilities I already have (check skill list below).
 - Ask questions inferrable from context.
 
@@ -49,6 +49,23 @@ When I mention these keywords, run the corresponding skill:
 | "research", "insights", "what do we know about" | `/knowledge research` |
 | "my tasks", "what am I working on", "what's active" | `/tasks` |
 
+## Data Routing
+
+Product data lives in `data/` in the repo. Skills read and write these files
+directly — no external database, no MCP fetch, no caching across calls.
+
+| Data | Location | Shape |
+|---|---|---|
+| Decisions | `data/decisions/` | One file per decision (`YYYY-MM-DD-slug.md`) + `index.md` |
+| Signals | `data/signals/active.md` (+ `archive/YYYY-QN.md`) | H3 per signal, inline HTML-comment metadata |
+| Knowledge | `data/knowledge/{people,reference,research,market-landscape}/` | One file per entry; market-landscape is append-only `## Scan —` sections |
+| Personas | `data/personas/` | One file per persona + `index.md` |
+| Tasks | `data/tasks/active.md`, `data/tasks/done.md` | Markdown checkboxes + HTML-comment metadata |
+
+One product per repo — there is no `Product` field. The repo IS the product.
+
+See `.claude/context/data-schemas.md` for full frontmatter and file conventions.
+
 ## Session Start
 
 Run `/tasks` at the start of every conversation to show active work before asking what I need. Skip if I say "skip tasks".
@@ -57,19 +74,18 @@ Run `/tasks` at the start of every conversation to show active work before askin
 
 | Server | Purpose | If unavailable |
 |---|---|---|
-| Notion | Source of truth for product data | Fatal — say so, do not proceed with invented context |
 | Tavily | Web search + extraction | Graceful — skip web sections, note limitation |
 
 Rules:
-- Never fabricate product context. Always fetch from Notion first.
+- Never fabricate product context. Always read from `data/` first.
 - Tavily is for market scans and digests only, not product context.
 
 ## Context Rules
 
 - Product question → `/fetch-context`
 - Meeting prep → `/knowledge people`
-- Strategic decision → reference prior Decisions from Notion
-- Context window filling up → proactively summarize and offload to Notion
+- Strategic decision → reference prior Decisions from `data/decisions/`
+- Context window filling up → proactively summarize and offload to `data/` files
 
 ## Agent Escalation
 
@@ -90,6 +106,6 @@ For dev work on this repo — modifying skills, agents, or plugin infrastructure
 
 - Before committing, verify changes against the pre-commit checklist in `dev-standards.md`.
 - Dev standards: `.claude/context/dev-standards.md`
-- Notion DB schemas + routing rubric: `.claude/context/notion-schemas.md`
+- Data layer schemas + DB routing rubric: `.claude/context/data-schemas.md`
 - Repo structure and file index: `.claude/REPO-MAP.md`
 - Architecture: skills own methodology, agents are lightweight chat personas. When in doubt, push logic into the skill.
