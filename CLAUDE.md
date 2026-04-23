@@ -69,6 +69,27 @@ Before committing changes to `.claude/skills/`, `.claude/agents/`, or `.claude/c
 3. If multiple skills/agents changed, check cross-file consistency and follow-up references.
 4. Run `/generate-repo-map` if files were added or removed.
 
+## Consumer Repo Setup
+
+Add this repo as a submodule at `.claude/` in the consumer repo:
+
+```bash
+git submodule add git@github.com:jesperhagg/pm-operating-system.git .claude
+git submodule update --init
+```
+
+Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The consumer repo keeps its own `CLAUDE.md` at root with product context and its `data/` directory for product data.
+
+To auto-update the submodule on session start, add to global `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "git submodule update --remote --merge .claude" }] }]
+  }
+}
+```
+
 ## MCP Usage
 
 | Server | Purpose | If unavailable |

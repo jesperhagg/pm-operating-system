@@ -10,18 +10,5 @@
   "statusLine": {
     "type": "command",
     "command": "input=$(cat); remaining=$(echo \"$input\" | jq -r '.context_window.remaining_percentage // empty'); [ -n \"$remaining\" ] && printf \"Context: %.0f%% remaining\" \"$remaining\""
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/scripts/repo-map-hook.sh"
-          }
-        ]
-      }
-    ]
   }
 }
