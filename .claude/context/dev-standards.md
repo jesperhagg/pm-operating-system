@@ -2,11 +2,9 @@
 
 ## File Conventions
 
-- Plugin-exported skills live in `skills/<skill-name>/SKILL.md`
-- Internal skills (plugin-dev only) live in `.claude/skills/<skill-name>/SKILL.md`
-- Agents live in `agents/<agent-name>/AGENT.md` (top-level — exported to consumer repos)
-- Plugin manifest lives in `.claude-plugin/plugin.json`
-- Marketplace listing lives in `.claude-plugin/marketplace.json`
+- Skills live in `.claude/skills/<skill-name>/SKILL.md`
+- Agents live in `.claude/agents/<agent-name>/AGENT.md`
+- Commands live in `.claude/commands/<command-name>.md`
 - MCP config template lives in `.mcp.json.example`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
@@ -120,19 +118,14 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 - Litmus test: "Would this skill work identically for a different product
   with different `data/` content?" If not, it is not product-agnostic.
 
-## Plugin Export Conventions
+## Submodule Conventions
 
-- `skills/<name>/SKILL.md` — exported via plugin, available in consumer
-  repos.
-- `agents/<name>/AGENT.md` — exported via plugin, available in consumer
-  repos.
-- `.claude/skills/<name>/SKILL.md` — internal (plugin-dev only), only
-  available in this repo.
-- Plugin manifest (`.claude-plugin/plugin.json`) gets a version bump when
-  exported skills or agents change materially. Skills and agents are
-  auto-discovered from their directories — no enumeration required.
-- Marketplace listing (`.claude-plugin/marketplace.json`) is updated only
-  for significant releases or description changes.
+- All skills in `.claude/skills/` and agents in `.claude/agents/` are
+  available to consumer repos via the submodule.
+- Skills and agents are auto-discovered from their directories — no
+  enumeration required.
+- Commands in `.claude/commands/` are available as slash commands when the
+  submodule is wired up in the consumer repo.
 
 ## Frontmatter Conventions
 
@@ -166,8 +159,8 @@ from. The `/memory-review` skill curates this file alongside `data/`.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
-Before committing changes to `skills/`, `.claude/skills/`, `agents/`,
-`dev-standards.md`, or `plugin.json`:
+Before committing changes to `.claude/skills/`, `.claude/agents/`,
+`.claude/commands/`, or `dev-standards.md`:
 
 1. **Diff check** — `git diff --stat HEAD` to confirm scope of changes.
 2. **Standards compliance** — verify changed files against the relevant

@@ -1,6 +1,6 @@
 ## This Repo
 
-This is the **pm-os Claude Code plugin** — a framework of 19 PM skills and 4 agents packaged for installation into product repos. Dev work here means authoring or modifying skills, agents, and plugin infrastructure.
+This is the **pm-os submodule** — a framework of 19 PM skills and 4 agents delivered as a git submodule to consumer repos. Dev work here means authoring or modifying skills, agents, commands, and submodule infrastructure.
 
 This is **not** a product repo. There is no `data/` directory here and none should be created. Product data lives in consumer repos at runtime.
 
@@ -27,7 +27,7 @@ When scope is unclear, read `.claude/REPO-MAP.md` first.
 - Recommend capabilities I already have (check `.claude/REPO-MAP.md`).
 - Ask questions inferrable from context.
 
-## Plugin Dev — Architecture
+## Dev — Architecture
 
 Full standards in `.claude/context/dev-standards.md`. Key constraints:
 
@@ -45,11 +45,11 @@ Full standards in `.claude/context/dev-standards.md`. Key constraints:
 - Zero product data in this repo. Skills read `data/` at runtime from the consumer repo.
 - Litmus test: "Would this skill work identically for a different product with different `data/`?" If not, it's not product-agnostic.
 
-**Plugin export:**
-- Skills and agents are auto-discovered from `skills/` and `agents/` — no manifest enumeration needed.
-- Bump version in `.claude-plugin/plugin.json` when exported skills or agents change materially.
+**Submodule layout:**
+- Skills and agents are auto-discovered by Claude Code from `.claude/skills/` and `.claude/agents/`.
+- Commands live in `.claude/commands/` and are available as slash commands in consumer repos.
 
-## Plugin Dev — When to Run What
+## Dev — When to Run What
 
 Skills available in this repo:
 
@@ -58,10 +58,11 @@ Skills available in this repo:
 | `/generate-repo-map` | After adding, removing, or renaming any skill or agent — regenerates `.claude/REPO-MAP.md` |
 | `/pm-digest` | Search web for PM + AI news and produce a structured digest (uses Tavily) |
 | `/migrate-from-notion` | One-shot migration of legacy Notion product data into a consumer repo's `data/` layout |
+| `/update-submodule` | Update this submodule to latest in a consumer repo |
 
-## Plugin Dev — Before Committing
+## Dev — Before Committing
 
-Before committing changes to `skills/`, `.claude/skills/`, `agents/`, or `plugin.json`:
+Before committing changes to `.claude/skills/`, `.claude/agents/`, or `.claude/commands/`:
 
 1. `git diff --stat HEAD` — confirm scope of changes.
 2. Verify against `.claude/context/dev-standards.md` (Skill Design Pattern, Agent Design Pattern, etc.).
