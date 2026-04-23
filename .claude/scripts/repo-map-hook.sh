@@ -11,10 +11,9 @@ FILE_PATH=$(printf '%s' "$INPUT" \
   | sed 's/"file_path"[[:space:]]*:[[:space:]]*"//' \
   | sed 's/"$//')
 
-# Only proceed if the modified file is a SKILL.md or AGENT.md in the
-# relevant directories (skills/, .claude/skills/, .claude/agents/)
+# Only proceed if the modified file is a SKILL.md, AGENT.md, or command in .claude/
 if printf '%s' "$FILE_PATH" \
-  | grep -qE '(^|/)skills/[^/]+/SKILL\.md$|(^|/)\.claude/(skills|agents)/[^/]+/(SKILL|AGENT)\.md$'; then
+  | grep -qE '(^|/)\.claude/(skills|agents)/[^/]+/(SKILL|AGENT)\.md$|(^|/)\.claude/commands/[^/]+\.md$'; then
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
   bash "$SCRIPT_DIR/generate-repo-map.sh"
 fi
