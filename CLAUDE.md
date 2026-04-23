@@ -1,9 +1,10 @@
-## Who I Am
+## This Repo
 
-- **Jesper** — Solo founder, PM background. Non-engineer.
-- **How I work:** systems thinking, fast action, test before spec.
-- **Energizes me:** learning, shipping, when you challenge my assumptions with specifics.
-- **Drains me:** walls of text, long specs, overcomplicating.
+This is the **pm-os Claude Code plugin** — a framework of 19 PM skills and 4 agents packaged for installation into product repos. Dev work here means authoring or modifying skills, agents, and plugin infrastructure.
+
+This is **not** a product repo. There is no `data/` directory here and none should be created. Product data lives in consumer repos at runtime.
+
+When scope is unclear, read `.claude/REPO-MAP.md` first.
 
 ## How to Work With Me
 
@@ -22,94 +23,62 @@
 **Don't:**
 
 - Write files, create PRs, or take irreversible actions without asking.
-- Assume product details — always read from `data/`.
-- Recommend capabilities I already have (check skill list below).
+- Hardcode product names, personas, or features into skills or agents.
+- Recommend capabilities I already have (check `.claude/REPO-MAP.md`).
 - Ask questions inferrable from context.
 
-## Skill Routing
+## Plugin Dev — Architecture
 
-When I mention these keywords, run the corresponding skill:
+Full standards in `.claude/context/dev-standards.md`. Key constraints:
 
-| When I say... | Run... |
+**Skills:**
+- Self-sufficient. Four-phase execution: Hydration → Framework → Output → Follow-ups.
+- The framework section is the IP. If it reads like generic advice, it's not a skill.
+- Follow-ups must reference real skill names with slash-command syntax.
+
+**Agents:**
+- 40–70 lines. Chat personas only — no orchestration, no data hydration, no file writes.
+- Required sections: Persona, Decision Principles, Challenge Style, What I Push Back On, Out of Scope.
+- Forbidden sections: Objectives, Proactive Checks, Capabilities tables, Output Format templates, Collaboration/Memory protocols.
+
+**Product-agnostic principle:**
+- Zero product data in this repo. Skills read `data/` at runtime from the consumer repo.
+- Litmus test: "Would this skill work identically for a different product with different `data/`?" If not, it's not product-agnostic.
+
+**Plugin export:**
+- Skills and agents are auto-discovered from `skills/` and `agents/` — no manifest enumeration needed.
+- Bump version in `.claude-plugin/plugin.json` when exported skills or agents change materially.
+
+## Plugin Dev — When to Run What
+
+Skills available in this repo:
+
+| Skill | When to use |
 |---|---|
-| "evaluate", "opportunity", "score" | `/evaluate-opportunity` |
-| "PRD", "spec", "requirements" | `/write-prd` |
-| "break down", "decompose", "tasks from this" | `/break-down` |
-| "experiment", "test", "validate", "hypothesis" | `/design-experiment` |
-| "persona", "customer", "who is this for" | `/define-persona` |
-| "pricing", "price", "charge", "what to charge" | `/pricing` |
-| "kill", "park", "sunset", "shut down" | `/sunset-product` |
-| "competitors", "market", "landscape" | `/market-scan` |
-| "decision", "log", "decided" | `/log-decision` |
-| "signal", "competitor moved", "funding round", "user feedback pattern" | `/log-signal` |
-| "lead", "prospect", "new contact", "add lead" | `/log-lead` |
-| "outreach", "sent email to", "followed up", "they replied", "log interaction" | `/log-interaction` |
-| "pipeline", "deal flow", "who should I follow up with", "overdue leads" | `/pipeline` |
-| "review", "weekly", "what shipped" | `/weekly-review` |
-| "memory", "clean up", "stale" | `/memory-review` |
-| "digest", "news", "what's happening" | `/pm-digest` |
-| person name, "stakeholder", "who is" | `/knowledge people` |
-| "research", "insights", "what do we know about" | `/knowledge research` |
-| "my tasks", "what am I working on", "what's active" | `/tasks` |
+| `/generate-repo-map` | After adding, removing, or renaming any skill or agent — regenerates `.claude/REPO-MAP.md` |
+| `/pm-digest` | Search web for PM + AI news and produce a structured digest (uses Tavily) |
+| `/migrate-from-notion` | One-shot migration of legacy Notion product data into a consumer repo's `data/` layout |
 
-## Data Routing
+## Plugin Dev — Before Committing
 
-Product data lives in `data/` in the repo. Skills read and write these files
-directly — no external database, no MCP fetch, no caching across calls.
+Before committing changes to `skills/`, `.claude/skills/`, `agents/`, or `plugin.json`:
 
-| Data | Location | Shape |
-|---|---|---|
-| Decisions | `data/decisions/` | One file per decision (`YYYY-MM-DD-slug.md`) + `index.md` |
-| Signals | `data/signals/active.md` (+ `archive/YYYY-QN.md`) | H3 per signal, inline HTML-comment metadata |
-| Knowledge | `data/knowledge/{people,reference,research,market-landscape}/` | One file per entry; market-landscape is append-only `## Scan —` sections |
-| Personas | `data/personas/` | One file per persona + `index.md` |
-| Leads | `data/leads/` (+ `index.md`, `archive/`) | One file per lead; frontmatter for pipeline state, `## Interactions` for append-only event log |
-| Tasks | `data/tasks/active.md`, `data/tasks/done.md` | Markdown checkboxes + HTML-comment metadata |
-
-One product per repo — there is no `Product` field. The repo IS the product.
-
-See `.claude/context/data-schemas.md` for full frontmatter and file conventions.
-
-## Session Start
-
-Run `/tasks` at the start of every conversation to show active work before asking what I need. Skip if I say "skip tasks".
+1. `git diff --stat HEAD` — confirm scope of changes.
+2. Verify against `.claude/context/dev-standards.md` (Skill Design Pattern, Agent Design Pattern, etc.).
+3. If multiple skills/agents changed, check cross-file consistency and follow-up references.
+4. Run `/generate-repo-map` if files were added or removed.
 
 ## MCP Usage
 
 | Server | Purpose | If unavailable |
 |---|---|---|
-| Tavily | Web search + extraction | Graceful — skip web sections, note limitation |
-
-Rules:
-- Never fabricate product context. Always read from `data/` first.
-- Tavily is for market scans and digests only, not product context.
-
-## Context Rules
-
-- Product question → `/fetch-context`
-- Meeting prep → `/knowledge people`
-- Strategic decision → reference prior Decisions from `data/decisions/`
-- Context window filling up → proactively summarize and offload to `data/` files
+| Tavily | Web search + extraction (used by `/pm-digest`) | Graceful — skip web sections, note limitation |
 
 ## Agent Escalation
 
-Agents are in-chat chat personas (pushback, not orchestration). Suggest one when my question is strategic and cross-cutting:
+Agents are in-chat chat personas (pushback, not orchestration). Suggest one when the question is strategic and cross-cutting:
 
 - GTM, moat, unit economics → `startup-advisor`
 - MVP scoping, feature cuts, backlogs → `product-sculptor`
 - Distribution, funnels, positioning → `growth-engineer`
 - Architecture, technical decisions, cost modeling → `systems-architect`
-
-## Memory Hygiene
-
-After a session with a significant decision, prompt me to `/log-decision`. Never log without asking.
-
-## This Repo (PM OS Plugin)
-
-For dev work on this repo — modifying skills, agents, or plugin infrastructure:
-
-- Before committing, verify changes against the pre-commit checklist in `dev-standards.md`.
-- Dev standards: `.claude/context/dev-standards.md`
-- Data layer schemas + DB routing rubric: `.claude/context/data-schemas.md`
-- Repo structure and file index: `.claude/REPO-MAP.md`
-- Architecture: skills own methodology, agents are lightweight chat personas. When in doubt, push logic into the skill.
