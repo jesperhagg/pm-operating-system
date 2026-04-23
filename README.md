@@ -1,9 +1,9 @@
 # PM Operating System
 
-My personal AI-native product management operating system, built as a
-Claude Code plugin. It encodes the PM frameworks I actually use into
-reusable slash commands and specialized agents — grounded in live product
-data from the repo's `data/` directory, not templates or hypotheticals.
+My personal AI-native product management operating system, delivered as a
+git submodule. It encodes the PM frameworks I actually use into reusable
+slash commands and specialized agents — grounded in live product data from
+the consumer repo's `data/` directory, not templates or hypotheticals.
 
 ## Why this exists
 
@@ -19,13 +19,14 @@ auditing.
 
 ## How I use it
 
-I install this as a Claude Code plugin in each of my product repos. The
-skills and agents become available as slash commands in any repo, reading
+I add this as a git submodule at `.claude/` in each product repo. Claude
+Code auto-discovers the skills, agents, and commands from there, reading
 that product's `data/` files automatically. One product per repo — the
 repo IS the product.
 
-```
-claude plugin marketplace add <path-or-github-url>
+```bash
+git submodule add git@github.com:jesperhagg/pm-operating-system.git .claude
+git submodule update --init
 ```
 
 ## Skills
@@ -57,9 +58,6 @@ claude plugin marketplace add <path-or-github-url>
 | `product-sculptor` | Sculpts MVPs to atomic core, defines JTBD backlogs |
 | `growth-engineer` | Distribution-first growth strategy, pre-launch funnels, copy |
 | `systems-architect` | System design, APIs, infrastructure, security, AI/LLM systems |
-
-Agents collaborate via a one-hop protocol — any agent can consult one
-other agent for cross-domain input, using a shared scratchpad for handoff.
 
 ## Setup
 
@@ -96,11 +94,11 @@ data/
     └── done.md                    # Completed tasks
 ```
 
-See `.claude/context/data-schemas.md` for full frontmatter and file
+See `context/data-schemas.md` in this repo for full frontmatter and file
 conventions.
 
 ### Migrating from Notion
 
-If you previously ran this plugin against Notion databases, run
+If you previously ran this against Notion databases, run
 `/migrate-from-notion` once to export pages into the `data/` layout.
 It's idempotent — safe to re-run.

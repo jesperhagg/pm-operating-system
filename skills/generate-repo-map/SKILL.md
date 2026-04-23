@@ -1,10 +1,10 @@
 ---
-description: Regenerate .claude/REPO-MAP.md by scanning current skills, agents, and context files. Run after adding, removing, or renaming any skill or agent.
+description: Regenerate REPO-MAP.md by scanning current skills, agents, and context files. Run after adding, removing, or renaming any skill or agent.
 ---
 
 # Generate Repo Map
 
-Regenerate `.claude/REPO-MAP.md` with accurate file paths and line counts by
+Regenerate `REPO-MAP.md` with accurate file paths and line counts by
 scanning the current state of the repo.
 
 **Trigger phrases:** "update repo map", "regenerate map", "refresh repo map",
@@ -14,24 +14,24 @@ or explicit `/generate-repo-map`
 
 Run these four scans in parallel:
 
-1. **Skills** — list all `.claude/skills/*/SKILL.md` files. For each, record:
+1. **Skills** — list all `skills/*/SKILL.md` files. For each, record:
    - Skill name (directory name prefixed with `/`)
    - Relative path
    - Line count
    - `description` value from frontmatter (first sentence only)
 
-2. **Agents** — list all `.claude/agents/*/AGENT.md` files. For each, record:
+2. **Agents** — list all `agents/*/AGENT.md` files. For each, record:
    - Agent name (from frontmatter `name` field, or directory name)
    - Relative path
    - Line count
    - `description` value from frontmatter
 
-3. **Commands** — list all `.claude/commands/*.md` files. For each, record:
+3. **Commands** — list all `commands/*.md` files. For each, record:
    - Command name (filename without `.md`, prefixed with `/`)
    - Relative path
    - `description` value from frontmatter
 
-4. **Context files** — list all `.claude/context/*.md` files. For each, record:
+4. **Context files** — list all `context/*.md` files. For each, record:
    - Filename
    - Line count
    - When to load (infer from filename: data-schemas → "Writing to data/ (Decisions, Signals, Knowledge, Personas, Tasks)",
@@ -39,7 +39,7 @@ Run these four scans in parallel:
 
 ## Step 2: Build the Map
 
-Write `.claude/REPO-MAP.md` with this exact structure:
+Write `REPO-MAP.md` with this exact structure:
 
 ```markdown
 # PM OS — Repo Map
@@ -49,30 +49,30 @@ _Last generated: {today's date} | {N} skills / {K} agents / {C} commands_
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `.claude/skills/` | Skills (available in consumer repos via submodule) | {N} |
-| `.claude/agents/` | Chat-persona agents (available in consumer repos) | {K} |
-| `.claude/commands/` | Slash commands (available in consumer repos) | {C} |
-| `.claude/context/` | Lazy-loaded reference docs | {J} |
+| `skills/` | Skills (available in consumer repos via submodule) | {N} |
+| `agents/` | Chat-persona agents (available in consumer repos) | {K} |
+| `commands/` | Slash commands (available in consumer repos) | {C} |
+| `context/` | Lazy-loaded reference docs | {J} |
 
-## Skills — `.claude/skills/*/SKILL.md`
+## Skills — `skills/*/SKILL.md`
 
 | Skill | Path | Lines | Purpose |
 |-------|------|-------|---------|
 {one row per skill, sorted alphabetically by skill name}
 
-## Agents — `.claude/agents/*/AGENT.md`
+## Agents — `agents/*/AGENT.md`
 
 | Agent | Path | Lines | Domain |
 |-------|------|-------|--------|
 {one row per agent, sorted alphabetically}
 
-## Commands — `.claude/commands/*.md`
+## Commands — `commands/*.md`
 
 | Command | Path | Purpose |
 |---------|------|---------|
 {one row per command, sorted alphabetically}
 
-## Reference Docs — `.claude/context/`
+## Reference Docs — `context/`
 
 | File | Lines | Load when |
 |------|-------|-----------|
@@ -82,19 +82,19 @@ _Last generated: {today's date} | {N} skills / {K} agents / {C} commands_
 
 | Task | File to read/edit |
 |------|-------------------|
-| Modify a skill | `.claude/skills/<name>/SKILL.md` |
-| Modify an agent | `.claude/agents/<name>/AGENT.md` |
-| Modify a command | `.claude/commands/<name>.md` |
-| Check data layer schemas (frontmatter, file shapes, routing rubric) | `.claude/context/data-schemas.md` |
-| Check skill design patterns + conventions | `.claude/context/dev-standards.md` |
-| Add a new skill | New `.claude/skills/<name>/SKILL.md` (auto-discovered) |
-| Add a new agent | New `.claude/agents/<name>/AGENT.md` (auto-discovered) |
-| Add a new command | New `.claude/commands/<name>.md` (auto-discovered) |
+| Modify a skill | `skills/<name>/SKILL.md` |
+| Modify an agent | `agents/<name>/AGENT.md` |
+| Modify a command | `commands/<name>.md` |
+| Check data layer schemas (frontmatter, file shapes, routing rubric) | `context/data-schemas.md` |
+| Check skill design patterns + conventions | `context/dev-standards.md` |
+| Add a new skill | New `skills/<name>/SKILL.md` (auto-discovered) |
+| Add a new agent | New `agents/<name>/AGENT.md` (auto-discovered) |
+| Add a new command | New `commands/<name>.md` (auto-discovered) |
 ```
 
 ## Step 3: Write and Confirm
 
-Overwrite `.claude/REPO-MAP.md` with the generated content.
+Overwrite `REPO-MAP.md` with the generated content.
 
 Output to conversation:
 

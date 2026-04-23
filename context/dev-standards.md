@@ -2,9 +2,9 @@
 
 ## File Conventions
 
-- Skills live in `.claude/skills/<skill-name>/SKILL.md`
-- Agents live in `.claude/agents/<agent-name>/AGENT.md`
-- Commands live in `.claude/commands/<command-name>.md`
+- Skills live in `skills/<skill-name>/SKILL.md`
+- Agents live in `agents/<agent-name>/AGENT.md`
+- Commands live in `commands/<command-name>.md`
 - MCP config template lives in `.mcp.json.example`
 - Digests and artifacts are output directly in the conversation, not
   written to files, unless the user asks to save them.
@@ -120,11 +120,11 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 
 ## Submodule Conventions
 
-- All skills in `.claude/skills/` and agents in `.claude/agents/` are
-  available to consumer repos via the submodule.
+- All skills in `skills/` and agents in `agents/` are available to
+  consumer repos via the submodule (mounted at `.claude/`).
 - Skills and agents are auto-discovered from their directories — no
   enumeration required.
-- Commands in `.claude/commands/` are available as slash commands when the
+- Commands in `commands/` are available as slash commands when the
   submodule is wired up in the consumer repo.
 
 ## Frontmatter Conventions
@@ -139,7 +139,7 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 
 The `data/` directory is the durable memory of the consumer repo. It
 holds product facts: decisions, signals, knowledge, personas, tasks.
-See `.claude/context/data-schemas.md` for the full layout.
+See `context/data-schemas.md` for the full layout.
 
 `.claude/memory/shared.md` is a lightweight local buffer for **cross-agent
 learnings and user preferences** that don't belong in product data
@@ -159,8 +159,8 @@ from. The `/memory-review` skill curates this file alongside `data/`.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
-Before committing changes to `.claude/skills/`, `.claude/agents/`,
-`.claude/commands/`, or `dev-standards.md`:
+Before committing changes to `skills/`, `agents/`, `commands/`, or
+`dev-standards.md`:
 
 1. **Diff check** — `git diff --stat HEAD` to confirm scope of changes.
 2. **Standards compliance** — verify changed files against the relevant
