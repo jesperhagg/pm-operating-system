@@ -6,6 +6,9 @@
 node_modules/
 __pycache__/
 
+# Local-only Claude Code settings (dev hooks, personal config)
+.claude/settings.local.json
+
 # Agent collaboration scratchpad (transient working files)
 .claude/scratchpad/
 
