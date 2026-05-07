@@ -1,11 +1,11 @@
 # PM OS — Repo Map
-_Last generated: 2026-04-23 | 22 skills / 4 agents / 1 commands_
+_Last generated: 2026-05-07 | 23 skills / 4 agents / 1 commands_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `skills/` | Skills (available in consumer repos via submodule) | 22 |
+| `skills/` | Skills (available in consumer repos via submodule) | 23 |
 | `agents/` | Chat-persona agents (available in consumer repos) | 4 |
 | `commands/` | Slash commands (available in consumer repos) | 1 |
 | `context/` | Lazy-loaded reference docs | 2 |
@@ -34,6 +34,7 @@ _Last generated: 2026-04-23 | 22 skills / 4 agents / 1 commands_
 | /pricing | `skills/pricing/SKILL.md` | 211 | Structure a pricing decision. Picks a value metric, sets an anchor pri |
 | /sunset-product | `skills/sunset-product/SKILL.md` | 204 | Guided kill-or-park workflow for a product or bet that isn't working.  |
 | /tasks | `skills/tasks/SKILL.md` | 139 | Surface active tasks from data/tasks/active.md with sprint-style forma |
+| /tech-review | `skills/tech-review/SKILL.md` | 264 | Audit code and architecture across six lenses (simplify, cost, perform |
 | /weekly-review | `skills/weekly-review/SKILL.md` | 134 | Run a weekly review — single-product (default) or portfolio (across  |
 | /write-prd | `skills/write-prd/SKILL.md` | 143 | Write a Product Requirements Document using opinionated per-section te |
 
