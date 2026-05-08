@@ -45,7 +45,7 @@ _Last generated: 2026-05-07 | 23 skills / 4 agents / 1 commands_
 | growth-engineer | `agents/growth-engineer/AGENT.md` | 38 | Distribution-first growth specialist. Advisory by default, produces co |
 | product-sculptor | `agents/product-sculptor/AGENT.md` | 36 | Minimalist PM who sculpts MVPs to their atomic core. Obsessed with Tim |
 | startup-advisor | `agents/startup-advisor/AGENT.md` | 37 | Analytical startup advisor (YC + McKinsey lens). Pressure-tests GTM, m |
-| systems-architect | `agents/systems-architect/AGENT.md` | 39 | Senior technical architect for product systems. Architecture only —  |
+| systems-architect | `agents/systems-architect/AGENT.md` | 42 | Senior technical architect for product systems. Architecture only —  |
 
 ## Commands — `commands/*.md`
 
