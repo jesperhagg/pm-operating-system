@@ -1,13 +1,22 @@
 ---
-description: Log a time-stamped observation to data/signals/active.md as an H3 section with structured metadata. Captures user feedback, competitive moves, market signals, technical constraints, or internal learnings with an optional Action Required flag.
+description: Log a time-stamped observation to context/market/signals.md or context/users/feedback.md as an H3 section with structured metadata. Captures user feedback, competitive moves, market signals, technical constraints, or internal learnings with an optional Action Required flag.
 ---
 
 # Log Signal
 
-This skill appends a single observation to `data/signals/active.md`.
-Use it when something **happened** that a PM should notice but isn't
-(yet) a commitment. Unlike `/log-decision` (which records what *we*
-chose), `/log-signal` records what *the world did* or what we observed.
+This skill appends a single observation to the appropriate context file.
+Use it when something **happened** that a PM should notice but isn't (yet)
+a commitment. Unlike `/log-decision` (which records what *we* chose),
+`/log-signal` records what *the world did* or what we observed.
+
+**Signal routing by type:**
+
+| Signal type | File |
+|---|---|
+| User Feedback | `context/users/feedback.md` |
+| Market Signal, Competitive Move | `context/market/signals.md` |
+| Internal Learning | `context/product/experiments.md` (H2 entry) |
+| Technical Constraint | `context/market/signals.md` (unless it triggers a decision → `/log-decision`) |
 
 **When to use vs. the alternatives:**
 - Use `/log-signal` for dated observations: a competitor launched X, a
@@ -16,8 +25,7 @@ chose), `/log-signal` records what *the world did* or what we observed.
 - Use `/knowledge add research` for synthesized, durable learnings:
   "what we know about persona X."
 
-See the **DB Routing Rubric** in `.claude/context/data-schemas.md` for
-the full distinction.
+See the **Context Routing Rubric** in `.claude/context/context-schemas.md`.
 
 ## Before Starting — Self-Hydration
 
@@ -29,17 +37,15 @@ the full distinction.
    - What did you observe? (one-sentence headline)
    - When did it happen? (date of the source event, not today)
    - Where did you see it? (source)
-4. Grep `data/signals/active.md` for similar headlines from the last
-   30 days to check for duplicates.
+4. Determine the signal type from the description. Confirm the target
+   file with the user if ambiguous.
+5. Grep the target file for similar headlines from the last 30 days to
+   check for duplicates.
 
 ## Signal Structure
 
-This skill writes an H3 section to `data/signals/active.md`. See
-`.claude/context/data-schemas.md` for the full format.
-
 ### Required Fields (in the metadata comment)
-- **date** — when the observation occurred (the source event's date,
-  NOT today's date).
+- **date** — when the observation occurred (source event date, not today).
 - **type** — one of:
   - `User Feedback` — recurring user complaint, praise, or behavior
     pattern (3+ source mentions, not a one-off)
@@ -47,46 +53,42 @@ This skill writes an H3 section to `data/signals/active.md`. See
     surprise, cost ceiling, platform restriction)
   - `Market Signal` — funding round, market movement, regulatory
     change, macro shift
-  - `Competitive Move` — competitor launched, priced, pivoted, or
-    acquired
-  - `Internal Learning` — a validated or invalidated assumption from
-    our own experiments, builds, or analysis
-- **source** — where this signal came from (URL, interview reference,
-  analytics dashboard, competitor site, etc.). Must be concrete.
+  - `Competitive Move` — competitor launched, priced, pivoted, or acquired
+  - `Internal Learning` — a validated or invalidated assumption from our
+    own experiments, builds, or analysis
+- **source** — where this signal came from. Must be concrete.
+- **session** — always `pending` when written by this skill.
 
 ### Body
-- **Implication** — what this means for the product or strategy
-  (1–2 sentences). Be concrete about what changes or what we need to
-  watch.
+- **Implication** — what this means for the product or strategy (1–2 sentences).
 
-### Optional Fields (in metadata comment)
+### Optional Fields
 - **action_required** — `true` if this signal demands an explicit PM
-  response (a decision, an experiment, a scope change). Default `false`.
-- **linked_decision** — relative path to a decision this signal connects
-  to (supports, contradicts, or should trigger).
+  response. Default `false`. See the Action Required test below.
+- **linked_decision** — anchor to a decision this signal connects to.
 
 ## The "Action Required" Test
 
-Before setting `action_required:true`, the signal must pass this test:
+Before setting `action_required:true`:
 *"If I ignore this signal for 2 weeks, something meaningful goes wrong."*
-If the answer is no, leave it `false`. Action Required signals surface in
-`/weekly-review` and are meant to be triaged — overusing the flag defeats
-the purpose.
+If the answer is no, leave it `false`.
 
 ## Writing the Signal
 
-1. Read the current `data/signals/active.md` (or create it with a `# Active Signals` H1 header if missing).
-2. Construct the H3 block:
+1. Determine the target file from the routing table above.
+2. Compute the anchor slug: kebab-case of headline, append `-YYYY-MM-DD`.
+3. Open the target file (create it with an H1 header if missing).
+4. Insert the new H3 block at the top (newest-first), after the H1 header:
 
-   ```markdown
-   ### {Headline one-liner}
-   <!-- date:YYYY-MM-DD type:"{Type}" source:"{source}" action_required:{true|false}{ linked_decision:"../decisions/...md" if set} -->
+```markdown
+### {Headline one-liner} {#slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD type:"{Type}" source:"{source}" action_required:{true|false} linked_decision:"{anchor or null}" session:pending -->
 
-   **Implication:** {1–2 sentences}.
-   ```
+**Implication:** {1–2 sentences}.
+```
 
-3. Insert the new block at the top of the file (immediately after the H1
-   header, before any existing H3 sections). Newest-first ordering.
+The `session:pending` annotation marks this as session-written, awaiting
+reconciliation by `/context-sync`.
 
 ## Output
 
@@ -101,12 +103,10 @@ Confirm what was logged:
 **Source:** {source}
 **Implication:** {implication}
 **Action Required:** {yes/no}
-**Written to:** data/signals/active.md (top of file)
+**Written to:** {target file} (top of file)
 ```
 
 ## Follow-ups
-
-Suggest 1–3 contextual next steps based on the signal just logged:
 
 - If `action_required:true`:
   → "This signal demands a response. Want to run `/log-decision` now to
@@ -125,11 +125,10 @@ Suggest 1–3 contextual next steps based on the signal just logged:
 
 Reject or redirect these inputs rather than logging them:
 
-- **Synthesized trend without a source** — "AI is getting cheaper." That's
-  a Research entry, not a Signal. Redirect to `/knowledge add research`.
+- **Synthesized trend without a source** — "AI is getting cheaper."
+  Redirect to `/knowledge add research`.
 - **A commitment phrased as an observation** — "We should pivot to X."
-  That's a decision, not a signal. Redirect to `/log-decision`.
-- **A one-off comment with no pattern** — A single Reddit thread with no
-  corroboration. Ask for more source examples before logging.
-- **A vague dateless claim** — "The market is shifting." Ask for the
-  specific dated event that triggered the observation.
+  Redirect to `/log-decision`.
+- **A one-off comment with no pattern** — A single Reddit thread.
+  Ask for more source examples before logging User Feedback.
+- **A vague dateless claim** — Ask for the specific dated event.

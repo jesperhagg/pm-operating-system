@@ -37,10 +37,10 @@ If the user passes `/pipeline {status}` or mentions a single status
 
 1. Identify the current product (read the host repo's CLAUDE.md, or
    ask).
-2. Check that `data/leads/index.md` exists. If not, surface:
+2. Check that `context/ops/leads.md` exists. If not, surface:
    *"No pipeline yet — run `/log-lead` to add your first prospect."*
    Do not invent data.
-3. Read `data/leads/index.md`. Parse each row.
+3. Read `context/ops/leads.md`. Parse each row.
 4. For `followups` and `stale` modes, compare against today's date
    (from the system context — never guess).
 
@@ -65,7 +65,7 @@ Use this lens when ranking leads within each status bucket:
 ### Negotiating ({count})
 - **{Company} — {Contact}** ({fit}) · last: {last_contact} · next: {next_action} ({next_action_date})
   {"[stale]" if last_contact > 14 days} {"[overdue]" if next_action_date past}
-  → data/leads/{slug}.md
+  → context/ops/leads-detail/{slug}.md
 
 ### Demo ({count})
 ...
@@ -85,7 +85,7 @@ Use this lens when ranking leads within each status bucket:
 {Omit Won/Lost from the default board view. Note their counts in
 Totals if non-zero:
 "**Closed this quarter:** {N_won} won, {N_lost} lost — see
-data/leads/archive/ for history."}
+context/ops/leads-detail/archive/ for history."}
 ```
 
 **Within each bucket:** sort by (1) overdue first, (2) fit High >
@@ -102,7 +102,7 @@ next_action_date sink to the bottom.
 ### Overdue ({count})
 - **{Company} — {Contact}** ({status}, {fit}) · due: {next_action_date} ({N days late})
   Next: {next_action}
-  → data/leads/{slug}.md
+  → context/ops/leads-detail/{slug}.md
 
 ### Due Today ({count})
 ...
@@ -111,7 +111,7 @@ next_action_date sink to the bottom.
 {Call out leads in active pipeline stages with no next step. These
 need a decision: bump the action or mark Lost.}
 - **{Company} — {Contact}** ({status}) · last contact: {last_contact}
-  → data/leads/{slug}.md
+  → context/ops/leads-detail/{slug}.md
 ```
 
 ## Output — Stale Mode
@@ -123,7 +123,7 @@ need a decision: bump the action or mark Lost.}
 
 - **{Company} — {Contact}** ({status}, {fit}) · last: {last_contact} ({N days ago})
   Last next_action: {next_action or "—"}
-  → data/leads/{slug}.md
+  → context/ops/leads-detail/{slug}.md
 
 {Sort by days-since-last-contact descending. Highest fit first within
 the same age band.}

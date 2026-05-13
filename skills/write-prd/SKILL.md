@@ -10,13 +10,14 @@ Produces a PRD with explicit templates for every section. Each section requires 
 
 1. Identify the current product (read host repo's CLAUDE.md for Repo Identity, or ask the user).
 2. Read:
-   - `data/decisions/index.md` — filter rows where `Status = Active` and `Type` is Scope, Positioning, or Architecture (last 90 days). Open the 3–6 most relevant decision files.
-   - `data/personas/index.md` and the primary persona file at `data/personas/{slug}.md`.
-   - `data/tasks/active.md` — top 10 items from Now → Next → Later sections.
-   - Grep `data/signals/active.md` for entries from the last 30 days, especially `type:"User Feedback"` and `type:"Technical Constraint"`.
+   - Grep `context/product/decisions.md` for `status:Active` and `type:Scope`, `type:Positioning`, or `type:Architecture` (last 90 days). Open the 3–6 most relevant H2 blocks.
+   - Grep `context/users/personas.md` for H2 headings; read the primary persona block.
+   - `tasks/active.md` — top 10 items from Now → Next → Later sections.
+   - Grep `context/users/feedback.md` for entries from the last 30 days (`type:"User Feedback"`).
+   - Grep `context/market/signals.md` for entries from the last 30 days (`type:"Technical Constraint"`).
 3. Summarize context briefly to the user before proceeding: *"Writing PRD for {product}. Persona: {name}. Active constraints: {list}. Recent user feedback: {summary}. Proceed?"*
 
-If `data/personas/` or `data/decisions/` is empty, halt and say so — do not write a PRD without grounded context. Suggest running `/define-persona` or capturing prior decisions first.
+If `context/users/personas.md` is empty or `context/product/decisions.md` has no Active decisions, halt and say so — do not write a PRD without grounded context. Suggest running `/define-persona` or capturing prior decisions first.
 
 ## PRD Structure — Per-Section Templates
 
@@ -26,8 +27,8 @@ If `data/personas/` or `data/decisions/` is empty, halt and say so — do not wr
 > {Persona name} currently {current behavior/workaround} when they need to {job-to-be-done}. This is painful because {specific cost — time / money / missed outcome}. We know this because {evidence: cite 2+ specific Signals rows OR a KB research entry OR quantified user data}.
 
 **Rules:**
-- Must cite at least 2 signal anchors from `data/signals/active.md` (or `archive/`) or 1 research file from `data/knowledge/research/`. If you can't, the problem isn't validated — flag this in the PRD and propose discovery before build.
-- Cite signals by relative path + anchor (e.g. `../signals/active.md#three-tasks-missed-2026-03-02`) and research by relative file path.
+- Must cite at least 2 signal anchors from `context/users/feedback.md` or `context/market/signals.md`, or 1 research section from `context/users/research.md`. If you can't, the problem isn't validated — flag this in the PRD and propose discovery before build.
+- Cite signals by anchor (e.g. `context/users/feedback.md#three-tasks-missed-2026-03-02`) and research by file path + H2 heading.
 - "This is painful because" must name a concrete cost, not a feeling.
 
 ### 2. Hypothesis
@@ -53,7 +54,7 @@ If `data/personas/` or `data/decisions/` is empty, halt and say so — do not wr
 - **Core user flow:** Entry → {action 1} → {action 2} → Completion. Target ≤ 5 steps.
 - **In scope (v1):** {bullet list, max 5 items}.
 - **Out of scope (v1):** {explicit list of things you considered and cut, with one-line rationale each}.
-- **Prior decisions that constrain this:** {cite decision files by relative path + title, e.g., `../decisions/2026-02-14-mobile-first-only.md` — "Mobile-first only — excludes desktop flow."}
+- **Prior decisions that constrain this:** {cite decision H2 anchors from `context/product/decisions.md`, e.g., `context/product/decisions.md#mobile-first-only-2026-02-14` — "Mobile-first only — excludes desktop flow."}
 
 **Rules:**
 - "Out of scope" must be non-empty. If there's nothing you cut, you haven't scoped hard enough.
@@ -78,7 +79,7 @@ If `data/personas/` or `data/decisions/` is empty, halt and say so — do not wr
 **Template:**
 - **Stack:** {from CLAUDE.md — "already uses X, Y, Z"}.
 - **New dependencies this introduces:** {list + reason for each, or "none"}.
-- **Known constraints:** {cite Technical Constraint signals by relative path + anchor, or "none flagged"}.
+- **Known constraints:** {cite Technical Constraint signals from `context/market/signals.md` by anchor, or "none flagged"}.
 - **Cost-per-user estimate (if AI/infra heavy):** ${X}/user/month at 100 MAU, ${Y} at 1K, ${Z} at 10K. If unknown, flag for systems-architect consultation.
 - **Integration points:** {external systems, APIs, data stores touched}.
 
@@ -116,7 +117,7 @@ Output format:
 ## Worked Example — Excerpts
 
 **Problem Statement (for `/weekly-review` SaaS):**
-> Solo PMs managing 2+ products currently stitch together Notion views, Linear filters, and memory when doing their weekly review. This is painful because it takes 45–90 minutes every Monday AND features slip through the cracks (cited: `../signals/active.md#three-tasks-missed-2026-03-02` Internal Learning, `../signals/active.md#forgot-competitor-move-2026-03-15` User Feedback). We know this because 4 of 5 interviewed solo PMs described a similar workaround.
+> Solo PMs managing 2+ products currently stitch together Notion views, Linear filters, and memory when doing their weekly review. This is painful because it takes 45–90 minutes every Monday AND features slip through the cracks (cited: `context/users/feedback.md#three-tasks-missed-2026-03-02` Internal Learning, `context/users/feedback.md#forgot-competitor-move-2026-03-15` User Feedback). We know this because 4 of 5 interviewed solo PMs described a similar workaround.
 
 **Hypothesis:**
 > We believe solo PMs with 2+ products will run a hosted `/weekly-review` every Monday because they already block Monday time for review but hate the manual aggregation.

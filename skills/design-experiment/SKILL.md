@@ -12,11 +12,11 @@ Use this before building anything non-trivial. Faster, cheaper, and more honest 
 
 1. Identify the current product (read host repo's CLAUDE.md, or ask).
 2. Read:
-   - Grep `data/signals/active.md` for entries from the last 30 days — especially `type:"Internal Learning"` and `type:"User Feedback"`.
-   - `data/decisions/index.md` — filter `Status = Active` (all types) to anchor what's already committed, plus any prior experiments (`Type: Go-to-Market` or `Type: Scope` with `Outcome` set). Open relevant decision files.
+   - Grep `context/users/feedback.md` and `context/market/signals.md` for entries from the last 30 days — especially `type:"Internal Learning"` and `type:"User Feedback"`.
+   - Grep `context/product/decisions.md` for `status:Active` (all types) to anchor what's already committed, plus any prior experiments. Open relevant H2 blocks.
 3. Brief the user on any prior experiment that touched this hypothesis — don't re-run what's already been tested.
 
-If `data/decisions/` and `data/signals/` are both empty, proceed but flag: *"No prior-experiment context available — risk of duplication."*
+If `context/product/decisions.md` and both signal files are empty, proceed but flag: *"No prior-experiment context available — risk of duplication."*
 
 ## Framework
 

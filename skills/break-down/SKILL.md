@@ -12,9 +12,9 @@ description: Break down a PRD or feature idea into kanban-ready work items. Read
    - If a PRD was just generated in this conversation, use it
    - If neither, ask the user what feature or idea to break down
 3. Read:
-   - `data/tasks/active.md` — scan Now/Next/Later to avoid duplicating existing tasks.
-   - `data/decisions/index.md` — filter rows where `Type` is Scope, Architecture, or Technical and `Status` is Active (last 90 days). Open the 2–4 most relevant decision files.
-   - `data/personas/index.md` and the primary persona file (to ground JTBD framing).
+   - `tasks/active.md` — scan Now/Next/Later to avoid duplicating existing tasks.
+   - Grep `context/product/decisions.md` for `type:Scope`, `type:Architecture`, or `type:Technical` and `status:Active` (last 90 days). Open the 2–4 most relevant H2 blocks.
+   - Grep `context/users/personas.md` for H2 headings; read the primary persona block (to ground JTBD framing).
 4. Briefly summarize context before proceeding
 
 ## Decomposition Framework
@@ -83,6 +83,6 @@ After generating the breakdown:
 ## After Completing
 
 Suggest the user might want to:
-- Append the top "Pull Next" items to `data/tasks/active.md` under the Now section (using `/tasks add` or directly, with `priority:now`).
+- Append the top "Pull Next" items to `tasks/active.md` under the Now section via `/tasks add` (priority:now).
 - Run `/log-decision` if the breakdown committed to a scope choice worth recording.
 - Consult the **product-sculptor** agent if further scope reduction is needed.

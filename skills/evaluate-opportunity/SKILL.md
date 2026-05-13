@@ -12,13 +12,13 @@ The lens: **not chasing $B markets**. Optimizing for "buildable by one person, m
 
 1. Identify whether this is for an existing product or a new exploration (read host repo's CLAUDE.md; ask if ambiguous).
 2. Read:
-   - `data/tasks/active.md` — grep for opportunity-tagged items in Now/Next/Later (current bets on the table).
-   - `data/decisions/index.md` — filter rows where `Type` is Scope, Positioning, Kill/Park, or Pricing (last 180 days). Open the most relevant decision files.
-   - `data/knowledge/market-landscape/*.md` — read the most recent `## Scan — YYYY-MM-DD` section for the relevant market.
-   - Grep `data/signals/active.md` for entries from the last 60 days matching the opportunity area.
+   - `tasks/active.md` — grep for opportunity-tagged items in Now/Next/Later (current bets on the table).
+   - Grep `context/product/decisions.md` for `type:Scope`, `type:Positioning`, `type:Kill/Park`, or `type:Pricing` (last 180 days). Open the most relevant H2 blocks.
+   - `context/market/landscape.md` — read the most recent `## Scan — YYYY-MM-DD` section.
+   - Grep `context/market/signals.md` for entries from the last 60 days matching the opportunity area.
 3. Briefly summarize what's already in the portfolio before scoring the new opportunity.
 
-If `data/decisions/` is empty AND `data/knowledge/market-landscape/` is empty, warn the user — scoring without any prior context is guesswork. Suggest running `/market-scan` first, or proceed with assumptions flagged explicitly.
+If `context/product/decisions.md` has no Active entries AND `context/market/landscape.md` has no scans, warn the user — scoring without any prior context is guesswork. Suggest running `/market-scan` first, or proceed with assumptions flagged explicitly.
 
 ## Scoring Framework
 
@@ -139,7 +139,7 @@ Strategies should be genuinely different — varying the buyer, the channel, the
 3. {...}
 
 ## Suggested Follow-ups
-- Add a task to `data/tasks/active.md` for the first validation step with `priority:now`.
+- Add a task via `/tasks add` for the first validation step with `priority:now`.
 - Log a Decision via `/log-decision` (Type: Kill/Park/Scope/Positioning) if this supersedes an active bet.
 ```
 
