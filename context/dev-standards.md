@@ -26,10 +26,10 @@
 Every skill follows a four-phase execution pattern:
 
 1. **Hydration** — Identify the current product from the host repo's
-   CLAUDE.md (one product per repo). Read targeted files from `data/`
-   (decisions, signals, personas, knowledge, tasks). Read indexes
-   (`data/decisions/index.md`, `data/personas/index.md`) before opening
-   individual files. Summarize context to the user before proceeding.
+   CLAUDE.md (one product per repo). Read targeted files from `context/`
+   (decisions, signals, personas, research, people) and `tasks/`. Use grep
+   for metadata filtering before opening full H2 sections. Summarize context
+   to the user before proceeding.
    For internal skills not tied to a product (e.g., pm-digest), hydration
    means loading any local context and scanning existing capabilities.
 2. **Framework** — Apply a domain-specific, opinionated structure (scoring
@@ -80,21 +80,41 @@ user invokes a skill first.
 
 ## Data Layer Rules (Skills Only)
 
-- Product data lives in the consumer repo at `data/`. The repo IS the
-  product — one product per repo. There is no `Product` filter field.
-- Skills read and write `data/` directly via Read, Write, Edit, Glob,
-  Grep. No MCP fetch, no external database, no fallback buffer.
-- Hydrate from indexes first (`data/decisions/index.md`,
-  `data/personas/index.md`), then open targeted files.
-- Filter by frontmatter, not by reading bodies. Open a body only when
-  the entry passes the filter.
-- If a `data/` directory or specific file is missing for the current
-  task, surface that explicitly to the user — do not invent context.
+- Product context lives in the consumer repo at `context/` + `tasks/`. The
+  repo IS the product — one product per repo. There is no `Product` filter.
+- Skills read and write `context/` and `tasks/` directly via Read, Write,
+  Edit, Glob, Grep. No external database, no fallback buffer.
+- Filter by inline metadata comments (grep for `status:Active`, `type:`,
+  `date:`) before opening full H2 sections. Read only the sections you need.
+- If `context/` does not exist, surface it to the user — suggest `/context-init`.
 - Caching across skill invocations is forbidden. Files are cheap; stale
   reads are dangerous. Always read fresh.
-- **Agents do NOT touch `data/`.** Agents are chat personas — they react
-  to whatever the user pasted. If an agent needs context, the user
-  invokes a skill first.
+- **Agents do NOT touch `context/`.** Agents are chat personas — they react
+  to whatever the user pasted. If an agent needs context, the user invokes
+  a skill first.
+
+## Context Layer Routing Rules
+
+When writing context, follow the routing rubric in `context-schemas.md`. Quick reference:
+
+| Content type | Target file |
+|---|---|
+| Commitment we're making | `context/product/decisions.md` (H2 block) |
+| Market / competitive observation | `context/market/signals.md` (H3 block) |
+| User feedback signal | `context/users/feedback.md` (H3 block) |
+| Internal learning / experiment | `context/product/experiments.md` (H2 block) |
+| Synthesized persona | `context/users/personas.md` (H2 block) |
+| Research / domain knowledge | `context/users/research.md` (H2 block) |
+| Stakeholder profile | `context/ops/people.md` (H2 block) |
+| Strategy / positioning / reference | `context/product/strategy.md` |
+| Competitive landscape | `context/market/landscape.md` (append-only, /market-scan only) |
+| Prospect / lead | `context/ops/leads-detail/{slug}.md` + `context/ops/leads.md` board |
+| Active tasks | `tasks/active.md` |
+| Governance / conflict tasks | `tasks/governance.md` (/context-sync only) |
+
+**Write skills** must add `session:pending` to new blocks. `/context-sync`
+resolves these by changing to `session:synced` after source reconciliation.
+Never write `session:synced` manually.
 
 ## Multi-Mode Skill Design
 
@@ -137,25 +157,25 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 
 ## Memory Convention
 
-The `data/` directory is the durable memory of the consumer repo. It
-holds product facts: decisions, signals, knowledge, personas, tasks.
-See `context/data-schemas.md` for the full layout.
+The `context/` and `tasks/` directories are the durable memory of the
+consumer repo. They hold product context: decisions, signals, personas,
+research, leads, tasks. See `context/context-schemas.md` for the full layout.
 
 `.claude/memory/shared.md` is a lightweight local buffer for **cross-agent
-learnings and user preferences** that don't belong in product data
+learnings and user preferences** that don't belong in product context
 (e.g., "Jesper prefers digests as bullets, not prose"). It is NOT a
-fallback for failed `data/` writes — there are no failures to fall back
-from. The `/memory-review` skill curates this file alongside `data/`.
+fallback for any write failures. The `/context-sync` skill and session-start
+hook together keep context fresh and surfaced.
 
 **Key properties:**
 
-- `data/` is created and committed in the consumer repo (one product
-  per repo). Plugin updates never touch it.
-- `.claude/memory/shared.md` lives in the consumer repo and is
-  gitignored to prevent accidental commits of personal learnings.
-- Plugin updates never touch consumer-repo `data/` or memory files.
-- The `/memory-review` skill walks `data/**/*.md` and `shared.md` for
-  staleness, redundancy, and pruning candidates.
+- `context/` and `tasks/` are created and committed in the consumer repo.
+  Plugin updates never touch them.
+- `.claude/memory/shared.md` lives in the consumer repo and is gitignored
+  to prevent accidental commits of personal learnings.
+- `context/.sync-state.json` is machine-written by `/context-sync` only.
+  Never edit it manually.
+- Plugin updates never touch consumer-repo `context/`, `tasks/`, or memory files.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 

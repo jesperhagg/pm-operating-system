@@ -1,5 +1,11 @@
 # Data Schemas — In-Repo Markdown
 
+> **Deprecated.** This file describes the legacy `data/` layout. New consumer
+> repos should use `context/` + `tasks/` instead. See
+> `.claude/context/context-schemas.md` for the current schema.
+> This file is kept during the migration cycle and will be removed once all
+> consumer repos have migrated.
+
 Product data lives entirely in the consumer repo under `data/`. One product
 per repo: there is no `Product` field — the repo *is* the product. Skills
 read and write these files directly. No external database, no MCP fetch,

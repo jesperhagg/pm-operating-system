@@ -20,14 +20,14 @@ If you have no persona yet → run `/define-persona` first. Pricing without a pe
 
 1. Identify the product being priced (read host repo's CLAUDE.md, or ask).
 2. Read:
-   - `data/personas/index.md` and the primary persona file at `data/personas/{slug}.md`.
-   - Grep `data/signals/active.md` for WTP or "too expensive" / "worth it" / pricing language (last 90 days).
-   - `data/decisions/index.md` — filter `Type: Pricing` (all history) and open relevant decision files.
-   - Current cost-per-user estimate from any PRD in `docs/` or prior `systems-architect` notes in `data/knowledge/reference/`.
-   - `data/knowledge/market-landscape/*.md` — most recent `## Scan —` section, looking for competitor price points.
+   - Grep `context/users/personas.md` for H2 headings; read the primary persona block.
+   - Grep `context/users/feedback.md` and `context/market/signals.md` for WTP or "too expensive" / "worth it" / pricing language (last 90 days).
+   - Grep `context/product/decisions.md` for `type:Pricing` (all history) and open relevant H2 blocks.
+   - Current cost-per-user estimate from any PRD in `docs/` or strategy notes in `context/product/strategy.md`.
+   - `context/market/landscape.md` — most recent `## Scan —` section, looking for competitor price points.
 3. Briefly recap to the user: *"Pricing for {product}. Persona: {name}. Unit cost: {$X or unknown}. {N} competitor price points on file. Proceed?"*
 
-If `data/personas/` is empty, halt and suggest `/define-persona` first — pricing without a persona is guessing.
+If `context/users/personas.md` is empty, halt and suggest `/define-persona` first — pricing without a persona is guessing.
 
 ## Framework — 5 Decisions
 

@@ -2,7 +2,7 @@
 
 This is the **pm-os submodule** — a framework of 19 PM skills and 4 agents delivered as a git submodule to consumer repos. Dev work here means authoring or modifying skills, agents, commands, and submodule infrastructure.
 
-This is **not** a product repo. There is no `data/` directory here and none should be created. Product data lives in consumer repos at runtime.
+This is **not** a product repo. There is no `data/` or `context/` directory here and none should be created. Product context lives in consumer repos at runtime under `context/` and `tasks/`.
 
 When scope is unclear, read `REPO-MAP.md` first.
 
@@ -42,8 +42,8 @@ Full standards in `context/dev-standards.md`. Key constraints:
 - Forbidden sections: Objectives, Proactive Checks, Capabilities tables, Output Format templates, Collaboration/Memory protocols.
 
 **Product-agnostic principle:**
-- Zero product data in this repo. Skills read `data/` at runtime from the consumer repo.
-- Litmus test: "Would this skill work identically for a different product with different `data/`?" If not, it's not product-agnostic.
+- Zero product data in this repo. Skills read `context/` and `tasks/` at runtime from the consumer repo.
+- Litmus test: "Would this skill work identically for a different product with different `context/` content?" If not, it's not product-agnostic.
 
 **Submodule layout:**
 - In this repo, skills live in `skills/`, agents in `agents/`, commands in `commands/`.
@@ -57,7 +57,9 @@ Skills available in this repo:
 |---|---|
 | `/generate-repo-map` | After adding, removing, or renaming any skill or agent — regenerates `REPO-MAP.md` |
 | `/pm-digest` | Search web for PM + AI news and produce a structured digest (uses Tavily) |
-| `/migrate-from-notion` | One-shot migration of legacy Notion product data into a consumer repo's `data/` layout |
+| `/context-init` | Initialize `context/` + `tasks/` in a new consumer repo (replaces `/pm-init`) |
+| `/context-sync` | Incremental sync of `context/` from Notion, Gmail, and session memory |
+| `/migrate-from-notion` | Legacy — one-shot migration into old `data/` layout; use `/context-init` + `/context-sync` for new repos |
 | `/update-submodule` | Update this submodule to latest in a consumer repo |
 
 ## Dev — Before Committing
@@ -78,7 +80,7 @@ git submodule add git@github.com:jesperhagg/pm-operating-system.git .claude
 git submodule update --init
 ```
 
-Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The consumer repo keeps its own `CLAUDE.md` at root with product context and its `data/` directory for product data.
+Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The consumer repo keeps its own `CLAUDE.md` at root with product context, `context/` for the knowledge wiki, and `tasks/` for operational artifacts.
 
 To auto-update the submodule on session start, add to global `~/.claude/settings.json`:
 
@@ -94,7 +96,9 @@ To auto-update the submodule on session start, add to global `~/.claude/settings
 
 | Server | Purpose | If unavailable |
 |---|---|---|
-| Tavily | Web search + extraction (used by `/pm-digest`) | Graceful — skip web sections, note limitation |
+| Tavily | Web search + extraction (used by `/pm-digest`, `/market-scan`) | Graceful — skip web sections, note limitation |
+| Notion | Context sync from Notion DBs (used by `/context-sync`, `/context-init`) | Graceful — skip Notion source, note limitation |
+| Gmail | Context sync from email threads (used by `/context-sync`) | Graceful — skip Gmail source, note limitation |
 
 ## Agent Escalation
 
