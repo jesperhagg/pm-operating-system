@@ -33,6 +33,17 @@ The consumer repo follows the layout in `.claude/context/context-schemas.md`.
 Read only the sections you need — most files are multi-entry with H2 blocks.
 Use grep for metadata filtering before opening full sections.
 
+### Step 0 — Read `context/INDEX.md` first
+
+If `context/INDEX.md` exists, read it before anything else. It is the
+machine-facing router refreshed by `/context-sync` and lists the most
+recent anchors per file. Use it to scope which downstream files you actually
+need to open for the calling skill's task — open only those.
+
+If `context/INDEX.md` is missing, fall back to the file-by-file procedure
+below and note: *"INDEX.md missing — run `/context-init` and `/context-sync`
+for routed reads."*
+
 ### Decisions (always fetch)
 
 1. Grep `context/product/decisions.md` for `status:Active` in H2 metadata

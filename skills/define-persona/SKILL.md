@@ -16,6 +16,7 @@ Use this before a PRD, before a positioning exercise, or when a target user has 
    - `context/ops/people.md` — stakeholders to avoid confusing with customer personas.
    - Grep `context/users/feedback.md` for `type:"User Feedback"` entries from the last 90 days.
    - Grep `context/product/decisions.md` for `type:Positioning` or `type:Scope` entries.
+   - If `context/learnings/define-persona.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Briefly recap to the user: *"Defining persona for {product}. {N} user-feedback signals, {M} existing personas. Building new, refining existing, or replacing?"*
 
 If `context/users/feedback.md` is empty, halt and say so — a persona without signal evidence is a guess.
@@ -128,6 +129,21 @@ Then return a summary to the user:
 **Anchor:** #{slug}
 **Open gaps:** {any TODOs}
 ```
+
+## Capture Learning
+
+After delivering the persona, append one H3 entry to `context/learnings/define-persona.md` (create with `# Learnings — define-persona` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:define-persona session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Follow-ups
 

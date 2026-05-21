@@ -39,8 +39,9 @@ context/
 ├── market/
 │   └── archive/
 ├── users/
-└── ops/
-    └── leads-detail/
+├── ops/
+│   └── leads-detail/
+└── learnings/
 tasks/
 ```
 
@@ -58,6 +59,9 @@ Product context for this repo. One product per repo — the repo IS the
 product. PM OS skills read and write these files directly; no external
 database.
 
+`INDEX.md` is the machine-facing router (refreshed by `/context-sync`).
+Skills consult it first to scope which files to open.
+
 ## Layout
 
 - `product/decisions.md` — commitments made (H2 per decision, newest first).
@@ -72,9 +76,45 @@ database.
 - `ops/people.md` — stakeholder profiles.
 - `ops/leads.md` — pipeline board.
 - `ops/leads-detail/` — one file per lead (append-only interaction log).
+- `learnings/<skill>.md` — per-skill accumulated lessons (created on first
+  capture by a looped skill).
 
 See the plugin's `.claude/context/context-schemas.md` for frontmatter and
 file conventions.
+```
+
+### `context/INDEX.md`
+
+```markdown
+# Context Index
+
+_Machine-facing router. Read this first; open only the file(s) you need.
+Anchor lists are refreshed by `/context-sync` — do not hand-edit._
+
+## product/
+- `decisions.md` — H2 per decision, newest first. Recent: _(refreshed by `/context-sync`)_
+- `strategy.md` — positioning, bets, north-star (living doc).
+- `roadmap.md` — Committed / Next / Later.
+- `experiments.md` — H2 per experiment.
+
+## market/
+- `landscape.md` — competitive snapshot (append-only via `/market-scan`).
+- `signals.md` — H3 dated observations. Recent: _(refreshed by `/context-sync`)_
+- `archive/` — quarterly rollover from `signals.md`.
+
+## users/
+- `personas.md` — H2 per persona.
+- `feedback.md` — H3 dated user feedback. Recent: _(refreshed by `/context-sync`)_
+- `research.md` — H2 per finding.
+- `icp.md` — H2 per ICP (created on first `/ideal-customer-profile` run).
+
+## ops/
+- `people.md` — stakeholder profiles.
+- `leads.md` — pipeline board.
+- `leads-detail/{slug}.md` — per-lead append-only logs.
+
+## learnings/
+- `<skill>.md` — per-skill accumulated lessons (created on first capture).
 ```
 
 ### `context/.sync-state.json`
@@ -263,6 +303,7 @@ Files skipped (already existed): {K}
 | File | Result |
 |---|---|
 | context/README.md | {created|skipped} |
+| context/INDEX.md | {created|skipped} |
 | context/.sync-state.json | {created|skipped} |
 | context/.notion-routing.md | {created|skipped} |
 | context/product/decisions.md | {created|skipped} |

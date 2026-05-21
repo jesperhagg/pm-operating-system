@@ -15,6 +15,7 @@ Produces a PRD with explicit templates for every section. Each section requires 
    - `tasks/active.md` — top 10 items from Now → Next → Later sections.
    - Grep `context/users/feedback.md` for entries from the last 30 days (`type:"User Feedback"`).
    - Grep `context/market/signals.md` for entries from the last 30 days (`type:"Technical Constraint"`).
+   - If `context/learnings/write-prd.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Summarize context briefly to the user before proceeding: *"Writing PRD for {product}. Persona: {name}. Active constraints: {list}. Recent user feedback: {summary}. Proceed?"*
 
 If `context/users/personas.md` is empty or `context/product/decisions.md` has no Active decisions, halt and say so — do not write a PRD without grounded context. Suggest running `/define-persona` or capturing prior decisions first.
@@ -113,6 +114,21 @@ Output format:
 **In-scope items:** {N} — **Out-of-scope items:** {M}
 **Open questions:** {N} — **Risks:** {M}
 ```
+
+## Capture Learning
+
+After delivering the PRD, append one H3 entry to `context/learnings/write-prd.md` (create with `# Learnings — write-prd` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:write-prd session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Worked Example — Excerpts
 

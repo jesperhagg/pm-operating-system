@@ -161,7 +161,33 @@ For each context file in the staleness thresholds table (from
 Create `tasks/governance.md` if it does not exist (with the header from
 `context-schemas.md`). Append to it if it exists — never overwrite.
 
-## Step 5 — Summary Output
+## Step 5 — Refresh `context/INDEX.md`
+
+`context/INDEX.md` is the machine-facing router skills consult before
+opening downstream files. It must mirror the live state of `context/`.
+
+1. If `context/INDEX.md` does not exist, skip — `/context-init` is responsible
+   for the initial scaffold. Note in summary: *"INDEX.md missing — run
+   `/context-init` to scaffold."*
+2. For each file with a `Recent:` placeholder in the seeded INDEX
+   (`product/decisions.md`, `market/signals.md`, `users/feedback.md`):
+   - Read the file. Collect the top 3 H2 (for decisions) or H3 (for signals
+     / feedback) anchor slugs in document order.
+   - Replace the `Recent: _(refreshed by /context-sync)_` line (or the
+     prior `Recent:` line from a previous sync) with `Recent: anchor-1,
+     anchor-2, anchor-3` — bare slugs, comma-separated, no link syntax.
+   - If a file is empty (header only), write `Recent: _(none yet)_`.
+3. For `context/learnings/`: glob `*.md`, list each as a bullet under the
+   `## learnings/` section as `- \`<skill>.md\` — N entries (last:
+   YYYY-MM-DD)`. If `learnings/` is empty, leave the placeholder line.
+4. For `context/users/icp.md`: if the file does not exist, leave the
+   seeded placeholder line. If it exists, drop the parenthetical and add
+   `Recent: anchor-1, anchor-2` as above.
+
+INDEX.md is machine-written from Step 5 forward. The PM should not
+hand-edit it; manual edits will be overwritten on next sync.
+
+## Step 6 — Summary Output
 
 ```
 ## /context-sync — {product} — {date}
@@ -211,6 +237,10 @@ the conversation. Governance tasks are appended to `tasks/governance.md`.
   `session:pending`; this skill resolves them.
 - **Don't create or overwrite `context/.notion-routing.md`.** That file is
   owned by the PM (created by `/context-init`, edited manually). Never touch it.
+- **Do overwrite `context/INDEX.md` Recent: lines in Step 5.** That file is
+  machine-owned from the first sync onward — anchor lists must mirror live
+  context. Preserve the static directory structure; only refresh the
+  `Recent:` placeholders and the `learnings/` list.
 - **Don't delete anything from source systems.** Read-only access to Notion
   and Gmail. No writes to external sources.
 - **Don't fail hard on missing MCP server.** If Notion or Gmail is
