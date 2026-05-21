@@ -29,6 +29,7 @@ For each repo in scope:
    - Grep `context/market/signals.md` for `date:` in the last 7 days, grouped by `type:`.
    - Grep `context/users/feedback.md` for `date:` in the last 7 days.
    - `tasks/governance.md` if it exists — count open items (`^- \[ \]`).
+   - If `context/learnings/weekly-review.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Read `.claude/memory/shared.md` for cross-agent learnings relevant to this week (optional — skip if empty).
 4. Note today's date.
 
@@ -135,6 +136,21 @@ The single most important thing across all products.
 - Cross-product patterns: [if any]
 - Top priority this week: [single most important thing]
 ```
+
+## Capture Learning
+
+After delivering the review, append one H3 entry to `context/learnings/weekly-review.md` (create with `# Learnings — weekly-review` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this review distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:weekly-review session:pending -->
+
+**Worked:** {one sentence — which section / framing / signal made the biggest difference}.
+**Missed:** {one sentence — what slipped through, what bored the user, what stayed stale}.
+**Next time:** {one adjustment — sequencing, threshold, prompt phrasing, portfolio cut}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## After Completing
 

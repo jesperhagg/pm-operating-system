@@ -15,6 +15,7 @@ description: Break down a PRD or feature idea into kanban-ready work items. Read
    - `tasks/active.md` — scan Now/Next/Later to avoid duplicating existing tasks.
    - Grep `context/product/decisions.md` for `type:Scope`, `type:Architecture`, or `type:Technical` and `status:Active` (last 90 days). Open the 2–4 most relevant H2 blocks.
    - Grep `context/users/personas.md` for H2 headings; read the primary persona block (to ground JTBD framing).
+   - If `context/learnings/break-down.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 4. Briefly summarize context before proceeding
 
 ## Decomposition Framework
@@ -79,6 +80,21 @@ After generating the breakdown:
 - Count the tasks. If more than 8-10 for a single feature, flag it: the PRD scope may be too large
 - If scope creep is detected, suggest the user either narrow the PRD or split it into multiple features
 - Suggest running `/evaluate-opportunity` if the feature scope has grown beyond the original intent
+
+## Capture Learning
+
+After delivering the breakdown, append one H3 entry to `context/learnings/break-down.md` (create with `# Learnings — break-down` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:break-down session:pending -->
+
+**Worked:** {one sentence — which decomposition / sizing / ordering move produced the cleanest tasks}.
+**Missed:** {one sentence — tasks that were too big, too small, or hid risk}.
+**Next time:** {one adjustment — sizing heuristic, dependency check, scope-creep trigger}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## After Completing
 

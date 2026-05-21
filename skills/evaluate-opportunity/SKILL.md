@@ -16,6 +16,7 @@ The lens: **not chasing $B markets**. Optimizing for "buildable by one person, m
    - Grep `context/product/decisions.md` for `type:Scope`, `type:Positioning`, `type:Kill/Park`, or `type:Pricing` (last 180 days). Open the most relevant H2 blocks.
    - `context/market/landscape.md` — read the most recent `## Scan — YYYY-MM-DD` section.
    - Grep `context/market/signals.md` for entries from the last 60 days matching the opportunity area.
+   - If `context/learnings/evaluate-opportunity.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Briefly summarize what's already in the portfolio before scoring the new opportunity.
 
 If `context/product/decisions.md` has no Active entries AND `context/market/landscape.md` has no scans, warn the user — scoring without any prior context is guesswork. Suggest running `/market-scan` first, or proceed with assumptions flagged explicitly.
@@ -191,6 +192,21 @@ Highest likelihood, fastest revenue, leverages founder fit and warm network. Str
 1. DM 10 of the 50 warm contacts this week — frame: "would you pre-pay $19/mo for hosted weekly review of all your products?"
 2. If ≥3 yes → ship the 1-week MVP.
 3. If <3 yes → revisit. The pain isn't sharp enough at this price.
+
+## Capture Learning
+
+After delivering the evaluation, append one H3 entry to `context/learnings/evaluate-opportunity.md` (create with `# Learnings — evaluate-opportunity` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:evaluate-opportunity session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Follow-ups
 

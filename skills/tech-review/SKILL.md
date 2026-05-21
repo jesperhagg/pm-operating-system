@@ -71,6 +71,9 @@ halt.
 - **Sample siblings.** For path-scoped reviews, skim 1–2 sibling files (e.g.
   the package's `index.*`, an adjacent adapter) so findings reference real
   callers and patterns rather than guesses.
+- **Prior learnings.** If `context/learnings/tech-review.md` exists, read the
+  top 3–5 H3 entries. Apply silently to this review — do not narrate prior
+  lessons back to the user.
 
 ### 1.4 Scale check
 
@@ -234,6 +237,21 @@ On confirmation, apply only the selected items. Strict rules:
 
 After applying, summarize: file count, lines touched, items skipped, and
 confirm with the user.
+
+## Capture Learning
+
+After the audit (and any Fix-mode application) completes, append one H3 entry to `context/learnings/tech-review.md` (create with `# Learnings — tech-review` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this review distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:tech-review session:pending -->
+
+**Worked:** {one sentence — which lens / heuristic / scoping choice produced the highest-leverage findings}.
+**Missed:** {one sentence — false positives, missed issues, scope mistakes}.
+**Next time:** {one adjustment — heuristic tweak, exclusion change, scale cutoff, lens emphasis}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Phase 4 — Follow-ups
 

@@ -12,6 +12,7 @@ buffers. Operational work items live in `tasks/` alongside `context/`.
 ├── CLAUDE.md                             # Skill routing + Context Routing table + Repo Identity
 ├── context/
 │   ├── README.md                         # One-paragraph map for LLM navigation
+│   ├── INDEX.md                          # Machine-facing router; anchor lists refreshed by /context-sync
 │   ├── .sync-state.json                  # Machine-written by /context-sync; tracks last-sync per file
 │   ├── .notion-routing.md                # Notion DB / page → context file mapping table
 │   ├── product/
@@ -27,12 +28,15 @@ buffers. Operational work items live in `tasks/` alongside `context/`.
 │   ├── users/
 │   │   ├── personas.md                   # H2-per-persona, all personas in one file
 │   │   ├── feedback.md                   # User-feedback signal stream, newest first
-│   │   └── research.md                   # Domain research, literature, one-shot insights
-│   └── ops/
-│       ├── people.md                     # Stakeholder profiles
-│       ├── leads.md                      # Pipeline board: one row per active lead
-│       └── leads-detail/
-│           └── {slug}.md                 # One file per lead; append-only interaction log
+│   │   ├── research.md                   # Domain research, literature, one-shot insights
+│   │   └── icp.md                        # H2-per-ICP (lazy; written by /ideal-customer-profile)
+│   ├── ops/
+│   │   ├── people.md                     # Stakeholder profiles
+│   │   ├── leads.md                      # Pipeline board: one row per active lead
+│   │   └── leads-detail/
+│   │       └── {slug}.md                 # One file per lead; append-only interaction log
+│   └── learnings/
+│       └── {skill-name}.md               # H3-per-run lesson log; written by looped skills
 └── tasks/
     ├── active.md                         # Now / Next / Later H2; checkboxes + HTML-comment metadata
     ├── done.md                           # Flat chronological completed-task list
@@ -60,6 +64,16 @@ this rubric when writing context.
 | Market Signal, Competitive Move | `context/market/signals.md` |
 | Internal Learning | `context/product/experiments.md` |
 | Technical Constraint | `context/product/decisions.md` (if commitment) or `context/market/signals.md` |
+
+**Skill artifact routing:**
+
+| Artifact | File |
+|---|---|
+| Per-skill accumulated learning | `context/learnings/{skill-name}.md` (H3 block) |
+| ICP profile | `context/users/icp.md` (H2 block) |
+| North Star Metric definition | `context/product/strategy.md` (H2 block: "North Star Metric") |
+| Cohort analysis insight (when persisted) | `context/product/experiments.md` (H2 block) |
+| Lean Canvas | `docs/lean-canvas-{product-slug}.md` (full doc — not in `context/`) |
 
 **Decision tree — where does this information go?**
 
@@ -165,6 +179,57 @@ _One H2 per persona. Evidence-backed customer segments._
 
 - `evidence_strength` — Strong (≥5 signals) | Moderate (2–4) | Thin (<2)
 - `evidence` — list of relative anchors to feedback/signal entries
+
+### Learnings — `context/learnings/{skill-name}.md`
+
+One file per skill that adopts the learnings loop. Created lazily by the
+skill on first capture. H3 per run, newest first. Same lifecycle as other
+session-written context: `session:pending` flips to `session:synced` via
+`/context-sync`.
+
+```markdown
+# Learnings — {skill-name}
+
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:{skill-name} session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Rules:
+- Newest entry at top, immediately after the H1 header.
+- Three lines (`Worked` / `Missed` / `Next time`). Not three paragraphs.
+- Looped skills read the top 3–5 entries during Hydration and apply
+  silently — they do not narrate prior lessons back to the user.
+- Looped skills (current set): `/write-prd`, `/define-persona`, `/pricing`,
+  `/evaluate-opportunity`, `/design-experiment`, `/market-scan`,
+  `/tech-review`, `/break-down`, `/weekly-review`.
+
+### ICP — `context/users/icp.md`
+
+Created lazily by `/ideal-customer-profile` on first run. One H2 per ICP
+(most solo products have one; a few have two). Distinct from personas:
+ICP describes the *segment we sell to* with disqualifiers and a fit-score
+rubric; personas describe the *individual buyer's* JTBD.
+
+```markdown
+# ICP
+
+## {Short ICP name} {#slug}
+<!-- last_updated:YYYY-MM-DD fit_score_rubric:"see below" session:pending -->
+
+**Firmographics:** {company size, stage, geo, industry}.
+**Tech stack:** {required / preferred / disqualifying tools}.
+**Use case:** {the specific job they hire us for}.
+**Buying trigger:** {discrete event that starts the buying motion}.
+**Buying committee:** {decision-maker + influencers + blockers}.
+**Disqualifiers:** {explicit list — required, non-empty}.
+**Fit-score rubric:** {1–5 scale + what each score means}.
+
+---
+```
 
 ### Research — `context/users/research.md`
 
@@ -468,16 +533,19 @@ system.
 
 ## Token-Efficiency Rules for Skills
 
-1. **Read the relevant H2 section, not the full file.** Most context files
+1. **Read `context/INDEX.md` first when it exists.** It is the machine-facing
+   router refreshed by `/context-sync` and lists the most recent anchors per
+   file. Use it to scope which downstream files to open before grepping.
+2. **Read the relevant H2 section, not the full file.** Most context files
    are multi-entry; use grep for the H2 heading, then read that section only.
-2. **Filter by inline metadata before reading bodies.** Grep for
+3. **Filter by inline metadata before reading bodies.** Grep for
    `status:Active` or `date:202...` in the metadata comment before opening
    the full section.
-3. **Never load archive files unless explicitly looking up history.**
+4. **Never load archive files unless explicitly looking up history.**
    `context/market/archive/` is for historical reference only.
-4. **Read the most recent `## Scan — {date}` in landscape.md, not the
+5. **Read the most recent `## Scan — {date}` in landscape.md, not the
    full file history.**
-5. **Cache nothing across skill invocations.** Files are cheap; staleness
+6. **Cache nothing across skill invocations.** Files are cheap; staleness
    is dangerous. Always read fresh.
-6. **Don't read `.sync-state.json` in analysis skills.** That file is for
+7. **Don't read `.sync-state.json` in analysis skills.** That file is for
    `/context-sync` only. Analysis skills read context files, not sync metadata.

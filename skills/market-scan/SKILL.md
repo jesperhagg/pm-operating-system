@@ -32,6 +32,8 @@ Follow the steps below precisely. Maximize parallel tool calls wherever possible
    avoid logging duplicate signals.
 5. If no landscape file or no prior scans exist, note it — the scan will
    create the first entry.
+6. If `context/learnings/market-scan.md` exists, read the top 3–5 H3 entries.
+   Apply silently to this run — do not narrate prior lessons back to the user.
 
 ## Step 2: Discover Competitors and Search the Market
 
@@ -195,6 +197,21 @@ I also identified {N} candidate Signals worth logging separately:
 Proceed with the landscape write? (y/n)
 Which Signals should I log? (all / none / 1,3,5)
 ```
+
+## Capture Learning
+
+After the dual-write completes, append one H3 entry to `context/learnings/market-scan.md` (create with `# Learnings — market-scan` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this scan distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:market-scan session:pending -->
+
+**Worked:** {one sentence — which queries / sources / triage moves produced the strongest signal}.
+**Missed:** {one sentence — what the scan failed to surface or got wrong}.
+**Next time:** {one adjustment — query phrasing, source class, parallelism, cadence}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Follow-ups
 
