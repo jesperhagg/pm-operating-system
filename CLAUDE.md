@@ -1,8 +1,8 @@
 ## This Repo
 
-This is the **pm-os submodule** — a framework of 19 PM skills and 4 agents delivered as a git submodule to consumer repos. Dev work here means authoring or modifying skills, agents, commands, and submodule infrastructure.
+This is the **pm-os template** — a framework of PM skills and agents you copy into each new product repo as the `.claude/` directory. Dev work here means authoring or modifying skills, agents, and commands.
 
-This is **not** a product repo. There is no `data/` or `context/` directory here and none should be created. Product context lives in consumer repos at runtime under `context/` and `tasks/`.
+This is **not** a product repo. There is no `data/` or `context/` directory here and none should be created. Product context lives in `context/` and `tasks/` directories created by `/context-init` after the template is copied.
 
 When scope is unclear, read `REPO-MAP.md` first.
 
@@ -42,12 +42,12 @@ Full standards in `context/dev-standards.md`. Key constraints:
 - Forbidden sections: Objectives, Proactive Checks, Capabilities tables, Output Format templates, Collaboration/Memory protocols.
 
 **Product-agnostic principle:**
-- Zero product data in this repo. Skills read `context/` and `tasks/` at runtime from the consumer repo.
+- Zero product data in this repo. Skills read `context/` and `tasks/` at runtime from the product repo.
 - Litmus test: "Would this skill work identically for a different product with different `context/` content?" If not, it's not product-agnostic.
 
-**Submodule layout:**
-- In this repo, skills live in `skills/`, agents in `agents/`, commands in `commands/`.
-- In consumer repos (where this is mounted at `.claude/`), they appear at `.claude/skills/`, `.claude/agents/`, `.claude/commands/` and are auto-discovered by Claude Code.
+**Layout:**
+- Skills live in `skills/`, agents in `agents/`, commands in `commands/`.
+- When copied to a product repo as `.claude/`, they appear at `.claude/skills/`, `.claude/agents/`, `.claude/commands/` and are auto-discovered by Claude Code.
 
 ## Dev — When to Run What
 
@@ -57,10 +57,9 @@ Skills available in this repo:
 |---|---|
 | `/generate-repo-map` | After adding, removing, or renaming any skill or agent — regenerates `REPO-MAP.md` |
 | `/pm-digest` | Search web for PM + AI news and produce a structured digest (uses Tavily) |
-| `/context-init` | Initialize `context/` + `tasks/` in a new consumer repo (replaces `/pm-init`) |
+| `/context-init` | Initialize `context/` + `tasks/` in a new product repo (replaces `/pm-init`) |
 | `/context-sync` | Incremental sync of `context/` from Notion, Gmail, and session memory |
 | `/migrate-from-notion` | Legacy — one-shot migration into old `data/` layout; use `/context-init` + `/context-sync` for new repos |
-| `/update-submodule` | Update this submodule to latest in a consumer repo |
 
 ## Dev — Before Committing
 
@@ -71,26 +70,15 @@ Before committing changes to `skills/`, `agents/`, or `commands/`:
 3. If multiple skills/agents changed, check cross-file consistency and follow-up references.
 4. Run `/generate-repo-map` if files were added or removed.
 
-## Consumer Repo Setup
+## New Product Repo Setup
 
-Add this repo as a submodule at `.claude/` in the consumer repo:
+Copy this template as the `.claude/` directory in a new product repo:
 
 ```bash
-git submodule add git@github.com:jesperhagg/pm-operating-system.git .claude
-git submodule update --init
+cp -r pm-operating-system/ my-product/.claude/
 ```
 
-Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The consumer repo keeps its own `CLAUDE.md` at root with product context, `context/` for the knowledge wiki, and `tasks/` for operational artifacts.
-
-To auto-update the submodule on session start, add to global `~/.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [{ "hooks": [{ "type": "command", "command": "git submodule update --remote --merge .claude" }] }]
-  }
-}
-```
+Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The product repo keeps its own `CLAUDE.md` at root with product context, `context/` for the knowledge wiki, and `tasks/` for operational artifacts. Run `/context-init` to scaffold the `context/` and `tasks/` directories.
 
 ## MCP Usage
 
