@@ -1,12 +1,13 @@
 # PM OS — Repo Map
+_Last generated: 2026-05-08 | 23 skills / 5 agents / 1 commands_
 _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
+| `agents/` | Chat-persona agents (available in consumer repos) | 5 |
 | `skills/` | Skills (available in consumer repos via submodule) | 29 |
-| `agents/` | Chat-persona agents (available in consumer repos) | 4 |
 | `commands/` | Slash commands (available in consumer repos) | 1 |
 | `context/` | Lazy-loaded reference docs | 3 |
 
@@ -48,10 +49,11 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 
 | Agent | Path | Lines | Domain |
 |-------|------|-------|--------|
-| growth-engineer | `agents/growth-engineer/AGENT.md` | 38 | Distribution-first growth specialist. |
-| product-sculptor | `agents/product-sculptor/AGENT.md` | 36 | Minimalist PM who sculpts MVPs to their atomic core. |
-| startup-advisor | `agents/startup-advisor/AGENT.md` | 37 | Analytical startup advisor (YC + McKinsey lens). |
-| systems-architect | `agents/systems-architect/AGENT.md` | 42 | Senior technical architect for product systems. |
+| domain-expert | `agents/domain-expert/AGENT.md` | 38 | Veteran practitioner in whatever industry the consumer repo operates in. Adapts from data/domain.md. |
+| growth-engineer | `agents/growth-engineer/AGENT.md` | 38 | Distribution-first growth specialist. Advisory by default, produces co |
+| product-sculptor | `agents/product-sculptor/AGENT.md` | 36 | Minimalist PM who sculpts MVPs to their atomic core. Obsessed with Tim |
+| startup-advisor | `agents/startup-advisor/AGENT.md` | 37 | Analytical startup advisor (YC + McKinsey lens). Pressure-tests GTM, m |
+| systems-architect | `agents/systems-architect/AGENT.md` | 42 | Senior technical architect for product systems. Architecture only —  |
 
 ## Commands — `commands/*.md`
 
