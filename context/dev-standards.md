@@ -80,8 +80,8 @@ user invokes a skill first.
 
 ## Data Layer Rules (Skills Only)
 
-- Product context lives in the consumer repo at `context/` + `tasks/`. The
-  repo IS the product — one product per repo. There is no `Product` filter.
+- Product context lives in `context/` + `tasks/`. The repo IS the product —
+  one product per repo. There is no `Product` filter.
 - Skills read and write `context/` and `tasks/` directly via Read, Write,
   Edit, Glob, Grep. No external database, no fallback buffer.
 - Filter by inline metadata comments (grep for `status:Active`, `type:`,
@@ -129,23 +129,21 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 
 ## Product-Agnostic Principle
 
-- This plugin repo contains zero product data.
-- Skills are frameworks that read product data from `data/` at runtime
-  in the consumer repo.
-- Product identity comes from the host repo's CLAUDE.md.
+- This template repo contains zero product data.
+- Skills are frameworks that read product data from `context/` at runtime
+  in the product repo.
+- Product identity comes from the product repo's CLAUDE.md.
 - Never hardcode product names, personas, features, or terminology into
   skill or agent definitions.
 - Litmus test: "Would this skill work identically for a different product
-  with different `data/` content?" If not, it is not product-agnostic.
+  with different `context/` content?" If not, it is not product-agnostic.
 
-## Submodule Conventions
+## Layout Conventions
 
-- All skills in `skills/` and agents in `agents/` are available to
-  consumer repos via the submodule (mounted at `.claude/`).
-- Skills and agents are auto-discovered from their directories — no
-  enumeration required.
-- Commands in `commands/` are available as slash commands when the
-  submodule is wired up in the consumer repo.
+- All skills in `skills/` and agents in `agents/` are auto-discovered by
+  Claude Code when this template is copied as `.claude/` in a product repo.
+- No enumeration is required — Claude Code discovers them from directories.
+- Commands in `commands/` are available as slash commands in the product repo.
 
 ## Frontmatter Conventions
 
@@ -158,7 +156,7 @@ When a skill manages a `data/` resource type, it may have multiple modes:
 ## Memory Convention
 
 The `context/` and `tasks/` directories are the durable memory of the
-consumer repo. They hold product context: decisions, signals, personas,
+product repo. They hold product context: decisions, signals, personas,
 research, leads, tasks. See `context/context-schemas.md` for the full layout.
 
 `.claude/memory/shared.md` is a lightweight local buffer for **cross-agent
@@ -169,13 +167,13 @@ hook together keep context fresh and surfaced.
 
 **Key properties:**
 
-- `context/` and `tasks/` are created and committed in the consumer repo.
-  Plugin updates never touch them.
-- `.claude/memory/shared.md` lives in the consumer repo and is gitignored
+- `context/` and `tasks/` are created and committed in the product repo.
+  Template updates never touch them.
+- `.claude/memory/shared.md` lives in the product repo and is gitignored
   to prevent accidental commits of personal learnings.
 - `context/.sync-state.json` is machine-written by `/context-sync` only.
   Never edit it manually.
-- Plugin updates never touch consumer-repo `context/`, `tasks/`, or memory files.
+- Template updates never touch product-repo `context/`, `tasks/`, or memory files.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 

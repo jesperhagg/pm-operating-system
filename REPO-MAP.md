@@ -6,9 +6,9 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `agents/` | Chat-persona agents (available in consumer repos) | 5 |
-| `skills/` | Skills (available in consumer repos via submodule) | 29 |
-| `commands/` | Slash commands (available in consumer repos) | 1 |
+| `agents/` | Chat-persona agents | 5 |
+| `skills/` | Skills | 29 |
+| `commands/` | Slash commands | 0 |
 | `context/` | Lazy-loaded reference docs | 3 |
 
 ## Skills — `skills/*/SKILL.md`
@@ -59,7 +59,7 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 
 | Command | Path | Purpose |
 |---------|------|---------|
-| /update-submodule | `commands/update-submodule.md` | Pull the latest pm-os submodule commits from the remote. |
+| _(none)_ | — | — |
 
 ## Reference Docs — `context/`
 
