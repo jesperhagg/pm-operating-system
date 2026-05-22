@@ -12,11 +12,12 @@ Use this before building anything non-trivial. Faster, cheaper, and more honest 
 
 1. Identify the current product (read host repo's CLAUDE.md, or ask).
 2. Read:
-   - Grep `data/signals/active.md` for entries from the last 30 days — especially `type:"Internal Learning"` and `type:"User Feedback"`.
-   - `data/decisions/index.md` — filter `Status = Active` (all types) to anchor what's already committed, plus any prior experiments (`Type: Go-to-Market` or `Type: Scope` with `Outcome` set). Open relevant decision files.
+   - Grep `context/users/feedback.md` and `context/market/signals.md` for entries from the last 30 days — especially `type:"Internal Learning"` and `type:"User Feedback"`.
+   - Grep `context/product/decisions.md` for `status:Active` (all types) to anchor what's already committed, plus any prior experiments. Open relevant H2 blocks.
+   - If `context/learnings/design-experiment.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Brief the user on any prior experiment that touched this hypothesis — don't re-run what's already been tested.
 
-If `data/decisions/` and `data/signals/` are both empty, proceed but flag: *"No prior-experiment context available — risk of duplication."*
+If `context/product/decisions.md` and both signal files are empty, proceed but flag: *"No prior-experiment context available — risk of duplication."*
 
 ## Framework
 
@@ -145,6 +146,21 @@ If {X}, then {metric} will {direction} {number} within {duration}.
 - Metric source: Carrd built-in analytics + ConvertKit signups
 - Baseline: 0 (new asset)
 - Sample source: 3 Slack/Discord communities (list names), 1 post each, no DM outreach
+
+## Capture Learning
+
+After delivering the experiment design, append one H3 entry to `context/learnings/design-experiment.md` (create with `# Learnings — design-experiment` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:design-experiment session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Follow-ups
 

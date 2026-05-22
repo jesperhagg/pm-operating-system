@@ -1,5 +1,5 @@
 ---
-description: Run a weekly review — single-product (default) or portfolio (across repo paths). Reads decisions, signals, and tasks from data/ and produces a one-page focus plan.
+description: Run a weekly review — single-product (default) or portfolio (across repo paths). Reads decisions, signals, and tasks from context/ and tasks/ and produces a one-page focus plan.
 ---
 
 # Weekly Review
@@ -20,50 +20,60 @@ For each repo in scope:
 
 1. Read `CLAUDE.md` for repo identity (product name, bet stage).
 2. Read:
-   - `data/decisions/index.md` — filter rows where `date` is within the last 7 days. Open those decision files for "What shipped / decided" context.
-   - `data/decisions/index.md` — filter rows where `outcome: Pending` AND `date` older than 14 days (the "pending outcome review" backlog).
-   - `data/decisions/index.md` — filter rows where `outcome_date` is within the last 7 days (outcomes just assessed).
-   - `data/tasks/active.md` — top 5 items by priority from Now → Next.
-   - `data/tasks/done.md` — items with `done:` date within last 7 days (what shipped).
-   - Grep `data/signals/active.md` for entries with `action_required:true` across all dates.
-   - Grep `data/signals/active.md` for entries with `date:` in the last 7 days, grouped by `type:`.
+   - Grep `context/product/decisions.md` for `date:` within the last 7 days → "What decided"
+   - Grep `context/product/decisions.md` for `outcome:Pending` AND date older than 14 days → "pending outcome review"
+   - `tasks/active.md` — top 5 items by priority from Now → Next.
+   - `tasks/done.md` — items with `done:` date within last 7 days.
+   - Grep `context/market/signals.md` for `action_required:true`.
+   - Grep `context/users/feedback.md` for `action_required:true`.
+   - Grep `context/market/signals.md` for `date:` in the last 7 days, grouped by `type:`.
+   - Grep `context/users/feedback.md` for `date:` in the last 7 days.
+   - `tasks/governance.md` if it exists — count open items (`^- \[ \]`).
+   - If `context/learnings/weekly-review.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Read `.claude/memory/shared.md` for cross-agent learnings relevant to this week (optional — skip if empty).
-4. Note today's date for the review header.
+4. Note today's date.
 
-If `data/` does not exist in a repo, note it in the review and skip that repo.
+If `context/` does not exist in a repo, note it and skip that repo.
 
 ## Review Framework
 
 ### Per Product (repeat for each repo)
 
 #### What Shipped
-- Pull from `data/tasks/done.md` lines with `done:YYYY-MM-DD` in the last 7 days.
-- Pull from `data/decisions/` files created in the last 7 days.
-- If nothing shipped, say so plainly — no spin.
+- Pull from `tasks/done.md` lines with `done:YYYY-MM-DD` in the last 7 days.
+- Pull from `context/product/decisions.md` H2 blocks with `date:` in last 7 days.
+- If nothing shipped, say so plainly.
 
 #### What's Blocked
-- Scan `data/tasks/active.md` for lines with non-empty `blocker:"..."` metadata.
-- For each blocker: note what's needed to unblock, and who/what can provide it.
-- Flag any blocker older than 2 weeks as "stale blocker" (heuristic: check git log on the file if needed).
+- Scan `tasks/active.md` for lines with non-empty `blocker:` metadata.
+- For each blocker: note what's needed to unblock.
+- Flag blockers older than 2 weeks as "stale blocker."
 
 #### What's Next
-- Top 1–2 priorities for the coming week from `data/tasks/active.md` Now section.
+- Top 1–2 priorities for the coming week from `tasks/active.md` Now section.
 - Each priority should be concrete enough to start immediately.
 
 #### Decision Outcomes Updated
 - Decisions where `outcome:` is not `Pending` and `outcome_date:` is within the last 7 days.
-- List each with the original `date` and the outcome assessment. If none, note: *"No decision outcomes assessed this week."*
+- If none: *"No decision outcomes assessed this week."*
 
 #### Pending Outcome Review
-- Decisions with `outcome: Pending` older than 14 days.
-- If 3+ are pending, prompt: *"These decisions are still awaiting outcome assessment: [list top 5]. Want to update any now?"* (Updates edit the frontmatter `outcome:` / `outcome_date:` of the decision file.)
+- Decisions with `outcome:Pending` older than 14 days.
+- If 3+: *"These decisions are still awaiting outcome assessment: [list top 5].
+  Want to update any now?"*
 
 #### Action-Required Signals
-- All H3 blocks in `data/signals/active.md` with `action_required:true`.
-- Group by `type:`.
-- For each: show headline, date, source, implication.
+- All H3 blocks with `action_required:true` in signals and feedback files.
+- Group by `type:`. Show headline, date, source, implication.
 - Flag signals outstanding 14+ days as "stale — triage now."
-- Prompt: *"Which should we act on this week? I can convert any into a decision via `/log-decision` or clear the action_required flag."*
+- Prompt: *"Which should we act on this week? I can convert any into a
+  decision via `/log-decision` or clear the action_required flag."*
+
+#### Governance Tasks
+- If `tasks/governance.md` has open items (`^- \[ \]`): list them with a
+  brief note. These are context conflicts or staleness alerts written by
+  `/context-sync` that need PM resolution.
+- If none: omit this section.
 
 #### Focus Score
 Rate this week's focus:
@@ -74,8 +84,7 @@ Rate this week's focus:
 ### Portfolio Level (portfolio mode only)
 
 #### Cross-Product Patterns
-- Shared blockers, recurring themes in signals, or resource conflicts.
-- Flag if attention is unevenly distributed.
+Shared blockers, recurring themes in signals, or resource conflicts.
 
 #### Top Priority This Week (Portfolio)
 The single most important thing across all products.
@@ -105,6 +114,9 @@ The single most important thing across all products.
 ## Action-Required Signals
 - [grouped by type]
 
+## Governance Tasks
+- [open items from tasks/governance.md, or omit if empty]
+
 ## Focus Score: {Active | Maintenance | Drifting}
 ```
 
@@ -125,10 +137,25 @@ The single most important thing across all products.
 - Top priority this week: [single most important thing]
 ```
 
+## Capture Learning
+
+After delivering the review, append one H3 entry to `context/learnings/weekly-review.md` (create with `# Learnings — weekly-review` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this review distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:weekly-review session:pending -->
+
+**Worked:** {one sentence — which section / framing / signal made the biggest difference}.
+**Missed:** {one sentence — what slipped through, what bored the user, what stayed stale}.
+**Next time:** {one adjustment — sequencing, threshold, prompt phrasing, portfolio cut}.
+```
+
+Keep entries three lines, not three paragraphs.
+
 ## After Completing
 
 Suggest the user might want to:
 - Run `/log-decision` to record any decisions made during the review.
-- Run `/memory-review` if files are getting long.
+- Run `/context-sync` if the context layer is stale or governance tasks are piling up.
 - Consult the **startup-advisor** agent if portfolio balance needs rethinking.
 - For Drifting products: `/sunset-product` to park or kill.

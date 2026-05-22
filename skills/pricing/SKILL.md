@@ -20,14 +20,15 @@ If you have no persona yet → run `/define-persona` first. Pricing without a pe
 
 1. Identify the product being priced (read host repo's CLAUDE.md, or ask).
 2. Read:
-   - `data/personas/index.md` and the primary persona file at `data/personas/{slug}.md`.
-   - Grep `data/signals/active.md` for WTP or "too expensive" / "worth it" / pricing language (last 90 days).
-   - `data/decisions/index.md` — filter `Type: Pricing` (all history) and open relevant decision files.
-   - Current cost-per-user estimate from any PRD in `docs/` or prior `systems-architect` notes in `data/knowledge/reference/`.
-   - `data/knowledge/market-landscape/*.md` — most recent `## Scan —` section, looking for competitor price points.
+   - Grep `context/users/personas.md` for H2 headings; read the primary persona block.
+   - Grep `context/users/feedback.md` and `context/market/signals.md` for WTP or "too expensive" / "worth it" / pricing language (last 90 days).
+   - Grep `context/product/decisions.md` for `type:Pricing` (all history) and open relevant H2 blocks.
+   - Current cost-per-user estimate from any PRD in `docs/` or strategy notes in `context/product/strategy.md`.
+   - `context/market/landscape.md` — most recent `## Scan —` section, looking for competitor price points.
+   - If `context/learnings/pricing.md` exists, read the top 3–5 H3 entries. Apply silently to this run — do not narrate prior lessons back to the user.
 3. Briefly recap to the user: *"Pricing for {product}. Persona: {name}. Unit cost: {$X or unknown}. {N} competitor price points on file. Proceed?"*
 
-If `data/personas/` is empty, halt and suggest `/define-persona` first — pricing without a persona is guessing.
+If `context/users/personas.md` is empty, halt and suggest `/define-persona` first — pricing without a persona is guessing.
 
 ## Framework — 5 Decisions
 
@@ -198,6 +199,21 @@ Reject or redirect these:
 - **Gating the core value prop** — free tiers that don't deliver value produce no upgrades. Free must prove value; Pro must add scale.
 - **Psychological-pricing tricks at the anchor** ($29.99) — for B2B / solo-PM tools, round numbers ($25, $29, $49) signal professional. Cents signal consumer.
 - **Lifetime deals on AppSumo etc.** — for SaaS with per-user cost, lifetime deals guarantee negative unit economics. Avoid unless product has near-zero marginal cost.
+
+## Capture Learning
+
+After delivering the pricing recommendation, append one H3 entry to `context/learnings/pricing.md` (create with `# Learnings — pricing` H1 if missing). Newest first. Mark `session:pending` — `/context-sync` will reconcile.
+
+```markdown
+### {one-line headline of what made this run distinctive} {#headline-slug-YYYY-MM-DD}
+<!-- date:YYYY-MM-DD skill:pricing session:pending -->
+
+**Worked:** {one sentence}.
+**Missed:** {one sentence}.
+**Next time:** {one adjustment}.
+```
+
+Keep entries three lines, not three paragraphs.
 
 ## Follow-ups
 
