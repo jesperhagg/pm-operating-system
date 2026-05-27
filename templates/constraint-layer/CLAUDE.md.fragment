@@ -1,0 +1,38 @@
+<!--
+Injected by /scaffold-constraint-layer. Place this section in the product
+repo's CLAUDE.md, ideally near the top so the coding agent reads it before
+anything else.
+-->
+
+## Constraint Layer
+
+This repo runs on a **constraint layer**: tests, lints, docs, and a review agent that encode "what good looks like" and mechanically reject anything below the bar. The coding agent reads three docs before writing code, in this order:
+
+1. `docs/agent-playbook.md` — how to run, where things live, credentials, quirks, hard rules.
+2. `docs/conventions.md` — house style. The review agent uses this as its rubric.
+3. `docs/architecture.md` — system shape and hot paths.
+
+### The Loop — When the Agent Makes a Mistake
+
+Do not patch the code directly. The fix is two steps, in order:
+
+1. **Encode the constraint first.** Run `/encode-constraint` describing the mistake. The skill outputs the right artifact (regression test, lint rule, conventions paragraph, playbook note, or review-agent prompt) and the exact location.
+2. **Apply it, then re-run the original task.** The next attempt is blocked by the constraint, not by a human.
+
+If the mistake was a missing piece of context (where a credential lives, why a script must run twice), use `/agent-playbook-update` so the next session inherits the knowledge.
+
+If you can't write a constraint that catches the class of mistake, write a paragraph in `docs/conventions.md` or `docs/agent-playbook.md`. The repo teaches the agent — the agent doesn't memorize the repo.
+
+### The Gate
+
+- Tests + lints run in CI on every PR. Red CI = blocked merge.
+- Every PR must answer: **"What test or constraint prevents this regression?"** If the answer is "none," the work isn't done.
+- The review-agent workflow runs `/review-diff` against `docs/conventions.md` and comments findings.
+
+### What You Will Not Find Here
+
+- A list of features.
+- A roadmap.
+- Project status.
+
+That all lives in `context/` and `tasks/` — written by PM OS skills, not by the coding agent.

@@ -175,6 +175,36 @@ hook together keep context fresh and surfaced.
   Never edit it manually.
 - Template updates never touch product-repo `context/`, `tasks/`, or memory files.
 
+## Constraint Layer Principles
+
+The pm-os template ships a **constraint layer** to every product repo it lands in: tests, lints, docs, and a review agent that encode "what good looks like" and mechanically reject anything below the bar. Borrowed from the OpenAI playbook: the compounding asset isn't the product code, it's the constraint layer that makes the next 1,000 diffs reject themselves.
+
+**Three layers in a product repo:**
+
+1. **The Playbook** — `docs/agent-playbook.md`, `docs/conventions.md`, `docs/architecture.md`. The coding agent reads these before writing any code. Scaffolded by `/scaffold-constraint-layer`, grown by `/agent-playbook-update` and `/encode-constraint`.
+2. **The Gate** — CI (`tests + lints`), PR template that asks "what test prevents this regression?", optional `review-agent.yml` workflow running `/review-diff`. Until the gate runs green, no feature work happens.
+3. **The Loop** — when the agent makes a mistake, don't patch the code. Run `/encode-constraint` to convert the mistake into a permanent artifact (test, lint, conventions entry, playbook note, review-agent prompt), apply it, then re-run the original task. The next attempt is blocked by the constraint, not by a human.
+
+**The decision rubric inside `/encode-constraint`** (first match wins):
+
+| Question | Artifact |
+|---|---|
+| Is the mistake deterministically detectable in test output? | Regression test |
+| Is it a static pattern (banned function, naming, hard-coded value)? | Lint rule |
+| Is it an explicit house-style violation hard to express as a lint? | `docs/conventions.md` entry |
+| Is it missing knowledge the agent would have had from the playbook? | `docs/agent-playbook.md` entry |
+| Is it a judgment call only a reviewer can make? | Review-agent prompt in `docs/conventions.md` |
+
+**Skills and the agent that deliver this layer:**
+
+- `/scaffold-constraint-layer` — one-shot setup. Copies templates from `.claude/templates/constraint-layer/` into the product repo, drops CI, injects a `## Constraint Layer` section into the product repo's CLAUDE.md.
+- `/encode-constraint` — the loop. Runs on every recurring mistake.
+- `/agent-playbook-update` — softer cousin. Captures non-obvious knowledge, not coding mistakes.
+- `/review-diff` — mechanical review of a diff against the rubric. Local pre-commit or CI step.
+- `constraint-architect` — in-chat persona that refuses to engage with code patches until the upstream constraint is named.
+
+**Where the templates live in this repo:** `templates/constraint-layer/` (agent-playbook.md, conventions.md, architecture.md, CLAUDE.md.fragment, pull_request_template.md, ci-python.yml, ci-node.yml, review-agent.yml). These are copied into product repos by `/scaffold-constraint-layer` — they are not used in this template repo itself.
+
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
 Before committing changes to `skills/`, `agents/`, `commands/`, or
