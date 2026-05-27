@@ -60,6 +60,12 @@ Skills available in this repo:
 | `/context-init` | Initialize `context/` + `tasks/` in a new product repo (replaces `/pm-init`) |
 | `/context-sync` | Incremental sync of `context/` from Notion, Gmail, and session memory |
 | `/migrate-from-notion` | Legacy — one-shot migration into old `data/` layout; use `/context-init` + `/context-sync` for new repos |
+| `/scaffold-constraint-layer` | One-shot setup of `docs/agent-playbook.md`, `docs/conventions.md`, `docs/architecture.md`, CI gate, and PR template in a product repo. Run once, after `/context-init`. |
+| `/encode-constraint` | The central loop. Convert a coding-agent mistake into a permanent test, lint, conventions entry, playbook note, or review-agent prompt. Run on every recurring mistake. |
+| `/agent-playbook-update` | Capture non-obvious repo knowledge the agent uncovered (where creds live, a quirk) into `docs/agent-playbook.md` so the next session inherits it. |
+| `/review-diff` | Mechanically review a diff against the constraint layer (conventions/playbook/architecture). Runs locally before commit and as the review-agent CI workflow on PR. |
+
+Recommended order in a new product repo: `/context-init` → `/scaffold-constraint-layer` → product work. During work: `/encode-constraint` on every mistake, `/review-diff` on every diff, `/agent-playbook-update` when a session uncovers something non-obvious.
 
 ## Dev — Before Committing
 
@@ -96,3 +102,4 @@ Agents are in-chat chat personas (pushback, not orchestration). Suggest one when
 - MVP scoping, feature cuts, backlogs → `product-sculptor`
 - Distribution, funnels, positioning → `growth-engineer`
 - Architecture, technical decisions, cost modeling → `systems-architect`
+- About to patch AI-generated code without encoding the upstream constraint → `constraint-architect`

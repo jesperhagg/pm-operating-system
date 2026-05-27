@@ -1,15 +1,15 @@
 # PM OS — Repo Map
-_Last generated: 2026-05-08 | 23 skills / 5 agents / 1 commands_
-_Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
+_Last generated: 2026-05-27 | 33 skills / 6 agents / 0 commands_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `agents/` | Chat-persona agents | 5 |
-| `skills/` | Skills | 29 |
+| `agents/` | Chat-persona agents | 6 |
+| `skills/` | Skills | 33 |
 | `commands/` | Slash commands | 0 |
 | `context/` | Lazy-loaded reference docs | 3 |
+| `templates/constraint-layer/` | Starter docs + CI copied into product repos by `/scaffold-constraint-layer` | 8 files |
 
 ## Skills — `skills/*/SKILL.md`
 
@@ -27,6 +27,10 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 | /ideal-customer-profile | `skills/ideal-customer-profile/SKILL.md` | 314 | Define an Ideal Customer Profile across 7 dimensions with required disqualifiers and a fit-score rubric. |
 | /knowledge | `skills/knowledge/SKILL.md` | 191 | Fetch, store, and review structured knowledge in context/. |
 | /lean-canvas | `skills/lean-canvas/SKILL.md` | 287 | Produce a Lean Canvas — 9 boxes with evidence required for each. |
+| /encode-constraint | `skills/encode-constraint/SKILL.md` | 104 | Convert a coding-agent mistake into a permanent constraint (test/lint/conventions/playbook/review-prompt). The core loop. |
+| /agent-playbook-update | `skills/agent-playbook-update/SKILL.md` | 84 | Capture non-obvious repo knowledge into docs/agent-playbook.md so the next session inherits it. |
+| /review-diff | `skills/review-diff/SKILL.md` | 103 | Mechanically review a diff against docs/conventions.md, docs/agent-playbook.md, docs/architecture.md. |
+| /scaffold-constraint-layer | `skills/scaffold-constraint-layer/SKILL.md` | 145 | One-shot setup of the constraint layer (docs + CI + PR template) in a product repo. |
 | /log-decision | `skills/log-decision/SKILL.md` | 99 | Log a product decision to context/product/decisions.md as an H2 block. |
 | /log-interaction | `skills/log-interaction/SKILL.md` | 108 | Append a dated interaction to an existing lead in context/ops/leads-detail/. |
 | /log-lead | `skills/log-lead/SKILL.md` | 100 | Log a new prospect to context/ops/leads-detail/ and update context/ops/leads.md. |
@@ -54,6 +58,7 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 | product-sculptor | `agents/product-sculptor/AGENT.md` | 36 | Minimalist PM who sculpts MVPs to their atomic core. Obsessed with Tim |
 | startup-advisor | `agents/startup-advisor/AGENT.md` | 37 | Analytical startup advisor (YC + McKinsey lens). Pressure-tests GTM, m |
 | systems-architect | `agents/systems-architect/AGENT.md` | 42 | Senior technical architect for product systems. Architecture only —  |
+| constraint-architect | `agents/constraint-architect/AGENT.md` | 36 | Pushes back when work would be done without first encoding the constraint. Every mistake becomes a permanent test/lint/doc. |
 
 ## Commands — `commands/*.md`
 
@@ -83,3 +88,7 @@ _Last generated: 2026-05-21 | 29 skills / 4 agents / 1 commands_
 | Add a new command | New `commands/<name>.md` (auto-discovered) |
 | Initialize context layer in a consumer repo | `/context-init` |
 | Sync context from Notion / Gmail (and refresh INDEX.md) | `/context-sync` |
+| Scaffold the constraint layer (docs + CI + PR template) in a new product repo | `/scaffold-constraint-layer` |
+| Encode an agent mistake as a permanent constraint | `/encode-constraint` |
+| Capture non-obvious repo knowledge into the agent playbook | `/agent-playbook-update` |
+| Review a diff against the constraint layer | `/review-diff` |
