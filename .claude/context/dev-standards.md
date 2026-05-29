@@ -250,7 +250,7 @@ The pm-os template ships a **constraint layer** to every product repo it lands i
 - `/dev-review-diff` — mechanical review of a diff against the rubric. Local pre-commit or CI step.
 - `constraint-architect` — in-chat persona that refuses to engage with code patches until the upstream constraint is named.
 
-**Where the templates live in this repo:** `templates/constraint-layer/` (agent-playbook.md, conventions.md, architecture.md, CLAUDE.md.fragment, pull_request_template.md, ci-python.yml, ci-node.yml, review-agent.yml). These are copied into product repos by `/dev-scaffold-constraint-layer` — they are not used in this template repo itself.
+**Where the templates live in this repo:** `.claude/templates/constraint-layer/` (agent-playbook.md, conventions.md, architecture.md, CLAUDE.md.fragment, pull_request_template.md, ci.yml (stack-detecting), ci-python.yml, ci-node.yml, review-agent.yml). They live under `.claude/` so they travel with the framework when it's installed as a submodule or copied directory. These are copied into product repos by `/dev-scaffold-constraint-layer` — they are not used in this template repo itself.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
