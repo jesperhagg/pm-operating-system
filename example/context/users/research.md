@@ -1,3 +1,3 @@
 # Research
 
-_H2 per research area. Updated by /knowledge and /context-sync._
+_H2 per research area. Updated by /ctx-knowledge and /ctx-context-sync._

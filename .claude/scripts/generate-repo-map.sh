@@ -1,7 +1,7 @@
 #!/bin/bash
 # Regenerates REPO-MAP.md from current repo state.
 # Called by the PostToolUse hook (via repo-map-hook.sh) and
-# directly by /generate-repo-map skill invocations.
+# directly by /ctx-generate-repo-map skill invocations.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CLAUDE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -35,8 +35,8 @@ get_desc() {
   printf '| `.claude/agents/` | Chat-persona agents (auto-discovered) | %s |\n' "$AGENT_COUNT"
   printf '| `.claude/commands/` | Slash commands (auto-discovered) | %s |\n' "$COMMAND_COUNT"
   printf '| `.claude/context/` | Lazy-loaded reference docs | %s |\n' "$CONTEXT_COUNT"
-  printf '| `template/` | Constraint-layer scaffolding copied by `/scaffold-constraint-layer` | — |\n'
-  printf '| `example/` | Working consumer-repo scaffold (output of `/context-init`) for local testing | — |\n'
+  printf '| `template/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |\n'
+  printf '| `example/` | Working consumer-repo scaffold (output of `/ctx-context-init`) for local testing | — |\n'
 
   printf '\n## Skills — `.claude/skills/*/SKILL.md`\n\n'
   printf '| Skill | Path | Lines | Purpose |\n'
