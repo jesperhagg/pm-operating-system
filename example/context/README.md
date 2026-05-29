@@ -23,6 +23,9 @@ Skills consult it first to scope which files to open.
 - `ops/leads-detail/` — one file per lead (append-only interaction log).
 - `learnings/<skill>.md` — per-skill accumulated lessons (created on first
   capture by a looped skill).
+- `audit/activity-YYYY-MM.jsonl` — automatic activity log (which skill/agent ran,
+  what files it touched, when). Machine-written by the `PostToolUse` hook;
+  append-only. See `audit/README.md`.
 
 See the plugin's `.claude/context/context-schemas.md` for frontmatter and
 file conventions.

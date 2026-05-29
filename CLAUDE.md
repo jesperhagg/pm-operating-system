@@ -38,6 +38,7 @@ ask questions inferrable from context.
 | Skill catalog, packages, when-to-run, local testing | `.claude/skills/README.md` |
 | Framework (skill/agent) authoring standards + pre-commit checklist | `.claude/context/dev-standards.md` |
 | Where product context/data lives + file shapes | `.claude/context/context-schemas.md` (live example: `example/context/`) |
+| Observability — automatic skill/agent activity log (audit trail) | `.claude/context/dev-standards.md` (§ Observability Layer); hook: `.claude/hooks/activity-log.sh` |
 | Generated routing map of the repo | `REPO-MAP.md` |
 
 ## MCP usage
