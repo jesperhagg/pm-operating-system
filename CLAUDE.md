@@ -1,8 +1,9 @@
 ## This Repo
 
-This is the **pm-os template** — a framework of PM skills and agents you copy into each new product repo as the `.claude/` directory. Dev work here means authoring or modifying skills, agents, and commands.
+This repo serves two roles:
 
-This is **not** a product repo. There is no `data/` or `context/` directory here and none should be created. Product context lives in `context/` and `tasks/` directories created by `/context-init` after the template is copied.
+1. **Canonical source of pm-os** — a framework of PM skills, agents, and reference docs that lives under `.claude/`. To install in your own product repo, copy or git-submodule this repo's `.claude/` directory into your repo's `.claude/`. Claude Code auto-discovers everything from there.
+2. **Working example consumer repo** — `example/` is a seeded product directory (the exact output of `/context-init`) so you can `cd example && claude` and exercise the skills end-to-end against realistic file shapes without leaving the repo. `example/.claude` is a symlink to `../.claude` so the skills are auto-discovered there too.
 
 When scope is unclear, read `REPO-MAP.md` first.
 
@@ -29,7 +30,7 @@ When scope is unclear, read `REPO-MAP.md` first.
 
 ## Dev — Architecture
 
-Full standards in `context/dev-standards.md`. Key constraints:
+Full standards in `.claude/context/dev-standards.md`. Key constraints:
 
 **Skills:**
 - Self-sufficient. Four-phase execution: Hydration → Framework → Output → Follow-ups.
@@ -42,12 +43,13 @@ Full standards in `context/dev-standards.md`. Key constraints:
 - Forbidden sections: Objectives, Proactive Checks, Capabilities tables, Output Format templates, Collaboration/Memory protocols.
 
 **Product-agnostic principle:**
-- Zero product data in this repo. Skills read `context/` and `tasks/` at runtime from the product repo.
+- Skills must work for any product. The seed data under `example/` is empty scaffolding only — no invented decisions, signals, or personas. Skills read `context/` and `tasks/` at runtime from the cwd (which is `example/` when testing, or the consumer repo root in production).
 - Litmus test: "Would this skill work identically for a different product with different `context/` content?" If not, it's not product-agnostic.
 
 **Layout:**
-- Skills live in `skills/`, agents in `agents/`, commands in `commands/`.
-- When copied to a product repo as `.claude/`, they appear at `.claude/skills/`, `.claude/agents/`, `.claude/commands/` and are auto-discovered by Claude Code.
+- Skills live in `.claude/skills/`, agents in `.claude/agents/`, commands in `.claude/commands/` (none yet).
+- Reference docs in `.claude/context/`. Constraint-layer scaffolding (copied into product repos by `/scaffold-constraint-layer`) lives in `template/constraint-layer/`.
+- `example/` is the consumer-repo scaffold. Don't put product data there — only the empty file shapes `/context-init` produces.
 
 ## Dev — When to Run What
 
@@ -67,24 +69,26 @@ Skills available in this repo:
 
 Recommended order in a new product repo: `/context-init` → `/scaffold-constraint-layer` → product work. During work: `/encode-constraint` on every mistake, `/review-diff` on every diff, `/agent-playbook-update` when a session uncovers something non-obvious.
 
-## Dev — Before Committing
+## Dev — Local Testing Loop
 
-Before committing changes to `skills/`, `agents/`, or `commands/`:
-
-1. `git diff --stat HEAD` — confirm scope of changes.
-2. Verify against `context/dev-standards.md` (Skill Design Pattern, Agent Design Pattern, etc.).
-3. If multiple skills/agents changed, check cross-file consistency and follow-up references.
-4. Run `/generate-repo-map` if files were added or removed.
-
-## New Product Repo Setup
-
-Copy this template as the `.claude/` directory in a new product repo:
+Because this repo is also a working consumer scaffold, you can exercise skills here without setting up a separate product repo:
 
 ```bash
-cp -r pm-operating-system/ my-product/.claude/
+cd example
+claude                       # opens Claude Code with .claude/ resolved via symlink
 ```
 
-Claude Code then discovers skills, agents, and commands directly from `.claude/` — no symlinks needed. The product repo keeps its own `CLAUDE.md` at root with product context, `context/` for the knowledge wiki, and `tasks/` for operational artifacts. Run `/context-init` to scaffold the `context/` and `tasks/` directories.
+Then try `/log-decision`, `/log-signal`, `/tasks add "..."`, `/market-scan`, etc. Writes land in `example/context/...` and `example/tasks/...`, not at the repo root. Before committing template changes, reset the seed files in `example/` if any test runs wrote into them (e.g. `git checkout -- example/`).
+
+## Dev — Before Committing
+
+Before committing changes to `.claude/skills/`, `.claude/agents/`, or `.claude/commands/`:
+
+1. `git diff --stat HEAD` — confirm scope of changes.
+2. Verify against `.claude/context/dev-standards.md` (Skill Design Pattern, Agent Design Pattern, etc.).
+3. If multiple skills/agents changed, check cross-file consistency and follow-up references.
+4. Run `/generate-repo-map` if files were added or removed.
+5. If you used `example/` to test, run `git status example/` and revert any writes that shouldn't ship as part of the empty scaffold.
 
 ## MCP Usage
 
