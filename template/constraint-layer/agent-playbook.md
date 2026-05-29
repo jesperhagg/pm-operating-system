@@ -2,7 +2,7 @@
 
 _The first doc the coding agent should read in this repo. Everything here is non-obvious knowledge the agent would otherwise have to discover the hard way._
 
-_Grown by `/agent-playbook-update` whenever a session uncovers something undocumented. Don't let the same question get answered twice — encode it here._
+_Grown by `/dev-agent-playbook-update` whenever a session uncovers something undocumented. Don't let the same question get answered twice — encode it here._
 
 ## How to Run This Project
 

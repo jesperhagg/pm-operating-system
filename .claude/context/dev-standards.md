@@ -39,7 +39,7 @@ Every skill follows a four-phase execution pattern:
    a skill.
 3. **Output** — Produce structured markdown with a consistent heading
    format. Specify the destination: conversation (default), a `data/`
-   file (writer skills), or a `docs/` artifact (e.g., `/write-prd`).
+   file (writer skills), or a `docs/` artifact (e.g., `/strat-write-prd`).
 4. **Follow-ups** — Suggest 1-3 specific next skills to chain. Follow-ups
    must be contextual (not a generic menu) and reference the skill name
    with slash-command syntax. Only suggest skills that actually exist.
@@ -86,7 +86,7 @@ user invokes a skill first.
   Edit, Glob, Grep. No external database, no fallback buffer.
 - Filter by inline metadata comments (grep for `status:Active`, `type:`,
   `date:`) before opening full H2 sections. Read only the sections you need.
-- If `context/` does not exist, surface it to the user — suggest `/context-init`.
+- If `context/` does not exist, surface it to the user — suggest `/ctx-context-init`.
 - Caching across skill invocations is forbidden. Files are cheap; stale
   reads are dangerous. Always read fresh.
 - **Agents do NOT touch `context/`.** Agents are chat personas — they react
@@ -107,12 +107,12 @@ When writing context, follow the routing rubric in `context-schemas.md`. Quick r
 | Research / domain knowledge | `context/users/research.md` (H2 block) |
 | Stakeholder profile | `context/ops/people.md` (H2 block) |
 | Strategy / positioning / reference | `context/product/strategy.md` |
-| Competitive landscape | `context/market/landscape.md` (append-only, /market-scan only) |
+| Competitive landscape | `context/market/landscape.md` (append-only, /gtm-market-scan only) |
 | Prospect / lead | `context/ops/leads-detail/{slug}.md` + `context/ops/leads.md` board |
 | Active tasks | `tasks/active.md` |
-| Governance / conflict tasks | `tasks/governance.md` (/context-sync only) |
+| Governance / conflict tasks | `tasks/governance.md` (/ctx-context-sync only) |
 
-**Write skills** must add `session:pending` to new blocks. `/context-sync`
+**Write skills** must add `session:pending` to new blocks. `/ctx-context-sync`
 resolves these by changing to `session:synced` after source reconciliation.
 Never write `session:synced` manually.
 
@@ -120,7 +120,7 @@ Never write `session:synced` manually.
 
 When a skill manages a `data/` resource type, it may have multiple modes:
 
-- Example: `/knowledge` has Fetch/Store/Review; `/tasks` has
+- Example: `/ctx-knowledge` has Fetch/Store/Review; `/ops-tasks` has
   View/Update/Add.
 - Document trigger phrases for each mode in the SKILL.md.
 - Default mode should be the most common read operation.
@@ -162,7 +162,7 @@ research, leads, tasks. See `context/context-schemas.md` for the full layout.
 `.claude/memory/shared.md` is a lightweight local buffer for **cross-agent
 learnings and user preferences** that don't belong in product context
 (e.g., "Jesper prefers digests as bullets, not prose"). It is NOT a
-fallback for any write failures. The `/context-sync` skill and session-start
+fallback for any write failures. The `/ctx-context-sync` skill and session-start
 hook together keep context fresh and surfaced.
 
 **Key properties:**
@@ -171,7 +171,7 @@ hook together keep context fresh and surfaced.
   Template updates never touch them.
 - `.claude/memory/shared.md` lives in the product repo and is gitignored
   to prevent accidental commits of personal learnings.
-- `context/.sync-state.json` is machine-written by `/context-sync` only.
+- `context/.sync-state.json` is machine-written by `/ctx-context-sync` only.
   Never edit it manually.
 - Template updates never touch product-repo `context/`, `tasks/`, or memory files.
 
@@ -181,11 +181,11 @@ The pm-os template ships a **constraint layer** to every product repo it lands i
 
 **Three layers in a product repo:**
 
-1. **The Playbook** — `docs/agent-playbook.md`, `docs/conventions.md`, `docs/architecture.md`. The coding agent reads these before writing any code. Scaffolded by `/scaffold-constraint-layer`, grown by `/agent-playbook-update` and `/encode-constraint`.
-2. **The Gate** — CI (`tests + lints`), PR template that asks "what test prevents this regression?", optional `review-agent.yml` workflow running `/review-diff`. Until the gate runs green, no feature work happens.
-3. **The Loop** — when the agent makes a mistake, don't patch the code. Run `/encode-constraint` to convert the mistake into a permanent artifact (test, lint, conventions entry, playbook note, review-agent prompt), apply it, then re-run the original task. The next attempt is blocked by the constraint, not by a human.
+1. **The Playbook** — `docs/agent-playbook.md`, `docs/conventions.md`, `docs/architecture.md`. The coding agent reads these before writing any code. Scaffolded by `/dev-scaffold-constraint-layer`, grown by `/dev-agent-playbook-update` and `/dev-encode-constraint`.
+2. **The Gate** — CI (`tests + lints`), PR template that asks "what test prevents this regression?", optional `review-agent.yml` workflow running `/dev-review-diff`. Until the gate runs green, no feature work happens.
+3. **The Loop** — when the agent makes a mistake, don't patch the code. Run `/dev-encode-constraint` to convert the mistake into a permanent artifact (test, lint, conventions entry, playbook note, review-agent prompt), apply it, then re-run the original task. The next attempt is blocked by the constraint, not by a human.
 
-**The decision rubric inside `/encode-constraint`** (first match wins):
+**The decision rubric inside `/dev-encode-constraint`** (first match wins):
 
 | Question | Artifact |
 |---|---|
@@ -197,13 +197,13 @@ The pm-os template ships a **constraint layer** to every product repo it lands i
 
 **Skills and the agent that deliver this layer:**
 
-- `/scaffold-constraint-layer` — one-shot setup. Copies templates from `.claude/templates/constraint-layer/` into the product repo, drops CI, injects a `## Constraint Layer` section into the product repo's CLAUDE.md.
-- `/encode-constraint` — the loop. Runs on every recurring mistake.
-- `/agent-playbook-update` — softer cousin. Captures non-obvious knowledge, not coding mistakes.
-- `/review-diff` — mechanical review of a diff against the rubric. Local pre-commit or CI step.
+- `/dev-scaffold-constraint-layer` — one-shot setup. Copies templates from `.claude/templates/constraint-layer/` into the product repo, drops CI, injects a `## Constraint Layer` section into the product repo's CLAUDE.md.
+- `/dev-encode-constraint` — the loop. Runs on every recurring mistake.
+- `/dev-agent-playbook-update` — softer cousin. Captures non-obvious knowledge, not coding mistakes.
+- `/dev-review-diff` — mechanical review of a diff against the rubric. Local pre-commit or CI step.
 - `constraint-architect` — in-chat persona that refuses to engage with code patches until the upstream constraint is named.
 
-**Where the templates live in this repo:** `templates/constraint-layer/` (agent-playbook.md, conventions.md, architecture.md, CLAUDE.md.fragment, pull_request_template.md, ci-python.yml, ci-node.yml, review-agent.yml). These are copied into product repos by `/scaffold-constraint-layer` — they are not used in this template repo itself.
+**Where the templates live in this repo:** `templates/constraint-layer/` (agent-playbook.md, conventions.md, architecture.md, CLAUDE.md.fragment, pull_request_template.md, ci-python.yml, ci-node.yml, review-agent.yml). These are copied into product repos by `/dev-scaffold-constraint-layer` — they are not used in this template repo itself.
 
 ## Pre-Commit Checklist (Skills, Agents, Plugin Infrastructure)
 
@@ -216,6 +216,6 @@ Before committing changes to `skills/`, `agents/`, `commands/`, or
 3. **Cross-file consistency** — if multiple skills/agents changed, check
    they follow the same patterns. If a new skill is added, confirm
    follow-ups in other skills reference it correctly.
-4. **REPO-MAP** — run `/generate-repo-map` if files were added or removed.
+4. **REPO-MAP** — run `/ctx-generate-repo-map` if files were added or removed.
 
 Advisory — Jesper makes the call.
