@@ -9,6 +9,7 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 | `.claude/agents/` | Chat-persona agents (auto-discovered) | 6 |
 | `.claude/commands/` | Slash commands (auto-discovered) | 0 |
 | `.claude/context/` | Lazy-loaded reference docs | 3 |
+| `.claude/hooks/` | SessionStart + PostToolUse hooks (staleness check, activity log) | 2 |
 | `template/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |
 | `example/` | Working consumer-repo scaffold (output of `/ctx-context-init`) for local testing | — |
 
@@ -16,7 +17,7 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 
 | Skill | Path | Lines | Purpose |
 |-------|------|-------|----------|
-| /ctx-context-init | `.claude/skills/ctx-context-init/SKILL.md` | 341 | Initialize the context/ and tasks/ directory tree in a consumer repo w |
+| /ctx-context-init | `.claude/skills/ctx-context-init/SKILL.md` | 382 | Initialize the context/ and tasks/ directory tree in a consumer repo w |
 | /ctx-context-sync | `.claude/skills/ctx-context-sync/SKILL.md` | 248 | Incremental sync of context/ files from Notion, Gmail, and session mem |
 | /ctx-fetch-context | `.claude/skills/ctx-fetch-context/SKILL.md` | 111 | Fetch live product context from the consumer repo's context/ files. Fo |
 | /ctx-generate-repo-map | `.claude/skills/ctx-generate-repo-map/SKILL.md` | 276 | Regenerate REPO-MAP.md as a routing map of the codebase. In the pm-os  |
@@ -72,7 +73,14 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 |------|-------|----------|
 | `context-schemas.md` | 551 | Reading/writing product context/ — file shapes, routing rubric, sync-state |
 | `data-schemas.md` | 389 | Legacy — see context-schemas.md instead |
-| `dev-standards.md` | 221 | Authoring or reviewing skills, agents, commands |
+| `dev-standards.md` | 268 | Authoring or reviewing skills, agents, commands |
+
+## Hooks — `.claude/hooks/*`
+
+| Hook | Path | Event | Purpose |
+|------|------|-------|---------|
+| session-start | `.claude/hooks/session-start.sh` | SessionStart | Bash-only context staleness check + recent-activity count |
+| activity-log | `.claude/hooks/activity-log.sh` | PostToolUse | Append one JSONL event per skill/agent/file action (audit trail) |
 
 ## When You Need To...
 
@@ -83,6 +91,8 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 | Modify a command | `.claude/commands/<name>.md` |
 | Check context schemas (file shapes, routing rubric) | `.claude/context/context-schemas.md` |
 | Check skill/agent design patterns | `.claude/context/dev-standards.md` |
+| Understand / change the activity log (audit trail) | `.claude/hooks/activity-log.sh` + `.claude/context/dev-standards.md` (§ Observability Layer) |
+| Read what skills/agents did | `context/audit/activity-*.jsonl` (consumer repos) or `.claude/logs/` (dev) |
 | Modify constraint-layer scaffolding | `template/constraint-layer/<file>` |
 | Try a skill against seeded data | `cd example && claude` |
 | Add a new skill | New `.claude/skills/<name>/SKILL.md` (auto-discovered) |

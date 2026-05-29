@@ -41,7 +41,8 @@ context/
 ├── users/
 ├── ops/
 │   └── leads-detail/
-└── learnings/
+├── learnings/
+└── audit/
 tasks/
 ```
 
@@ -78,6 +79,9 @@ Skills consult it first to scope which files to open.
 - `ops/leads-detail/` — one file per lead (append-only interaction log).
 - `learnings/<skill>.md` — per-skill accumulated lessons (created on first
   capture by a looped skill).
+- `audit/activity-YYYY-MM.jsonl` — automatic activity log (which skill/agent ran,
+  what files it touched, when). Machine-written by the `PostToolUse` hook;
+  append-only. See `audit/README.md`.
 
 See the plugin's `.claude/context/context-schemas.md` for frontmatter and
 file conventions.
@@ -239,6 +243,42 @@ _H2 per stakeholder. Updated by /ctx-knowledge and /ctx-context-sync._
 _Completed tasks, chronological. Written by /ops-tasks when items are checked off._
 ```
 
+### `context/audit/README.md`
+
+````markdown
+# Activity Audit Trail
+
+Automatic, append-only log of what skills and agents did in this repo. Written by
+the `PostToolUse` hook `.claude/hooks/activity-log.sh` — never by hand, never by a
+skill. One JSON object per line, in monthly files `activity-YYYY-MM.jsonl`.
+
+## Event shape
+
+```json
+{"ts":"2026-05-29T14:03:22Z","session":"<id>","actor":"skill:strat-log-decision",
+ "action":"invoke","targets":["context/product/decisions.md"],"tool":"Edit","status":"ok"}
+```
+
+- `actor` — `skill:<name>`, `agent:<subagent_type>`, or `tool:<Write|Edit|NotebookEdit>`.
+- `action` — `invoke` | `write` | `edit`.
+- `targets` — file path(s) touched, when present.
+- `session` + `ts` + `targets` correlate a file change back to the skill that made it.
+
+This records *that an action happened*. The *why* lives in content metadata
+(`date:`, `source:`, `agent:[]`, `linked_signals:`) inside the files themselves.
+
+## Reading it
+
+```sh
+# Everything a given skill did
+jq -c 'select(.actor=="skill:strat-log-decision")' audit/activity-*.jsonl
+# Everything that touched a file
+jq -c 'select(.targets[]? == "context/product/decisions.md")' audit/activity-*.jsonl
+# Run volume by actor
+jq -r '.actor' audit/activity-*.jsonl | sort | uniq -c | sort -rn
+```
+````
+
 ## Step 4 — Notion Routing Config
 
 Ask: *"Do you have a Notion workspace with existing product data to sync?
@@ -317,6 +357,7 @@ Files skipped (already existed): {K}
 | context/users/research.md | {created|skipped} |
 | context/ops/people.md | {created|skipped} |
 | context/ops/leads.md | {created|skipped} |
+| context/audit/README.md | {created|skipped} |
 | tasks/active.md | {created|skipped} |
 | tasks/done.md | {created|skipped} |
 ```

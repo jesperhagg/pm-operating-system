@@ -175,6 +175,53 @@ hook together keep context fresh and surfaced.
   Never edit it manually.
 - Template updates never touch product-repo `context/`, `tasks/`, or memory files.
 
+## Observability Layer
+
+PM OS keeps an **automatic activity log** so every skill/agent invocation and file
+mutation leaves an auditable trail. It is written by the `PostToolUse` hook
+`.claude/hooks/activity-log.sh` (wired in `.claude/settings.json`) — **not** by skills.
+
+**You, the skill/agent author, do nothing.** The hook fires for `Skill`, `Task`,
+`Write`, `Edit`, and `NotebookEdit` tool calls and appends one JSON line per event.
+Do not add logging calls to a SKILL.md; do not write to the log from a skill.
+
+**What it captures (facts only — no LLM, no network):**
+
+```json
+{"ts":"2026-05-29T14:03:22Z","session":"<id>","actor":"skill:strat-log-decision",
+ "action":"invoke","targets":["context/product/decisions.md"],"tool":"Edit","status":"ok"}
+```
+
+- `actor` — `skill:<name>`, `agent:<subagent_type>`, or `tool:<Write|Edit|NotebookEdit>`.
+- `action` — `invoke` (Skill/Task) | `write` | `edit`.
+- `targets` — file path(s) touched, when the tool carries one.
+
+**Where it lives (chosen by the hook):**
+
+- Product/consumer repo (`context/` exists): `context/audit/activity-YYYY-MM.jsonl` —
+  committed, append-only, monthly rotation. The durable PM audit trail.
+- Framework/dev repo (no `context/`): `.claude/logs/activity-YYYY-MM.jsonl` —
+  gitignored, ephemeral. For dogfooding and verification only.
+
+**Relationship to content provenance.** This log records *that an action happened*;
+the inline content metadata (`date:`, `source:`, `agent:[]`, `linked_signals:`,
+`session:pending→synced`) records *why a decision/signal exists*. The two are
+complementary — correlate by `session` + `ts` + `targets` to trace a file change
+back to the skill that made it. Do not duplicate content metadata into the log.
+
+**Rule:** nothing writes to `context/audit/` except the hook. It is append-only and
+machine-written, like `context/.sync-state.json`.
+
+### Next phase — Eval (not yet built)
+
+The activity log is the foundation for evaluating skill quality. Deferred, by design:
+
+- Golden-task fixtures + a per-skill scoring rubric + a runnable eval command.
+- An eval/review skill that grades runs by reading the activity log + `context/learnings/`.
+- A hard `skill:` author field in content metadata (today, correlation via the log suffices).
+
+Build these on top of the trail when there is enough volume to measure against.
+
 ## Constraint Layer Principles
 
 The pm-os template ships a **constraint layer** to every product repo it lands in: tests, lints, docs, and a review agent that encode "what good looks like" and mechanically reject anything below the bar. Borrowed from the OpenAI playbook: the compounding asset isn't the product code, it's the constraint layer that makes the next 1,000 diffs reject themselves.

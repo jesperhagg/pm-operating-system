@@ -6,6 +6,22 @@ if [ "${CLAUDE_CODE_REMOTE:-}" = "true" ]; then
   npm install
 fi
 
+# Surface recent activity-log volume (written by activity-log.sh). Read-only.
+# Runs before the context/ guard so it also reports in framework/dev repos.
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+if [ -d "${PROJECT_DIR}/context" ]; then
+  ACTIVITY_DIR="${PROJECT_DIR}/context/audit"
+else
+  ACTIVITY_DIR="${PROJECT_DIR}/.claude/logs"
+fi
+LATEST_ACTIVITY=$(ls -1 "${ACTIVITY_DIR}"/activity-*.jsonl 2>/dev/null | sort | tail -1)
+if [ -n "${LATEST_ACTIVITY:-}" ] && [ -f "$LATEST_ACTIVITY" ]; then
+  EVENTS=$(wc -l <"$LATEST_ACTIVITY" 2>/dev/null | tr -d ' ' || echo 0)
+  if [ "${EVENTS:-0}" -gt 0 ]; then
+    echo "ACTIVITY_EVENTS_THIS_MONTH=$EVENTS"
+  fi
+fi
+
 # Context-layer staleness check — bash only, no LLM, no network
 CONTEXT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}/context"
 SYNC_STATE="${CONTEXT_DIR}/.sync-state.json"
