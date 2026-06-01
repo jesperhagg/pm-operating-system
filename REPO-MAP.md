@@ -10,7 +10,7 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 | `.claude/commands/` | Slash commands (auto-discovered) | 0 |
 | `.claude/context/` | Lazy-loaded reference docs | 3 |
 | `.claude/hooks/` | SessionStart + PostToolUse hooks (staleness check, activity log) | 2 |
-| `template/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |
+| `.claude/templates/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |
 | `example/` | Working consumer-repo scaffold (output of `/ctx-context-init`) for local testing | — |
 
 ## Skills — `.claude/skills/*/SKILL.md`
@@ -93,7 +93,7 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 | Check skill/agent design patterns | `.claude/context/dev-standards.md` |
 | Understand / change the activity log (audit trail) | `.claude/hooks/activity-log.sh` + `.claude/context/dev-standards.md` (§ Observability Layer) |
 | Read what skills/agents did | `context/audit/activity-*.jsonl` (consumer repos) or `.claude/logs/` (dev) |
-| Modify constraint-layer scaffolding | `template/constraint-layer/<file>` |
+| Modify constraint-layer scaffolding | `.claude/templates/constraint-layer/<file>` |
 | Try a skill against seeded data | `cd example && claude` |
 | Add a new skill | New `.claude/skills/<name>/SKILL.md` (auto-discovered) |
 | Add a new agent | New `.claude/agents/<name>/AGENT.md` (auto-discovered) |

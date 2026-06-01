@@ -35,7 +35,7 @@ get_desc() {
   printf '| `.claude/agents/` | Chat-persona agents (auto-discovered) | %s |\n' "$AGENT_COUNT"
   printf '| `.claude/commands/` | Slash commands (auto-discovered) | %s |\n' "$COMMAND_COUNT"
   printf '| `.claude/context/` | Lazy-loaded reference docs | %s |\n' "$CONTEXT_COUNT"
-  printf '| `template/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |\n'
+  printf '| `.claude/templates/` | Constraint-layer scaffolding copied by `/dev-scaffold-constraint-layer` | — |\n'
   printf '| `example/` | Working consumer-repo scaffold (output of `/ctx-context-init`) for local testing | — |\n'
 
   printf '\n## Skills — `.claude/skills/*/SKILL.md`\n\n'
@@ -90,7 +90,7 @@ get_desc() {
   printf '| Modify a command | `.claude/commands/<name>.md` |\n'
   printf '| Check context schemas (file shapes, routing rubric) | `.claude/context/context-schemas.md` |\n'
   printf '| Check skill/agent design patterns | `.claude/context/dev-standards.md` |\n'
-  printf '| Modify constraint-layer scaffolding | `template/constraint-layer/<file>` |\n'
+  printf '| Modify constraint-layer scaffolding | `.claude/templates/constraint-layer/<file>` |\n'
   printf '| Try a skill against seeded data | `cd example && claude` |\n'
   printf '| Add a new skill | New `.claude/skills/<name>/SKILL.md` (auto-discovered) |\n'
   printf '| Add a new agent | New `.claude/agents/<name>/AGENT.md` (auto-discovered) |\n'

@@ -48,3 +48,41 @@ ask questions inferrable from context.
 | Tavily | `/ops-pm-digest`, `/gtm-market-scan` | Graceful — skip web sections, note limitation |
 | Notion | `/ctx-context-sync`, `/ctx-context-init` | Graceful — skip Notion source, note limitation |
 | Gmail | `/ctx-context-sync` | Graceful — skip Gmail source, note limitation |
+
+## Constraint Layer
+
+This repo runs on a **constraint layer**: tests, lints, docs, and a review agent that encode "what good looks like" and mechanically reject anything below the bar. The coding agent reads three docs before writing code, in this order:
+
+1. `docs/agent-playbook.md` — how to run, where things live, credentials, quirks, hard rules.
+2. `docs/conventions.md` — house style. The review agent uses this as its rubric.
+3. `docs/architecture.md` — system shape and hot paths.
+
+> **This repo is dual-purpose.** `/dev-scaffold-constraint-layer` intentionally halts here (it scaffolds *other* product repos), so the Gate was installed by hand: `.github/workflows/ci.yml` (stack-detecting), `.github/workflows/review-agent.yml`, `.github/pull_request_template.md`, and this section. When app code lands, fill the placeholders in `docs/conventions.md` and `docs/architecture.md` so the rubric has teeth.
+
+### The Loop — When the Agent Makes a Mistake
+
+Do not patch the code directly. The fix is two steps, in order:
+
+1. **Encode the constraint first.** Run `/dev-encode-constraint` describing the mistake. The skill outputs the right artifact (regression test, lint rule, conventions paragraph, playbook note, or review-agent prompt) and the exact location.
+2. **Apply it, then re-run the original task.** The next attempt is blocked by the constraint, not by a human.
+
+If the mistake was a missing piece of context (where a credential lives, why a script must run twice), use `/dev-agent-playbook-update` so the next session inherits the knowledge.
+
+If you can't write a constraint that catches the class of mistake, write a paragraph in `docs/conventions.md` or `docs/agent-playbook.md`. The repo teaches the agent — the agent doesn't memorize the repo.
+
+### The Gate
+
+- Tests + lints run in CI on every PR. Red CI = blocked merge.
+- Every PR must answer: **"What test or constraint prevents this regression?"** If the answer is "none," the work isn't done.
+- The review-agent workflow runs `/dev-review-diff` against `docs/conventions.md` and comments findings.
+
+### Identifying a Constraint-Layer Gap
+
+A **gap** is a class of mistake the layer should have caught but didn't — the rubric never encoded the rule. Signals that you've hit one:
+
+- `/dev-review-diff` returns clean but something is still wrong on read.
+- The same class of mistake recurs across diffs.
+- A bug reaches `main` with green CI.
+- A reviewer (human or agent) flags something no test, lint, or convention names.
+
+When you spot one, the gap is in the layer, not the diff: run `/dev-encode-constraint` to add the missing test/lint/convention, then re-run `/dev-review-diff` — the next diff of that class is caught mechanically.

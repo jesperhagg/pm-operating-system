@@ -36,9 +36,9 @@ Record the answer as `stack`. Used in Step 4.
 
 ## Step 3 — Copy the Playbook Docs
 
-Source files live in this template repo at `templates/constraint-layer/`.
-When this template is installed in the product repo as `.claude/`, the path
-is `.claude/templates/constraint-layer/`.
+Source files live at `.claude/templates/constraint-layer/` — both in this
+template repo and in any product repo where pm-os is installed as `.claude/`
+(submodule or copied directory). The path is the same in both.
 
 For each source → destination pair, **read** the source, **check** if the
 destination exists. If it exists, skip and log. Else write verbatim.
@@ -60,8 +60,11 @@ Based on the `stack` answer from Step 2:
 |---|---|
 | Python | `.github/workflows/ci.yml` ← `ci-python.yml` |
 | Node | `.github/workflows/ci.yml` ← `ci-node.yml` |
-| Both | `.github/workflows/ci-python.yml` ← `ci-python.yml` **and** `.github/workflows/ci-node.yml` ← `ci-node.yml` |
+| Both | `.github/workflows/ci.yml` ← `ci.yml` (stack-detecting; runs python + node jobs as manifests appear) |
 | Other | Skip. Note in summary: *"Author your own `.github/workflows/ci.yml` running tests + lints on PR."* |
+
+If the user is unsure or wants one workflow that travels across repos, write the
+stack-detecting `ci.yml` for any stack — it no-ops where a manifest is absent.
 
 For every stack except "Other," also write `.github/workflows/review-agent.yml` from the template — but ask first: *"Wire up the review-agent CI workflow? (requires a CLAUDE_CODE_OAUTH_TOKEN secret in the repo) (y/n)"*. Skip if no.
 

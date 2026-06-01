@@ -1,0 +1,7 @@
+# Minimal ruff config. Tighten as conventions accumulate.
+# Active only once Python code lands; the ci.yml python job reads this.
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

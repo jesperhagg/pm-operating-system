@@ -14,11 +14,12 @@ pm-operating-system/
 │   ├── context/          # reference docs (context-schemas, dev-standards)
 │   ├── hooks/            # SessionStart hook
 │   ├── scripts/          # generate-repo-map.sh and friends
+│   ├── templates/        # constraint-layer scaffolding copied by /dev-scaffold-constraint-layer
+│   │   └── constraint-layer/ #  docs/, CI workflows (ci.yml + per-stack), PR template, CLAUDE.md fragment
 │   ├── settings.json
 │   └── .mcp.json.example
+├── .github/              # this repo's own Gate: workflows/ci.yml, workflows/review-agent.yml, PR template
 ├── docs/                 # coding-side guides: engineering, architecture, conventions, agent-playbook
-├── template/             # constraint-layer scaffolding copied by /dev-scaffold-constraint-layer
-│   └── constraint-layer/ #   docs/, CI workflows, PR template
 ├── example/              # working consumer scaffold — output of /ctx-context-init
 │   ├── .claude → ../.claude
 │   ├── context/          # product/, market/, users/, ops/, learnings/ (empty seed files)
@@ -27,6 +28,96 @@ pm-operating-system/
 ├── CLAUDE.md             # purpose + routing index (entry point)
 └── REPO-MAP.md           # generated index of skills/agents/commands/reference docs
 ```
+
+## Architecture
+
+The repo carries two systems in one tree, separated by audience, and a routing layer on top.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ ROUTER          CLAUDE.md · AGENTS.md · REPO-MAP.md                   │
+│                 entry point + when-to-use-what index                  │
+├──────────────────────────────────┬──────────────────────────────────┤
+│ PM OPERATING SYSTEM              │ PRODUCT CODEBASE                   │
+│ (.claude/)                       │ (docs/ + app code, when it lands)  │
+│                                  │                                    │
+│ skills/   methodology, run via   │ docs/engineering.md  principles    │
+│           /<skill-name>          │ docs/architecture.md system map    │
+│ agents/   in-chat pushback       │ docs/conventions.md  house style   │
+│ hooks/    SessionStart, activity │ docs/agent-playbook.md  run + gotchas│
+│ templates/ constraint-layer seed │ .github/  CI + review-agent + PR    │
+│ context/  authoring standards    │                                    │
+│           (dev-standards,        │ governed by the CONSTRAINT LAYER ──┐│
+│            context-schemas)      │                                    ││
+├──────────────────────────────────┴────────────────────────────────┐ ││
+│ DATA (per product repo, written by skills — never hardcoded)        │ ││
+│ context/  product· market· users· ops· learnings                    │ ││
+│ tasks/    active· done                                              │ ││
+└─────────────────────────────────────────────────────────────────────┘ │
+                                                                          │
+   The constraint layer (below) is what governs the product codebase ◄────┘
+```
+
+**Two modes of work.** *PM workflows* invoke a skill (strategy, discovery, GTM, cadence) that reads
+and writes structured markdown in `context/` + `tasks/`. *Product development* follows `docs/` and is
+policed by the constraint layer. Agents are chat personas for pushback — they don't orchestrate, hydrate,
+or write files; skills own all methodology.
+
+**Why `.claude/templates/` lives where it does.** pm-os installs into a product repo as `.claude/`
+(submodule or copied directory). Anything a downstream repo needs at scaffold time must therefore sit
+*inside* `.claude/` — so the constraint-layer seed files live at `.claude/templates/constraint-layer/`,
+not at the repo root.
+
+## How the constraint layer works
+
+The constraint layer is what keeps app code high-quality when most of it is written by an agent. It is
+three coupled mechanisms — **Playbook**, **Gate**, **Loop** — not a pile of docs.
+
+**1. The Playbook (the rubric).** Three docs the coding agent reads *before* writing code:
+`docs/agent-playbook.md` (how to run, where things live, credentials, quirks, hard rules),
+`docs/conventions.md` (enforceable house style — the review agent's rubric), and `docs/architecture.md`
+(system shape, hot paths, hard constraints).
+
+**2. The Gate (mechanical rejection).** Runs on every PR:
+- `.github/workflows/ci.yml` — stack-detecting lint + test. A Python repo runs the python job, a Node
+  repo the node job, a polyglot repo both, an empty repo passes as a no-op until code lands. Red CI =
+  blocked merge.
+- `.github/workflows/review-agent.yml` — runs `/dev-review-diff` against the three docs and comments
+  file-anchored findings. Needs a `CLAUDE_CODE_OAUTH_TOKEN` repo secret.
+- `.github/pull_request_template.md` — forces every PR to answer **"What test or constraint prevents
+  this regression?"** If the answer is "none," the work isn't done.
+
+**3. The Loop (self-improvement).** When the agent makes a mistake you don't patch the code first — you
+encode the constraint first via `/dev-encode-constraint`, which walks a first-match-wins rubric and
+writes the strongest artifact that catches the *class* of mistake:
+
+| The mistake is… | Artifact | Where |
+|---|---|---|
+| detectable in test output | regression test | `tests/` |
+| a static pattern (banned call, naming) | lint rule | `ruff.toml` / `.eslintrc.json` |
+| explicit house style, hard to lint | convention entry | `docs/conventions.md` |
+| missing knowledge the agent should have had | playbook note | `docs/agent-playbook.md` |
+| a judgment call only a reviewer makes | review-agent prompt | `docs/conventions.md` (review rubric) |
+
+Strength order: **test > lint > convention > playbook > review-prompt.** Then you re-run the original
+task — the next attempt is blocked by the constraint, not a human. `/dev-agent-playbook-update` is the
+softer cousin for *missing knowledge* rather than coding mistakes. The slogan: **the repo teaches the
+agent — the agent doesn't memorize the repo.**
+
+**A typical dev task** therefore flows: hydrate (read the three docs) → implement surgically → self-review
+with `/dev-review-diff` → push → Gate re-checks on PR (CI + review-agent) → if anything slips through,
+`/dev-encode-constraint` ratchets the bar up so it can't recur.
+
+**Identifying a constraint-layer gap.** A gap is a class of mistake the layer *should* have caught but
+didn't — the rubric never encoded the rule. The tells: `/dev-review-diff` comes back clean yet something
+is still wrong on read; the same class of mistake recurs across diffs; a bug reaches `main` with green CI;
+or a reviewer flags something no test, lint, or convention names. The fix is never a one-off patch — it's
+`/dev-encode-constraint` to add the missing test/lint/convention, then re-run `/dev-review-diff` so the
+next diff of that class is caught mechanically. (See the "Constraint Layer" section in `CLAUDE.md`.)
+
+> **This repo is dual-purpose.** Because it *hosts* pm-os, `/dev-scaffold-constraint-layer` deliberately
+> halts here rather than scaffolding over itself. Its Gate (`.github/`) was therefore installed by hand;
+> the Playbook docs in `docs/` are still placeholders to be filled when app code lands.
 
 ## Install in your own product repo
 
@@ -49,7 +140,7 @@ Then, from your product repo root:
 
 ```bash
 /ctx-context-init                    # scaffolds context/ and tasks/
-/dev-scaffold-constraint-layer       # scaffolds docs/, CI, PR template from template/constraint-layer/
+/dev-scaffold-constraint-layer       # scaffolds docs/, CI, PR template from .claude/templates/constraint-layer/
 ```
 
 ## Try it without leaving this repo
