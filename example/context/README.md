@@ -4,7 +4,7 @@ Product context for this repo. One product per repo — the repo IS the
 product. PM OS skills read and write these files directly; no external
 database.
 
-`INDEX.md` is the machine-facing router (refreshed by `/ctx-context-sync`).
+`INDEX.md` is the machine-facing router (refreshed by `/context-sync`).
 Skills consult it first to scope which files to open.
 
 ## Layout

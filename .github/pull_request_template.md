@@ -27,7 +27,7 @@ _(Required. Pick one or more — and be specific:)_
 
 - [ ] Tests pass locally (`make test` or equivalent)
 - [ ] Lints pass locally (`make lint` or equivalent)
-- [ ] `/dev-review-diff` ran clean
+- [ ] `/review-diff` ran clean
 - [ ] Manually exercised the change in dev
 
 ## Docs updated?

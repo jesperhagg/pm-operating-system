@@ -2,7 +2,7 @@
 
 How to approach **product coding tasks** in this repo. The companion docs are
 `docs/architecture.md` (system shape), `docs/conventions.md` (enforceable house style,
-checked by `/dev-review-diff`), and `docs/agent-playbook.md` (non-obvious repo knowledge).
+checked by `/review-diff`), and `docs/agent-playbook.md` (non-obvious repo knowledge).
 
 ## 1. Think Before Coding
 

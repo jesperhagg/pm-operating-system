@@ -1,3 +1,3 @@
 # Experiments
 
-_H2 per experiment, newest first. Written by /gtm-log-signal (Internal Learning type)._
+_H2 per experiment, newest first. Written by /log-signal (Internal Learning type)._

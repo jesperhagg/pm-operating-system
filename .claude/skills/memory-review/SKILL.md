@@ -1,10 +1,10 @@
 ---
-description: Deprecated. Use /ctx-context-sync instead.
+description: Deprecated. Use /context-sync instead.
 ---
 
 # Memory Review — Deprecated
 
-This skill has been replaced by `/ctx-context-sync`, which handles:
+This skill has been replaced by `/context-sync`, which handles:
 
 - **Staleness detection** — compares `context/.sync-state.json` timestamps
   against per-file thresholds and writes governance tasks when files are stale.
@@ -13,5 +13,5 @@ This skill has been replaced by `/ctx-context-sync`, which handles:
 - **Session memory reconciliation** — resolves `session:pending` annotations
   written by write skills during sessions.
 
-Run `/ctx-context-sync` to refresh the context layer and surface stale entries.
-Run `/ops-weekly-review` to see open governance tasks alongside the weekly summary.
+Run `/context-sync` to refresh the context layer and surface stale entries.
+Run `/weekly-review` to see open governance tasks alongside the weekly summary.

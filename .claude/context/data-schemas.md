@@ -29,7 +29,7 @@ no fallback buffers.
     │   ├── people/{slug}.md
     │   ├── reference/{slug}.md
     │   ├── research/{slug}.md
-    │   └── market-landscape/{market-slug}.md   # Living doc; /gtm-market-scan appends `## Scan — YYYY-MM-DD`
+    │   └── market-landscape/{market-slug}.md   # Living doc; /market-scan appends `## Scan — YYYY-MM-DD`
     ├── personas/
     │   ├── index.md                  # One-line-per-persona scannable manifest
     │   └── {slug}.md                 # JTBD + evidence per persona
@@ -73,7 +73,7 @@ newest first) — signal-style, but scoped to the lead.
 ```
 Is this about a specific prospect/customer we're cultivating
 (contact details, outreach event, pipeline status change)?
-├── YES → data/leads/ (new lead → /gtm-log-lead; interaction → /gtm-log-interaction)
+├── YES → data/leads/ (new lead → /log-lead; interaction → /log-interaction)
 └── NO → Is this a commitment WE are making (scope, positioning, pricing, kill/park)?
     ├── YES → data/decisions/YYYY-MM-DD-slug.md
     └── NO → Is this a time-stamped observation of something that happened
@@ -116,7 +116,7 @@ What this changes or constrains going forward.
 
 ## Outcome Notes
 
-(Filled in when outcome is assessed via /ops-weekly-review.)
+(Filled in when outcome is assessed via /weekly-review.)
 ```
 
 `Type: Insight` is retired — observations belong in Signals.
@@ -133,7 +133,7 @@ What this changes or constrains going forward.
 - `date` is the source event's date, **not** today.
 - `type` is one of: `User Feedback`, `Technical Constraint`, `Market Signal`, `Competitive Move`, `Internal Learning`.
 - `source` must be concrete (URL, interview ID, analytics dashboard, competitor site).
-- `action_required:true` means a PM response is required. Surfaces in `/ops-weekly-review`.
+- `action_required:true` means a PM response is required. Surfaces in `/weekly-review`.
 - Newest signal at the top of the file. `/memory-review` rolls faded entries to `archive/YYYY-QN.md`.
 
 ### Knowledge entry — `data/knowledge/<category>/<slug>.md`
@@ -147,14 +147,14 @@ last_updated: 2026-04-20
 status: active               # active | archived
 ---
 
-(Body is category-specific. See per-category templates in /ctx-knowledge.)
+(Body is category-specific. See per-category templates in /knowledge.)
 ```
 
 Categories:
 - **people** — stakeholder profiles, communication styles, working preferences.
 - **reference** — company info, product overviews, team structure, OKR history.
 - **research** — domain research, literature reviews, one-shot insights.
-- **market-landscape** — living documents of the competitive landscape. Written exclusively by `/gtm-market-scan` as append-only `## Scan — YYYY-MM-DD` H2 sections. See the full structure below.
+- **market-landscape** — living documents of the competitive landscape. Written exclusively by `/market-scan` as append-only `## Scan — YYYY-MM-DD` H2 sections. See the full structure below.
 
 ### Persona file — `data/personas/<slug>.md`
 
@@ -167,7 +167,7 @@ evidence_strength: Moderate  # Strong (≥5 signals) | Moderate (2–4) | Thin (
 evidence: [../signals/active.md#three-tasks-missed-2026-03-02, ../signals/active.md#forgot-competitor-move-2026-03-15]
 ---
 
-(Body is the 6-field persona template defined in /strat-define-persona.)
+(Body is the 6-field persona template defined in /define-persona.)
 ```
 
 ### Lead entry — `data/leads/<slug>.md`
@@ -220,8 +220,8 @@ decision-makers, personal details worth remembering.
 - `persona` — slug of a persona in `data/personas/`, or empty string.
   Enables "which personas are converting" analysis.
 - `last_contact` — date of the most recent Interactions entry. Skills
-  bump this automatically when `/gtm-log-interaction` appends an entry.
-- `next_action_date` — used by `/gtm-pipeline` to surface overdue follow-ups.
+  bump this automatically when `/log-interaction` appends an entry.
+- `next_action_date` — used by `/pipeline` to surface overdue follow-ups.
 
 **Interaction H3 conventions:**
 
@@ -246,7 +246,7 @@ Compact pipeline board. One row per active lead, grouped/sorted by
 | Responded | Gamma | Kit Ono | High | 2026-04-19 | Book call | gamma.md |
 ```
 
-The writer skills (`/gtm-log-lead`, `/gtm-log-interaction`) are responsible for
+The writer skills (`/log-lead`, `/log-interaction`) are responsible for
 keeping the index in sync. Won/Lost leads move to `archive/` via
 `/memory-review` and are dropped from `index.md`.
 
@@ -318,7 +318,7 @@ punctuation). Don't invent a separate ID system.
 
 ## Market Landscape entry structure
 
-Maintained exclusively by `/gtm-market-scan`. Strict heading set so other
+Maintained exclusively by `/market-scan`. Strict heading set so other
 skills can parse by heading.
 
 ```markdown
