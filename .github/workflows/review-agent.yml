@@ -1,11 +1,11 @@
 name: review-agent
 
-# Runs the /dev-review-diff skill against PR diffs. Posts findings as PR
+# Runs the /review-diff skill against PR diffs. Posts findings as PR
 # comments anchored at the convention or playbook entry being violated.
 #
 # Requires repository secret CLAUDE_CODE_OAUTH_TOKEN (or an equivalent
 # auth mechanism for your Claude Code action). Remove this workflow if
-# you'd rather invoke /dev-review-diff manually before pushing.
+# you'd rather invoke /review-diff manually before pushing.
 
 on:
   pull_request:
@@ -24,11 +24,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run /dev-review-diff
+      - name: Run /review-diff
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            Run /dev-review-diff against the diff for this PR (#${{ github.event.pull_request.number }}).
+            Run /review-diff against the diff for this PR (#${{ github.event.pull_request.number }}).
             Read docs/conventions.md, docs/agent-playbook.md, and docs/architecture.md as the rubric.
             Post findings as PR comments anchored at the violated rule. If clean, post a single approval comment.

@@ -1,3 +1,3 @@
 # Strategy
 
-_Positioning, bets, north-star. Updated by /ctx-context-sync and in sessions._
+_Positioning, bets, north-star. Updated by /context-sync and in sessions._

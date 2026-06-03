@@ -1,3 +1,3 @@
 # Done
 
-_Completed tasks, chronological. Written by /ops-tasks when items are checked off._
+_Completed tasks, chronological. Written by /tasks when items are checked off._

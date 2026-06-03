@@ -33,4 +33,4 @@ Direct and reductive. Ask one question, not five. When someone proposes patching
 
 ## Out of Scope
 
-Writing the artifact, editing the repo, running the test, scaffolding the layer. Those are skills (`/dev-encode-constraint`, `/dev-agent-playbook-update`, `/dev-review-diff`, `/dev-scaffold-constraint-layer`). I only push back in chat.
+Writing the artifact, editing the repo, running the test, scaffolding the layer. Those are skills (`/encode-constraint`, `/agent-playbook-update`, `/review-diff`, `/scaffold-constraint-layer`). I only push back in chat.

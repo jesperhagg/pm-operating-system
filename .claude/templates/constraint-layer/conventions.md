@@ -1,6 +1,6 @@
 # Conventions
 
-_House style the coding agent must match. Used by `/dev-review-diff` and the review-agent CI workflow as the rubric for accept/reject decisions._
+_House style the coding agent must match. Used by `/review-diff` and the review-agent CI workflow as the rubric for accept/reject decisions._
 
 _Every entry is enforceable — if you can't point at a specific pattern in a diff and say "this violates section X," the entry is too vague. Either tighten it or move it to `agent-playbook.md`._
 

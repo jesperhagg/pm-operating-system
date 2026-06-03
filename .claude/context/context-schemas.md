@@ -12,8 +12,8 @@ buffers. Operational work items live in `tasks/` alongside `context/`.
 ├── CLAUDE.md                             # Skill routing + Context Routing table + Repo Identity
 ├── context/
 │   ├── README.md                         # One-paragraph map for LLM navigation
-│   ├── INDEX.md                          # Machine-facing router; anchor lists refreshed by /ctx-context-sync
-│   ├── .sync-state.json                  # Machine-written by /ctx-context-sync; tracks last-sync per file
+│   ├── INDEX.md                          # Machine-facing router; anchor lists refreshed by /context-sync
+│   ├── .sync-state.json                  # Machine-written by /context-sync; tracks last-sync per file
 │   ├── .notion-routing.md                # Notion DB / page → context file mapping table
 │   ├── product/
 │   │   ├── decisions.md                  # H2-per-decision, newest first
@@ -21,15 +21,15 @@ buffers. Operational work items live in `tasks/` alongside `context/`.
 │   │   ├── roadmap.md                    # Committed / next / later — living doc
 │   │   └── experiments.md               # Active hypotheses + outcome log
 │   ├── market/
-│   │   ├── landscape.md                  # Living competitive doc; /gtm-market-scan appends ## Scan — YYYY-MM-DD
+│   │   ├── landscape.md                  # Living competitive doc; /market-scan appends ## Scan — YYYY-MM-DD
 │   │   ├── signals.md                    # Market and competitive observations, newest first
 │   │   └── archive/
-│   │       └── signals-YYYY-QN.md        # Quarterly rollover (managed by /ctx-context-sync)
+│   │       └── signals-YYYY-QN.md        # Quarterly rollover (managed by /context-sync)
 │   ├── users/
 │   │   ├── personas.md                   # H2-per-persona, all personas in one file
 │   │   ├── feedback.md                   # User-feedback signal stream, newest first
 │   │   ├── research.md                   # Domain research, literature, one-shot insights
-│   │   └── icp.md                        # H2-per-ICP (lazy; written by /strat-ideal-customer-profile)
+│   │   └── icp.md                        # H2-per-ICP (lazy; written by /ideal-customer-profile)
 │   ├── ops/
 │   │   ├── people.md                     # Stakeholder profiles
 │   │   ├── leads.md                      # Pipeline board: one row per active lead
@@ -40,7 +40,7 @@ buffers. Operational work items live in `tasks/` alongside `context/`.
 └── tasks/
     ├── active.md                         # Now / Next / Later H2; checkboxes + HTML-comment metadata
     ├── done.md                           # Flat chronological completed-task list
-    └── governance.md                     # Auto-written by /ctx-context-sync for conflicts requiring PM review
+    └── governance.md                     # Auto-written by /context-sync for conflicts requiring PM review
 ```
 
 ## Context Routing Rubric
@@ -112,7 +112,7 @@ What this changes or constrains going forward.
 
 ### Outcome Notes
 
-_(Filled in via /ops-weekly-review when outcome is assessed.)_
+_(Filled in via /weekly-review when outcome is assessed.)_
 
 ---
 ```
@@ -121,7 +121,7 @@ _(Filled in via /ops-weekly-review when outcome is assessed.)_
 - `type` — one of: Architecture | Scope | Positioning | Pricing | Go-to-Market | Technical | Design | Partnership | Kill/Park
 - `status` — one of: Active | Superseded | Experimental | Archived
 - `outcome` — one of: Pending | Validated | Invalidated | Inconclusive
-- `session` — one of: `pending` (written this session, not yet reconciled with sources) | `synced` (reconciled by `/ctx-context-sync`)
+- `session` — one of: `pending` (written this session, not yet reconciled with sources) | `synced` (reconciled by `/context-sync`)
 
 ### Signal entries — `context/market/signals.md` and `context/users/feedback.md`
 
@@ -147,8 +147,8 @@ _Newest first. One H3 per signal. User feedback and customer observations._
 - `date` is the source event's date, not today.
 - `type` — one of: User Feedback | Technical Constraint | Market Signal | Competitive Move | Internal Learning
 - `source` must be concrete (URL, email thread ID, interview date, analytics dashboard).
-- `action_required:true` surfaces in `/ops-weekly-review`.
-- Quarterly rollover: signals older than 90 days move to `context/market/archive/signals-YYYY-QN.md` by `/ctx-context-sync`.
+- `action_required:true` surfaces in `/weekly-review`.
+- Quarterly rollover: signals older than 90 days move to `context/market/archive/signals-YYYY-QN.md` by `/context-sync`.
 
 ### Personas — `context/users/personas.md`
 
@@ -185,7 +185,7 @@ _One H2 per persona. Evidence-backed customer segments._
 One file per skill that adopts the learnings loop. Created lazily by the
 skill on first capture. H3 per run, newest first. Same lifecycle as other
 session-written context: `session:pending` flips to `session:synced` via
-`/ctx-context-sync`.
+`/context-sync`.
 
 ```markdown
 # Learnings — {skill-name}
@@ -203,13 +203,13 @@ Rules:
 - Three lines (`Worked` / `Missed` / `Next time`). Not three paragraphs.
 - Looped skills read the top 3–5 entries during Hydration and apply
   silently — they do not narrate prior lessons back to the user.
-- Looped skills (current set): `/strat-write-prd`, `/strat-define-persona`, `/strat-pricing`,
-  `/strat-evaluate-opportunity`, `/disc-design-experiment`, `/gtm-market-scan`,
-  `/dev-tech-review`, `/disc-break-down`, `/ops-weekly-review`.
+- Looped skills (current set): `/write-prd`, `/define-persona`, `/pricing`,
+  `/evaluate-opportunity`, `/design-experiment`, `/market-scan`,
+  `/tech-review`, `/break-down`, `/weekly-review`.
 
 ### ICP — `context/users/icp.md`
 
-Created lazily by `/strat-ideal-customer-profile` on first run. One H2 per ICP
+Created lazily by `/ideal-customer-profile` on first run. One H2 per ICP
 (most solo products have one; a few have two). Distinct from personas:
 ICP describes the *segment we sell to* with disqualifiers and a fit-score
 rubric; personas describe the *individual buyer's* JTBD.
@@ -260,7 +260,7 @@ Communication style, context, working preferences...
 
 ### Strategy — `context/product/strategy.md`
 
-Living doc; sections updated by `/ctx-context-sync` from Notion or session memory.
+Living doc; sections updated by `/context-sync` from Notion or session memory.
 No per-entry format constraint — structured as the PM sees fit, with H2
 sections per strategic topic (Positioning, Core Bet, North Star, etc.).
 
@@ -284,7 +284,7 @@ Living doc; H2 per experiment. Append-only.
 
 ### Market Landscape — `context/market/landscape.md`
 
-Maintained exclusively by `/gtm-market-scan`. Append-only `## Scan — YYYY-MM-DD`
+Maintained exclusively by `/market-scan`. Append-only `## Scan — YYYY-MM-DD`
 H2 sections. Structure identical to the prior `data/knowledge/market-landscape/`
 format:
 
@@ -415,13 +415,13 @@ HTML-comment metadata. Grouped by H2 in `active.md`.
 
 ### `tasks/governance.md`
 
-Written exclusively by `/ctx-context-sync`. Never edited by write skills. PM
-reviews and resolves each item manually, or via `/ops-weekly-review`.
+Written exclusively by `/context-sync`. Never edited by write skills. PM
+reviews and resolves each item manually, or via `/weekly-review`.
 
 ```markdown
 # Governance Tasks
 
-_Written by /ctx-context-sync. Review and resolve each item._
+_Written by /context-sync. Review and resolve each item._
 
 ## Semantic Conflicts
 
@@ -436,7 +436,7 @@ _Written by /ctx-context-sync. Review and resolve each item._
 
 ## `.sync-state.json` Schema
 
-Machine-written by `/ctx-context-sync`. Never edit manually. Tracks what was
+Machine-written by `/context-sync`. Never edit manually. Tracks what was
 last synced so incremental runs skip unchanged sources.
 
 ```json
@@ -478,7 +478,7 @@ last synced so incremental runs skip unchanged sources.
 
 ## `<!-- session: pending -->` Annotation
 
-When a write skill (e.g., `/strat-log-decision`, `/gtm-log-signal`) adds a new block
+When a write skill (e.g., `/log-decision`, `/log-signal`) adds a new block
 to a context file during a session, it appends `session:pending` in the
 inline metadata comment on that block's header. This marks content that
 has been captured locally but not yet reconciled with external sources.
@@ -488,15 +488,15 @@ has been captured locally but not yet reconciled with external sources.
 <!-- date:2026-05-11 type:Scope status:Active outcome:Pending agent:[] linked_signals:[] linked_decision:null session:pending -->
 ```
 
-`/ctx-context-sync` step 3 processes these: verifies consistency, runs a
+`/context-sync` step 3 processes these: verifies consistency, runs a
 conflict check if the new block overlaps semantically with existing context,
 then changes `session:pending` to `session:synced`. The block content stays;
 only the marker changes.
 
 **Rules:**
 - Write skills always add `session:pending` when writing a new block.
-- `/ctx-context-sync` is the only skill that writes `session:synced`.
-- Never manually set `session:synced` — let `/ctx-context-sync` do it.
+- `/context-sync` is the only skill that writes `session:synced`.
+- Never manually set `session:synced` — let `/context-sync` do it.
 
 ## Staleness Thresholds
 
@@ -512,8 +512,8 @@ only the marker changes.
 | context/product/strategy.md | Notion + sessions | 60 days | 30 days |
 | context/product/experiments.md | Sessions | 30 days (no new entry) | — |
 
-**Hard threshold:** `/ctx-context-sync` writes a staleness task to `tasks/governance.md`.
-**Soft warning:** `/ctx-context-sync` notes it in the sync summary but does not create a task.
+**Hard threshold:** `/context-sync` writes a staleness task to `tasks/governance.md`.
+**Soft warning:** `/context-sync` notes it in the sync summary but does not create a task.
 
 ## Cross-References
 
@@ -534,7 +534,7 @@ system.
 ## Token-Efficiency Rules for Skills
 
 1. **Read `context/INDEX.md` first when it exists.** It is the machine-facing
-   router refreshed by `/ctx-context-sync` and lists the most recent anchors per
+   router refreshed by `/context-sync` and lists the most recent anchors per
    file. Use it to scope which downstream files to open before grepping.
 2. **Read the relevant H2 section, not the full file.** Most context files
    are multi-entry; use grep for the H2 heading, then read that section only.
@@ -548,4 +548,4 @@ system.
 6. **Cache nothing across skill invocations.** Files are cheap; staleness
    is dangerous. Always read fresh.
 7. **Don't read `.sync-state.json` in analysis skills.** That file is for
-   `/ctx-context-sync` only. Analysis skills read context files, not sync metadata.
+   `/context-sync` only. Analysis skills read context files, not sync metadata.

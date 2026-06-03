@@ -7,7 +7,7 @@ skill. One JSON object per line, in monthly files `activity-YYYY-MM.jsonl`.
 ## Event shape
 
 ```json
-{"ts":"2026-05-29T14:03:22Z","session":"<id>","actor":"skill:strat-log-decision",
+{"ts":"2026-05-29T14:03:22Z","session":"<id>","actor":"skill:log-decision",
  "action":"invoke","targets":["context/product/decisions.md"],"tool":"Edit","status":"ok"}
 ```
 
@@ -23,7 +23,7 @@ This records *that an action happened*. The *why* lives in content metadata
 
 ```sh
 # Everything a given skill did
-jq -c 'select(.actor=="skill:strat-log-decision")' audit/activity-*.jsonl
+jq -c 'select(.actor=="skill:log-decision")' audit/activity-*.jsonl
 # Everything that touched a file
 jq -c 'select(.targets[]? == "context/product/decisions.md")' audit/activity-*.jsonl
 # Run volume by actor
