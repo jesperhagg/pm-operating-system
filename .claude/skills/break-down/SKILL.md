@@ -99,6 +99,7 @@ Keep entries three lines, not three paragraphs.
 ## After Completing
 
 Suggest the user might want to:
+- Build each "Pull Next" task test-first with `/spec-feature` — turn its `Done when:` into failing tests, then code until green.
 - Append the top "Pull Next" items to `tasks/active.md` under the Now section via `/tasks add` (priority:now).
 - Run `/log-decision` if the breakdown committed to a scope choice worth recording.
 - Consult the **product-sculptor** agent if further scope reduction is needed.
