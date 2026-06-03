@@ -59,6 +59,7 @@ section is the IP — if it reads like generic advice, it's not a skill.
 |---|---|
 | `/scaffold-constraint-layer` | One-shot constraint-layer setup (docs, CI gate, PR template) |
 | `/encode-constraint` | Convert a coding-agent mistake into a permanent constraint |
+| `/spec-feature` | Build a feature test-first: acceptance criteria → failing tests → code until green |
 | `/agent-playbook-update` | Capture non-obvious repo knowledge into `docs/agent-playbook.md` |
 | `/review-diff` | Review a diff against the constraint layer (accept/reject) |
 | `/tech-review` | Audit code/architecture across six lenses, apply fixes surgically |
@@ -69,7 +70,8 @@ section is the IP — if it reads like generic advice, it's not a skill.
 ## When to run what
 
 New product repo, recommended order: `/context-init` → `/scaffold-constraint-layer` → product work.
-During work: `/encode-constraint` on every recurring mistake, `/review-diff` on every diff,
+During work: `/spec-feature` to build each feature test-first (the proactive twin of
+`/encode-constraint`), `/encode-constraint` on every recurring mistake, `/review-diff` on every diff,
 `/agent-playbook-update` when a session uncovers something non-obvious. After adding/removing/renaming
 any skill or agent: `/generate-repo-map`.
 

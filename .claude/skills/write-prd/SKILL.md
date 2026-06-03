@@ -155,6 +155,6 @@ Contextual to what the PRD surfaced:
 
 - Problem section cited no Signals → suggest `/log-signal` to capture user feedback before building, OR running user interviews.
 - Risky assumption is buildable-to-test → suggest `/design-experiment` to frame the validation test.
-- PRD is scoped → suggest `/break-down` to decompose into kanban-ready tasks.
+- PRD is scoped → suggest `/break-down` to decompose into kanban-ready tasks, then `/spec-feature` to build each task test-first.
 - PRD introduces AI or expensive infra → consult **systems-architect** for cost model.
 - PRD represents a new product bet → suggest `/evaluate-opportunity` before committing.

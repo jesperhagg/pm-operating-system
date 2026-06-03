@@ -1,11 +1,11 @@
 # PM OS — Repo Map
-_Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
+_Last generated: 2026-06-03 | 34 skills / 6 agents / 0 commands_
 
 ## Structure
 
 | Path | Contains | Count |
 |------|----------|-------|
-| `.claude/skills/` | Skills (auto-discovered by Claude Code) | 33 |
+| `.claude/skills/` | Skills (auto-discovered by Claude Code) | 34 |
 | `.claude/agents/` | Chat-persona agents (auto-discovered) | 6 |
 | `.claude/commands/` | Slash commands (auto-discovered) | 0 |
 | `.claude/context/` | Lazy-loaded reference docs | 3 |
@@ -24,6 +24,7 @@ _Last generated: 2026-05-29 | 33 skills / 6 agents / 0 commands_
 | /knowledge | `.claude/skills/knowledge/SKILL.md` | 191 | Fetch, store, and review structured knowledge in context/. Manages peo |
 | /agent-playbook-update | `.claude/skills/agent-playbook-update/SKILL.md` | 84 | Capture non-obvious knowledge the coding agent uncovered during a sess |
 | /encode-constraint | `.claude/skills/encode-constraint/SKILL.md` | 104 | Convert a coding-agent mistake into a permanent constraint — regress |
+| /spec-feature | `.claude/skills/spec-feature/SKILL.md` | 150 | Build a feature test-first — convert user-facing acceptance criteria |
 | /review-diff | `.claude/skills/review-diff/SKILL.md` | 103 | Review a code diff (working tree, last commit, or PR number) against t |
 | /scaffold-constraint-layer | `.claude/skills/scaffold-constraint-layer/SKILL.md` | 145 | One-shot setup of the constraint layer in a consumer product repo. Cop |
 | /tech-review | `.claude/skills/tech-review/SKILL.md` | 282 | Audit code and architecture across six lenses (simplify, cost, perform |
